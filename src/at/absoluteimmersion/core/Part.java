@@ -1,33 +1,29 @@
 package at.absoluteimmersion.core;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Part {
-    private String text;
-    private String name;
-    private Map<String, Action> actions = new HashMap<>();
+public class Part extends BasePart {
+    private List<Action> actions = new ArrayList<>();
 
-    public Part(String name, String text) {
-        this.text = text;
-        this.name = name;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getName() {
-        return name;
+    public Part(String name) {
+        super(name);
     }
 
     public void addAction(Action action) {
-        actions.put(action.getName(), action);
+        actions.add(action);
     }
 
-    public Action getAction(String name) throws StoryException {
-        Action action = actions.get(name);
-        if (action == null) throw new StoryException("Command not found!");
-        return action;
+    public List<Action> getActions(String name) throws StoryException {
+        List<Action> tmpActions = new ArrayList<>();
+        for (Action action:actions)
+        {
+            if(action.getName().equals(name))
+            {
+                tmpActions.add(action);
+            }
+        }
+        if (tmpActions.isEmpty()) throw new StoryException("Command not found!");
+        return tmpActions;
     }
 }

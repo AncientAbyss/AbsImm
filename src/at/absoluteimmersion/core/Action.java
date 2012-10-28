@@ -1,25 +1,32 @@
 package at.absoluteimmersion.core;
 
-import java.util.HashMap;
-import java.util.Map;
+public class Action extends BasePart {
 
-public class Action {
-    private String name;
-    private Map<String, Part> parts = new HashMap<>();
+    private String text;
+    private StateList stateList;
+    private String state;
 
-    public Action(String name) {
-        this.name = name;
+    public Action(String name, String text, StateList stateList) {
+        this(name, text, "", "", stateList);
     }
 
-    public String getName() {
-        return name;
+    public Action(String name, String text, String condition, String state, StateList stateList) {
+        super(name, condition);
+        this.text = text;
+        this.state = state;
+        this.stateList = stateList;
     }
 
-    public void addPart(Part part) {
-        parts.put(part.getName(), part);
+    public boolean conditionMet() {
+        if (condition.isEmpty()) return true;
+        boolean containsNot = condition.startsWith("not ");
+        if (!containsNot) return stateList.contains(condition);
+        return (!stateList.contains(condition.split(" ")[1]));
     }
 
     public String execute() {
-        return parts.values().iterator().next().getText();
+        if (!conditionMet()) return "";
+        stateList.add(state);
+        return text;
     }
 }

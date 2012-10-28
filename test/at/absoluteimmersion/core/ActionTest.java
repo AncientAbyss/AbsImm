@@ -35,24 +35,4 @@ public class ActionTest {
     private Action createAction(String condition, StateList stateList) {
         return new Action("drink", "jamm", condition, "drunk", stateList);
     }
-
-    @Test
-    public void conditionMet_noCondition_isMet() {
-        Action action = createAction("", new StateList());
-        Assert.assertTrue(action.conditionMet());
-    }
-
-    @Test
-    public void conditionMet_withCondition_isNotMet() {
-        Action action = createAction("some_condition", new StateList());
-        Assert.assertFalse(action.conditionMet());
-    }
-
-    @Test
-    public void conditionMet_withNotCondition_isMet() {
-        StateList stateList = new StateList();
-        stateList.add("some_condition");
-        Action action = createAction("not some_condition", stateList);
-        Assert.assertFalse(action.conditionMet());
-    }
 }

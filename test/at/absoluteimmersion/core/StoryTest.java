@@ -3,9 +3,7 @@ package at.absoluteimmersion.core;
 import org.junit.Test;
 import org.mockito.Matchers;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class StoryTest {
 
@@ -74,14 +72,11 @@ public class StoryTest {
         Part locker = new Part("locker");
         Action open;
         StateList list = new StateList();
-        if (condition)
-        {
+        if (condition) {
             open = new Action("open", "Locker is open now!", "have_key", "locker_open", list);
             Action locked = new Action("open", "You need a key!", "not have_key", "", list);
             locker.addAction(locked);
-        }
-        else
-        {
+        } else {
             open = new Action("open", "Locker is open now!", mock(StateList.class));
         }
         locker.addAction(open);
@@ -118,5 +113,61 @@ public class StoryTest {
         verify(client).reaction("introduction");
         story.interact("open locker");
         verify(client).reaction("You need a key!");
+    }
+
+    @Test
+    public void tell_multipleChapters_executesAllActions() throws StoryException {
+        Story story = createStory();
+        Part part = (Part) story.find("chapter01");
+        Part locker = new Part("locker");
+        Action locker1 = mock(Action.class);
+        when(locker1.getName()).thenReturn("open");
+        when(locker1.execute()).thenReturn("");
+        locker.addAction(locker1);
+        part.addPart(locker);
+        part = new Part("chapter02");
+        locker = new Part("locker");
+        Action locker2 = mock(Action.class);
+        when(locker2.getName()).thenReturn("open");
+        when(locker2.execute()).thenReturn("");
+        locker.addAction(locker2);
+        part.addPart(locker);
+        story.addPart(part);
+        story.tell();
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.interact("open locker");
+        verify(locker1).execute();
+        verify(locker2).execute();
+    }
+
+    @Test
+    public void tell_multipleChaptersWithConditions_executesOneAction() throws StoryException {
+        StateList stateList = new StateList();
+        Story story = new Story();
+        Part part = new Part("chapter01", "", stateList);
+        Action action = new Action(Story.INITIAL_ACTION, "introduction", "", "in_chapter01", stateList);
+        part.addAction(action);
+        story.addPart(part);
+        Part locker = new Part("locker");
+        Action locker1 = mock(Action.class);
+        when(locker1.getName()).thenReturn("open");
+        when(locker1.execute()).thenReturn("");
+        locker.addAction(locker1);
+        part.addPart(locker);
+        part = new Part("chapter02", "in_chapter02", stateList);
+        locker = new Part("locker");
+        Action locker2 = mock(Action.class);
+        when(locker2.getName()).thenReturn("open");
+        when(locker2.execute()).thenReturn("");
+        locker.addAction(locker2);
+        part.addPart(locker);
+        story.addPart(part);
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        story.interact("open locker");
+        verify(locker1).execute();
+        verifyNoMoreInteractions(locker2);
     }
 }

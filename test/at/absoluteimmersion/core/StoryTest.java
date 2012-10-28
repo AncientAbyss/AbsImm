@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class StoryTest {
@@ -14,24 +15,41 @@ public class StoryTest {
         story.interact("test");
     }
 
+    @Test(expected = StoryException.class)
+    public void interact_noEnterAction_throwsException() throws StoryException {
+        Story story = new Story();
+        story.addPart(new Part("chapter", ""));
+        story.tell();
+    }
+
     @Test()
     public void interact_initial_callsReaction() throws StoryException {
         Story story = new Story();
-        story.addSection("start", new StorySection("start"));
+        Part part = new Part("testpart", "");
+        Action action = new Action("enter");
+        Part actionText = new Part("", "introduction");
+        action.addPart(actionText);
+        part.addAction(action);
+        story.addPart(part);
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
-        story.interact("start");
-        verify(client).reaction(Matchers.anyString());
+        story.tell();
+        verify(client, times(2)).reaction(Matchers.anyString());
     }
 
     @Test()
     public void interact_initial_callsReactionWithCorrectParameter() throws StoryException {
         Story story = new Story();
-        StorySection storySection = new StorySection("init");
-        story.addSection("start", storySection);
+        Part part = new Part("chapter01", "");
+        Action action = new Action("enter");
+        Part actionText = new Part("", "introduction");
+        action.addPart(actionText);
+        part.addAction(action);
+        story.addPart(part);
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
-        story.interact("start");
-        verify(client).reaction("init");
+        story.tell();
+        verify(client).reaction("chapter01");
+        verify(client).reaction("introduction");
     }
 }

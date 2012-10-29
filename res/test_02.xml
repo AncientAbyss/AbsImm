@@ -1,0 +1,8 @@
+<story>
+    <part name="chapter_01">
+        <action name="enter" state="in_chapter01" condition="has_lock1" text="opened1"/>
+    </part>
+    <part name="chapter_02">
+        <action name="enter" state="in_chapter02" condition="has_lock2" text="opened2"/>
+    </part>
+</story>

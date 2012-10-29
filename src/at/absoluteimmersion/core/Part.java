@@ -42,11 +42,10 @@ public class Part extends BasePart {
     public List<Action> getActions(String name) throws StoryException {
         List<Action> tmpActions = new ArrayList<>();
         for (Action action : actions) {
-            if (action.getName().equals(name)) {
+            if (action.getName().equals(name) && action.conditionMet()) {
                 tmpActions.add(action);
             }
         }
-        if (tmpActions.isEmpty()) throw new StoryException("Command not found!");
         return tmpActions;
     }
 }

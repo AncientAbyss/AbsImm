@@ -42,6 +42,14 @@ public class Story extends BasePart {
             actions.addAll(((Part) part).getActions(actionName));
         }
         for (ReactionClient client : clients) {
+            if (parts.isEmpty()) {
+                client.reaction("No such object!");
+                continue;
+            }
+            if (actions.isEmpty()) {
+                client.reaction("You can not do this with this object!");
+                continue;
+            }
             for (BasePart part : parts) {
                 if (allParts.contains(part)) {
                     client.reaction(part.getName());

@@ -50,17 +50,6 @@ public class BasePart {
         parts.add(part);
     }
 
-    public BasePart find(String name) throws StoryException {
-        for (BasePart part : parts) {
-            if (part.getName().equals(name)) return part;
-            BasePart child = part.find(name);
-            if (child != null) {
-                return child;
-            }
-        }
-        throw new StoryException(("Part not found!"));
-    }
-
     public String getName() {
         return name;
     }

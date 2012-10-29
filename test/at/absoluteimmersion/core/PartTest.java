@@ -4,13 +4,13 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 public class PartTest {
-    @Test(expected = StoryException.class)
-    public void getActions_noAction_throwsException() throws StoryException {
+    @Test
+    public void getActions_noAction_returnsEmptyList() throws StoryException {
         Part part = new Part("");
-        part.getActions("blah");
+        Assert.assertEquals(0, part.getActions("blah").size());
     }
 
-    @Test()
+    @Test
     public void getActions_multipleActions_returnsWantedAction() throws StoryException {
         Part part = new Part("");
         Action a01 = new Action("01", "", new StateList());

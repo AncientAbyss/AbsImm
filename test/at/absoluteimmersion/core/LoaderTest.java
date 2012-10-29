@@ -23,9 +23,9 @@ public class LoaderTest {
         Loader loader = new Loader();
         Story expected = new Story();
         StateList stateList = new StateList();
-        expected.addPart(new Part("chapter_01", "", stateList));
+        expected.addPart(new Part("chapter_01", "in_chapter01", stateList));
         expected.addPart(new Part("chapter_02", "", stateList));
-        Story actual = loader.fromString("<story><part name='chapter_01'/><part name='chapter_02'/></story>");
+        Story actual = loader.fromString("<story><part name='chapter_01' condition='in_chapter01'/><part name='chapter_02'/></story>");
         Assert.assertEquals(expected, actual);
     }
 
@@ -45,7 +45,7 @@ public class LoaderTest {
     }
 
     @Test
-    public void fromFile_storyWithPartsAndActions_createsStoryWithPartsAndActions() throws StoryException {
+     public void fromFile_storyWithPartsAndActions_createsStoryWithPartsAndActions() throws StoryException {
         Loader loader = new Loader();
         Story expected = new Story();
         StateList stateList = new StateList();

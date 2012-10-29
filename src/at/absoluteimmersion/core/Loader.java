@@ -64,7 +64,7 @@ public class Loader {
                 if (nameNode != null) name = nameNode.getNodeValue();
                 String condition = "";
                 Node conditionNode = n.getAttributes().getNamedItem("condition");
-                if (conditionNode != null) name = conditionNode.getNodeValue();
+                if (conditionNode != null) condition = conditionNode.getNodeValue();
                 Part part = new Part(name, condition, stateList);
                 parent.addPart(part);
                 parseChildNodes(part, stateList, n.getChildNodes());

@@ -19,11 +19,14 @@ public class StoryTest {
         story.tell();
     }
 
-    @Test(expected = StoryException.class)
+    @Test
     public void tell_noEnterAction_throwsException() throws StoryException {
         Story story = new Story();
         story.addPart(new Part("chapter"));
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
         story.tell();
+        verify(client).reaction("You can not do this with this object!");
     }
 
     @Test()
@@ -57,7 +60,7 @@ public class StoryTest {
     @Test()
     public void tell_actionOnNonChapterPart_callsReactionWithCorrectParameter() throws StoryException {
         Story story = createStory();
-        Part part = (Part) story.find("chapter01");
+        Part part = (Part) story.findAll("chapter01").get(0);
         part.addPart(createLocker(false));
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -86,7 +89,7 @@ public class StoryTest {
     @Test()
     public void tell_actionWithConditionNotMet_returnsEmptyString() throws StoryException {
         Story story = createStory();
-        Part part = (Part) story.find("chapter01");
+        Part part = (Part) story.findAll("chapter01").get(0);
         Part locker = new Part("locker");
         Action open;
         StateList list = new StateList();
@@ -104,7 +107,7 @@ public class StoryTest {
     @Test()
     public void tell_actionWithCondition_callsReactionWithCorrectParameter() throws StoryException {
         Story story = createStory();
-        Part part = (Part) story.find("chapter01");
+        Part part = (Part) story.findAll("chapter01").get(0);
         part.addPart(createLocker(true));
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -118,10 +121,11 @@ public class StoryTest {
     @Test
     public void tell_multipleChapters_executesAllActions() throws StoryException {
         Story story = createStory();
-        Part part = (Part) story.find("chapter01");
+        Part part = (Part) story.findAll("chapter01").get(0);
         Part locker = new Part("locker");
         Action locker1 = mock(Action.class);
         when(locker1.getName()).thenReturn("open");
+        when(locker1.conditionMet()).thenReturn(true);
         when(locker1.execute()).thenReturn("");
         locker.addAction(locker1);
         part.addPart(locker);
@@ -129,6 +133,7 @@ public class StoryTest {
         locker = new Part("locker");
         Action locker2 = mock(Action.class);
         when(locker2.getName()).thenReturn("open");
+        when(locker2.conditionMet()).thenReturn(true);
         when(locker2.execute()).thenReturn("");
         locker.addAction(locker2);
         part.addPart(locker);
@@ -152,6 +157,7 @@ public class StoryTest {
         Part locker = new Part("locker");
         Action locker1 = mock(Action.class);
         when(locker1.getName()).thenReturn("open");
+        when(locker1.conditionMet()).thenReturn(true);
         when(locker1.execute()).thenReturn("");
         locker.addAction(locker1);
         part.addPart(locker);
@@ -159,6 +165,7 @@ public class StoryTest {
         locker = new Part("locker");
         Action locker2 = mock(Action.class);
         when(locker2.getName()).thenReturn("open");
+        when(locker2.conditionMet()).thenReturn(true);
         when(locker2.execute()).thenReturn("");
         locker.addAction(locker2);
         part.addPart(locker);
@@ -169,5 +176,51 @@ public class StoryTest {
         story.interact("open locker");
         verify(locker1).execute();
         verifyNoMoreInteractions(locker2);
+    }
+
+    @Test
+    public void tell_multipleChaptersWithActionsWithUnsatisfiedConditions_returnsErrorMessage() throws StoryException {
+        Loader loader = new Loader();
+        Story story = loader.fromFile("res/test_02.xml");
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client).reaction("You can not do this with this object!");
+    }
+
+    @Test
+    public void tell_multipleChaptersWithConditions_playsGameWithoutProblem() throws StoryException {
+        Loader loader = new Loader();
+        Story story = loader.fromFile("res/test_03.xml");
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client).reaction("chapter_01");
+        verify(client).reaction("Entered chapter 01!");
+        story.interact("open locker");
+        verify(client).reaction("You can not do this with this object!");
+        story.interact("enter locker");
+        verify(client).reaction("You can not do this with this object!");
+        story.interact("look locker");
+        verify(client).reaction("A nice locker!");
+        story.interact("take key");
+        verify(client).reaction("You found a key!");
+        story.interact("open locker");
+        verify(client).reaction("The locker is open now!");
+        story.interact("enter locker");
+        verify(client).reaction("chapter_02");
+        verify(client).reaction("You are inside the locker!");
+        story.interact("open locker");
+        verify(client).reaction("You can not do this with this object!");
+        story.interact("enter locker");
+        verify(client).reaction("You can not do this with this object!");
+        story.interact("look locker");
+        verify(client).reaction("A very nice locker!");
+        story.interact("take key");
+        verify(client).reaction("You found a small key!");
+        story.interact("open locker");
+        verify(client).reaction("The very nice locker is open now!");
+        story.interact("leave chapter02");
+        verify(client).reaction("You left the locker!");
     }
 }

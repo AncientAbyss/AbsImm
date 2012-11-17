@@ -54,14 +54,24 @@ public class BasePart {
         return name;
     }
 
-    public boolean conditionMet() {
+    public boolean conditionsMet() {
         if (condition.isEmpty()) return true;
 
-        String invertedCondition = conditionContainsNot() ? condition.split(" ")[1] : "not " + condition;
-        int condition_index = stateList.lastIndexOf(condition);
+        String[] conditions = condition.split(" AND ");
+
+        for (String single_condition : conditions) {
+            if (!singleConditionMet(single_condition)) return false;
+        }
+
+        return true;
+    }
+
+    private boolean singleConditionMet(String single_condition) {
+        String invertedCondition = conditionContainsNot(single_condition) ? single_condition.split(" ")[1] : "NOT " + single_condition;
+        int condition_index = stateList.lastIndexOf(single_condition);
         int inverted_condition_index = stateList.lastIndexOf(invertedCondition);
 
-        if (conditionContainsNot()) {
+        if (conditionContainsNot(single_condition)) {
             if (condition_index == -1 && inverted_condition_index == -1) return true;
         } else {
             if (condition_index == -1) return false;
@@ -70,15 +80,15 @@ public class BasePart {
         return (condition_index > inverted_condition_index);
     }
 
-    private boolean conditionContainsNot() {
-        return condition.startsWith("not ");
+    private boolean conditionContainsNot(String single_condition) {
+        return single_condition.startsWith("NOT ");
     }
 
     public List<BasePart> findAll(String somePart) {
         List<BasePart> result = new ArrayList<BasePart>();
         for (BasePart part : parts) {
-            if (!part.conditionMet()) continue;
-            if (part.getName().equals(somePart)) result.add(part);
+            if (!part.conditionsMet()) continue;
+            if (part.getName().equals(somePart) || somePart.equals("")) result.add(part);
             result.addAll(part.findAll(somePart));
         }
         return result;

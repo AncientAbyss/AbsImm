@@ -52,7 +52,7 @@ public class Action extends BasePart {
     }
 
     public String execute() throws StoryException {
-        if (!conditionMet()) return "";
+        if (!conditionsMet()) return "";
         if (!state.isEmpty()) stateList.add(state);
         if (!command.isEmpty()) story.interact(command);
         return text;

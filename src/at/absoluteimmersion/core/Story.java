@@ -33,6 +33,12 @@ public class Story extends BasePart {
 
     public void interact(String interaction) throws StoryException {
         if (!isInitialized()) throw new StoryException("Cannot run empty tale!");
+
+        if (interaction.equals("hint")) {
+            hint();
+            return;
+        }
+
         String[] splitted = interaction.split(" ", 2);
         if (splitted.length < 2) throw new StoryException("Invalid command!");
         String target = splitted[1];
@@ -40,7 +46,7 @@ public class Story extends BasePart {
         List<BasePart> allParts = findAll(target);
         List<Action> actions = new ArrayList<Action>();
         for (BasePart part : allParts) {
-            actions.addAll(((Part) part).getActions(actionName));
+            actions.addAll(((Part) part).findActions(actionName));
         }
         for (ReactionClient client : clients) {
             if (allParts.isEmpty()) {
@@ -55,6 +61,24 @@ public class Story extends BasePart {
                 String result = action.execute();
                 if (result.isEmpty()) continue;
                 client.reaction(result);
+            }
+        }
+    }
+
+    private void hint() {
+        List<BasePart> allParts = findAll("");
+        for (ReactionClient client : clients) {
+            for (BasePart part : allParts) {
+                String hint_message = part.getName() + " (";
+                List<String> send_actions = new ArrayList<String>();
+                for (Action action : ((Part) part).findActions(""))
+                {
+                    if (send_actions.contains(action.getName())) continue;
+                    if (send_actions.size() > 0) hint_message += ", ";
+                    hint_message += action.getName();
+                    send_actions.add(action.getName());
+                }
+                if (send_actions.size() > 0) client.reaction(hint_message + ")");
             }
         }
     }

@@ -39,10 +39,10 @@ public class Part extends BasePart {
         actions.add(action);
     }
 
-    public List<Action> getActions(String name) throws StoryException {
+    public List<Action> findActions(String name) {
         List<Action> tmpActions = new ArrayList<Action>();
         for (Action action : actions) {
-            if (action.getName().equals(name) && action.conditionMet()) {
+            if ((action.getName().equals(name) || name.equals("")) && action.conditionsMet()) {
                 tmpActions.add(action);
             }
         }

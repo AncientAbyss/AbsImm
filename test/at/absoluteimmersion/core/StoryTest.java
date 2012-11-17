@@ -81,7 +81,7 @@ public class StoryTest {
         StateList list = new StateList();
         if (condition) {
             open = new Action("open", "Locker is open now!", "have_key", "locker_open", list, new Story());
-            Action locked = new Action("open", "You need a key!", "not have_key", "", list, new Story());
+            Action locked = new Action("open", "You need a key!", "NOT have_key", "", list, new Story());
             locker.addAction(locked);
         } else {
             open = new Action("open", "Locker is open now!", mock(StateList.class), new Story());
@@ -129,7 +129,7 @@ public class StoryTest {
         Part locker = new Part("locker");
         Action locker1 = mock(Action.class);
         when(locker1.getName()).thenReturn("open");
-        when(locker1.conditionMet()).thenReturn(true);
+        when(locker1.conditionsMet()).thenReturn(true);
         when(locker1.execute()).thenReturn("");
         locker.addAction(locker1);
         part.addPart(locker);
@@ -137,7 +137,7 @@ public class StoryTest {
         locker = new Part("locker");
         Action locker2 = mock(Action.class);
         when(locker2.getName()).thenReturn("open");
-        when(locker2.conditionMet()).thenReturn(true);
+        when(locker2.conditionsMet()).thenReturn(true);
         when(locker2.execute()).thenReturn("");
         locker.addAction(locker2);
         part.addPart(locker);
@@ -161,7 +161,7 @@ public class StoryTest {
         Part locker = new Part("locker");
         Action locker1 = mock(Action.class);
         when(locker1.getName()).thenReturn("open");
-        when(locker1.conditionMet()).thenReturn(true);
+        when(locker1.conditionsMet()).thenReturn(true);
         when(locker1.execute()).thenReturn("");
         locker.addAction(locker1);
         part.addPart(locker);
@@ -169,7 +169,7 @@ public class StoryTest {
         locker = new Part("locker");
         Action locker2 = mock(Action.class);
         when(locker2.getName()).thenReturn("open");
-        when(locker2.conditionMet()).thenReturn(true);
+        when(locker2.conditionsMet()).thenReturn(true);
         when(locker2.execute()).thenReturn("");
         locker.addAction(locker2);
         part.addPart(locker);
@@ -190,6 +190,28 @@ public class StoryTest {
         story.addClient(client);
         story.tell();
         verify(client).reaction("You can not do this with this object!");
+    }
+
+    @Test
+    public void interact_hint_returnsAllPossibleActions() throws StoryException {
+        Loader loader = new Loader();
+        Story story = loader.fromFile("res/test_03.xml");
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client).reaction("chapter_01");
+        verify(client).reaction("Entered chapter 01!");
+        story.interact("hint");
+        verify(client).reaction("locker (look)");
+        verify(client).reaction("key (take)");
+        story.interact("take key");
+        verify(client).reaction("You found a key!");
+        story.interact("hint");
+        verify(client).reaction("locker (look, open)");
+        story.interact("open locker");
+        verify(client).reaction("The locker is open now!");
+        story.interact("hint");
+        verify(client).reaction("locker (look, open, enter)");
     }
 
     @Test

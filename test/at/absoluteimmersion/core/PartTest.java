@@ -7,7 +7,7 @@ public class PartTest {
     @Test
     public void getActions_noAction_returnsEmptyList() throws StoryException {
         Part part = new Part("");
-        Assert.assertEquals(0, part.getActions("blah").size());
+        Assert.assertEquals(0, part.findActions("blah").size());
     }
 
     @Test
@@ -17,7 +17,7 @@ public class PartTest {
         Action a02 = new Action("02", "", new StateList(), new Story());
         part.addAction(a01);
         part.addAction(a02);
-        for (Action action : part.getActions("01")) {
+        for (Action action : part.findActions("01")) {
             Assert.assertEquals(a01, action);
         }
     }

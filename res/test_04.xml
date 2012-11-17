@@ -18,13 +18,19 @@
         <action name="enter" text="chapter_02"/>
         <part name="small locker">
             <action name="look" text="A very nice locker!" state="looked_at_very_nice_locker"/>
-            <action name="open" condition="have_small_key" text="The very nice locker is open now!" state="very_nice_locker_is_open"/>
+            <action name="use key with" condition="have_small_key AND NOT unlocked_small_locker" text="The very nice locker is unlocked now!" state="unlocked_small_locker"/>
+            <action name="open" condition="unlocked_small_locker" text="The very nice locker is open now!" state="very_nice_locker_is_open"/>
         </part>
         <part name="locker">
             <action name="leave" state="in_chapter01" text="You left the locker!"/>
         </part>
         <part name="key">
             <action name="take" condition="NOT have_small_key" text="You found a small key!" state="have_small_key"/>
+        </part>
+    </part>
+    <part name="inventory">
+        <part name="key" condition="have_small_key">
+            <action name="use small locker with" condition="NOT unlocked_small_locker" text="The very nice locker is unlocked now!" state="unlocked_small_locker"/>
         </part>
     </part>
 </story>

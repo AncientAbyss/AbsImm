@@ -17,13 +17,13 @@ public class BasePartTest {
     @Test
     public void conditionMet_noCondition_isMet() {
         Action action = createAction("", new StateList());
-        Assert.assertTrue(action.conditionMet());
+        Assert.assertTrue(action.conditionsMet());
     }
 
     @Test
     public void conditionMet_withCondition_isNotMet() {
         Action action = createAction("some_condition", new StateList());
-        Assert.assertFalse(action.conditionMet());
+        Assert.assertFalse(action.conditionsMet());
     }
 
     @Test
@@ -31,35 +31,68 @@ public class BasePartTest {
         StateList stateList = new StateList();
         Action action = createAction("some_condition", stateList);
         stateList.add("some_condition");
-        Assert.assertTrue(action.conditionMet());
+        Assert.assertTrue(action.conditionsMet());
     }
 
     @Test
     public void conditionMet_withNotCondition_isMet() {
         StateList stateList = new StateList();
         stateList.add("some_condition");
-        Action action = createAction("not some_condition", stateList);
-        Assert.assertFalse(action.conditionMet());
+        Action action = createAction("NOT some_condition", stateList);
+        Assert.assertFalse(action.conditionsMet());
     }
 
     @Test
     public void conditionMet_withNoNotCondition_isMet() {
         StateList stateList = new StateList();
-        Action action = createAction("not some_condition", stateList);
-        Assert.assertTrue(action.conditionMet());
+        Action action = createAction("NOT some_condition", stateList);
+        Assert.assertTrue(action.conditionsMet());
     }
 
     @Test
     public void conditionMet_withExistingStateAndNotState_isNotMet() {
         StateList stateList = new StateList();
         stateList.add("some_condition");
-        stateList.add("not some_condition");
+        stateList.add("NOT some_condition");
         Action action = createAction("some_condition", stateList);
-        Assert.assertFalse(action.conditionMet());
+        Assert.assertFalse(action.conditionsMet());
     }
 
     private Action createAction(String condition, StateList stateList) {
         return new Action("drink", "jamm", condition, "drunk", stateList, new Story());
     }
 
+    @Test
+    public void conditionMet_withANDCondition_isMet() {
+        StateList stateList = new StateList();
+        stateList.add("some_condition");
+        stateList.add("some_other_condition");
+        Action action = createAction("some_condition AND some_other_condition", stateList);
+        Assert.assertTrue(action.conditionsMet());
+    }
+
+    @Test
+    public void conditionMet_withANDCondition_isNotMet() {
+        StateList stateList = new StateList();
+        stateList.add("some_condition");
+        Action action = createAction("some_condition AND some_other_condition", stateList);
+        Assert.assertFalse(action.conditionsMet());
+    }
+
+    @Test
+    public void conditionMet_withANDConditionAndNotCondition_isNotMet() {
+        StateList stateList = new StateList();
+        stateList.add("some_condition");
+        stateList.add("some_other_condition");
+        Action action = createAction("some_condition AND NOT some_other_condition", stateList);
+        Assert.assertFalse(action.conditionsMet());
+    }
+
+    @Test
+    public void conditionMet_withANDConditionAndNotCondition_isMet() {
+        StateList stateList = new StateList();
+        stateList.add("some_condition");
+        Action action = createAction("some_condition AND NOT some_other_condition", stateList);
+        Assert.assertTrue(action.conditionsMet());
+    }
 }

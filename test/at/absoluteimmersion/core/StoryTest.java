@@ -1,6 +1,7 @@
 package at.absoluteimmersion.core;
 
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.Matchers;
 
 import static org.mockito.Mockito.*;
@@ -51,8 +52,10 @@ public class StoryTest {
     private Story createStory() {
         Story story = new Story();
         Part part = new Part("chapter01");
-        Action action = new Action(Story.INITIAL_ACTION, "introduction", mock(StateList.class));
+        Action action = new Action(Story.INITIAL_ACTION, part.getName(), mock(StateList.class), story);
+        Action action2 = new Action(Story.INITIAL_ACTION, "introduction", mock(StateList.class), story);
         part.addAction(action);
+        part.addAction(action2);
         story.addPart(part);
         return story;
     }
@@ -76,11 +79,11 @@ public class StoryTest {
         Action open;
         StateList list = new StateList();
         if (condition) {
-            open = new Action("open", "Locker is open now!", "have_key", "locker_open", list);
-            Action locked = new Action("open", "You need a key!", "not have_key", "", list);
+            open = new Action("open", "Locker is open now!", "have_key", "locker_open", list, new Story());
+            Action locked = new Action("open", "You need a key!", "not have_key", "", list, new Story());
             locker.addAction(locked);
         } else {
-            open = new Action("open", "Locker is open now!", mock(StateList.class));
+            open = new Action("open", "Locker is open now!", mock(StateList.class), new Story());
         }
         locker.addAction(open);
         return locker;
@@ -93,7 +96,7 @@ public class StoryTest {
         Part locker = new Part("locker");
         Action open;
         StateList list = new StateList();
-        open = new Action("open", "Locker is open now!", "have_key", "locker_open", list);
+        open = new Action("open", "Locker is open now!", "have_key", "locker_open", list, story);
         locker.addAction(open);
         part.addPart(locker);
         ReactionClient client = mock(ReactionClient.class);
@@ -151,7 +154,7 @@ public class StoryTest {
         StateList stateList = new StateList();
         Story story = new Story();
         Part part = new Part("chapter01", "", stateList);
-        Action action = new Action(Story.INITIAL_ACTION, "introduction", "", "in_chapter01", stateList);
+        Action action = new Action(Story.INITIAL_ACTION, "introduction", "", "in_chapter01", stateList, story);
         part.addAction(action);
         story.addPart(part);
         Part locker = new Part("locker");
@@ -189,38 +192,50 @@ public class StoryTest {
     }
 
     @Test
+    public void interact_nonexistentObject_returnsErrorMessage() throws StoryException {
+        Loader loader = new Loader();
+        Story story = loader.fromFile("res/test_02.xml");
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        story.interact("look blah");
+        verify(client).reaction("No such object!");
+    }
+
+    @Test
     public void tell_multipleChaptersWithConditions_playsGameWithoutProblem() throws StoryException {
         Loader loader = new Loader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
+        InOrder inOrder = inOrder(client);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("chapter_01");
-        verify(client).reaction("Entered chapter 01!");
+        inOrder.verify(client).reaction("chapter_01");
+        inOrder.verify(client).reaction("Entered chapter 01!");
         story.interact("open locker");
-        verify(client).reaction("You can not do this with this object!");
+        inOrder.verify(client).reaction("You can not do this with this object!");
         story.interact("enter locker");
-        verify(client).reaction("You can not do this with this object!");
+        inOrder.verify(client).reaction("You can not do this with this object!");
         story.interact("look locker");
-        verify(client).reaction("A nice locker!");
+        inOrder.verify(client).reaction("A nice locker!");
         story.interact("take key");
-        verify(client).reaction("You found a key!");
+        inOrder.verify(client).reaction("You found a key!");
         story.interact("open locker");
-        verify(client).reaction("The locker is open now!");
+        inOrder.verify(client).reaction("The locker is open now!");
         story.interact("enter locker");
-        verify(client).reaction("chapter_02");
-        verify(client).reaction("You are inside the locker!");
-        story.interact("open locker");
-        verify(client).reaction("You can not do this with this object!");
-        story.interact("enter locker");
-        verify(client).reaction("You can not do this with this object!");
-        story.interact("look locker");
-        verify(client).reaction("A very nice locker!");
+        inOrder.verify(client).reaction("chapter_02");
+        inOrder.verify(client).reaction("You entered the locker!");
+        story.interact("open smalllocker");
+        inOrder.verify(client).reaction("You can not do this with this object!");
+        story.interact("enter smalllocker");
+        inOrder.verify(client).reaction("You can not do this with this object!");
+        story.interact("look smalllocker");
+        inOrder.verify(client).reaction("A very nice locker!");
         story.interact("take key");
-        verify(client).reaction("You found a small key!");
-        story.interact("open locker");
-        verify(client).reaction("The very nice locker is open now!");
-        story.interact("leave chapter02");
-        verify(client).reaction("You left the locker!");
+        inOrder.verify(client).reaction("You found a small key!");
+        story.interact("open smalllocker");
+        inOrder.verify(client).reaction("The very nice locker is open now!");
+        story.interact("leave locker");
+        inOrder.verify(client).reaction("You left the locker!");
     }
 }

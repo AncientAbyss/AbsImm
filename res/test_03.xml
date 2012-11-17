@@ -1,23 +1,27 @@
 <story>
     <part name="chapter_01" condition="not game_started">
-        <action name="enter" state="game_started"/>
+        <action name="enter" state="game_started" text="chapter_01"/>
         <action name="enter" state="in_chapter01" text="Entered chapter 01!"/>
     </part>
     <part name="chapter_01" condition="in_chapter01">
         <part name="locker">
             <action name="look" text="A nice locker!" state="looked_at_locker"/>
             <action name="open" condition="have_key" text="The locker is open now!" state="locker_is_open"/>
-            <action name="enter" condition="locker_is_open" state="in_chapter02" text="You are inside the locker!"/>
+            <action name="enter" condition="locker_is_open" state="not in_chapter01" />
+            <action name="enter" condition="locker_is_open" state="in_chapter02" text="You entered the locker!" command="enter chapter_02"/>
         </part>
         <part name="key">
             <action name="take" condition="not have_key" text="You found a key!" state="have_key"/>
         </part>
     </part>
     <part name="chapter_02" condition="in_chapter02">
-        <action name="leave" state="in_chapter01" text="You left the locker!"/>
-        <part name="locker">
+        <action name="enter" text="chapter_02"/>
+        <part name="smalllocker">
             <action name="look" text="A very nice locker!" state="looked_at_very_nice_locker"/>
             <action name="open" condition="have_small_key" text="The very nice locker is open now!" state="very_nice_locker_is_open"/>
+        </part>
+        <part name="locker">
+            <action name="leave" state="in_chapter01" text="You left the locker!"/>
         </part>
         <part name="key">
             <action name="take" condition="not have_small_key" text="You found a small key!" state="have_small_key"/>

@@ -1,6 +1,6 @@
 package at.absoluteimmersion.core;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class BasePartTest {
@@ -27,6 +27,14 @@ public class BasePartTest {
     }
 
     @Test
+    public void conditionMet_withCondition_isMet() {
+        StateList stateList = new StateList();
+        Action action = createAction("some_condition", stateList);
+        stateList.add("some_condition");
+        Assert.assertTrue(action.conditionMet());
+    }
+
+    @Test
     public void conditionMet_withNotCondition_isMet() {
         StateList stateList = new StateList();
         stateList.add("some_condition");
@@ -34,7 +42,24 @@ public class BasePartTest {
         Assert.assertFalse(action.conditionMet());
     }
 
-    private Action createAction(String condition, StateList stateList) {
-        return new Action("drink", "jamm", condition, "drunk", stateList);
+    @Test
+    public void conditionMet_withNoNotCondition_isMet() {
+        StateList stateList = new StateList();
+        Action action = createAction("not some_condition", stateList);
+        Assert.assertTrue(action.conditionMet());
     }
+
+    @Test
+    public void conditionMet_withExistingStateAndNotState_isNotMet() {
+        StateList stateList = new StateList();
+        stateList.add("some_condition");
+        stateList.add("not some_condition");
+        Action action = createAction("some_condition", stateList);
+        Assert.assertFalse(action.conditionMet());
+    }
+
+    private Action createAction(String condition, StateList stateList) {
+        return new Action("drink", "jamm", condition, "drunk", stateList, new Story());
+    }
+
 }

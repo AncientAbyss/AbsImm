@@ -38,7 +38,7 @@ public class Loader {
         Node node = document.getFirstChild();
         if (!node.getNodeName().equals("story")) throw new StoryException("Root node needs to be story!");
         Story story = new Story();
-        parseChildNodes(story, new StateList(), node.getChildNodes());
+        parseChildNodes(story, new StateList(), node.getChildNodes(), story);
         return story;
     }
 
@@ -51,7 +51,7 @@ public class Loader {
         }
     }
 
-    private void parseChildNodes(BasePart parent, StateList stateList, NodeList children) throws StoryException {
+    private void parseChildNodes(BasePart parent, StateList stateList, NodeList children, Story story) throws StoryException {
         for (int i = 0; i < children.getLength(); ++i) {
             Node n = children.item(i);
             if (isWhitespaceNode(n)) continue;
@@ -67,7 +67,7 @@ public class Loader {
                 if (conditionNode != null) condition = conditionNode.getNodeValue();
                 Part part = new Part(name, condition, stateList);
                 parent.addPart(part);
-                parseChildNodes(part, stateList, n.getChildNodes());
+                parseChildNodes(part, stateList, n.getChildNodes(), story);
             } else {
                 String name = "";
                 Node nameNode = n.getAttributes().getNamedItem("name");
@@ -81,7 +81,10 @@ public class Loader {
                 String text = "";
                 Node textNode = n.getAttributes().getNamedItem("text");
                 if (textNode != null) text = textNode.getNodeValue();
-                ((Part) parent).addAction(new Action(name, text, condition, state, stateList));
+                String command = "";
+                Node commandNode = n.getAttributes().getNamedItem("command");
+                if (commandNode != null) command = commandNode.getNodeValue();
+                ((Part) parent).addAction(new Action(name, text, condition, state, stateList, story, command));
             }
         }
     }

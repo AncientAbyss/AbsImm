@@ -3,6 +3,8 @@ package at.absoluteimmersion.core;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: kill
+@Deprecated
 public class StateList {
     private List<String> list = new ArrayList<>();
 
@@ -29,5 +31,9 @@ public class StateList {
 
     public boolean contains(String state) {
         return list.contains(state);
+    }
+
+    public int lastIndexOf(String state) {
+        return list.lastIndexOf(state);
     }
 }

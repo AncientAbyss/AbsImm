@@ -35,12 +35,12 @@ public class LoaderTest {
         Story expected = new Story();
         StateList stateList = new StateList();
         Part part = new Part("chapter_01", "", stateList);
-        part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList));
+        part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
         expected.addPart(part);
         part = new Part("chapter_02", "", stateList);
-        part.addAction(new Action("enter", "opened2", "has_lock2", "in_chapter02", stateList));
+        part.addAction(new Action("enter", "opened2", "has_lock2", "in_chapter02", stateList, expected, "kill me"));
         expected.addPart(part);
-        Story actual = loader.fromString("<story><part name='chapter_01'><action name='enter' state='in_chapter01' condition='has_lock1' text='opened1'/></part><part name='chapter_02'><action name='enter' state='in_chapter02' condition='has_lock2' text='opened2'/></part></story>");
+        Story actual = loader.fromString("<story><part name='chapter_01'><action name='enter' state='in_chapter01' condition='has_lock1' text='opened1'/></part><part name='chapter_02'><action name='enter' state='in_chapter02' condition='has_lock2' text='opened2' command='kill me'/></part></story>");
         Assert.assertEquals(expected, actual);
     }
 
@@ -50,10 +50,10 @@ public class LoaderTest {
         Story expected = new Story();
         StateList stateList = new StateList();
         Part part = new Part("chapter_01", "", stateList);
-        part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList));
+        part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
         expected.addPart(part);
         part = new Part("chapter_02", "", stateList);
-        part.addAction(new Action("enter", "opened2", "has_lock2", "in_chapter02", stateList));
+        part.addAction(new Action("enter", "opened2", "has_lock2", "in_chapter02", stateList, expected));
         expected.addPart(part);
         Story actual = loader.fromFile("res/test_01.xml");
         Assert.assertEquals(expected, actual);

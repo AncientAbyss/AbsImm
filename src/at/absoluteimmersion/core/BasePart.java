@@ -56,9 +56,22 @@ public class BasePart {
 
     public boolean conditionMet() {
         if (condition.isEmpty()) return true;
-        boolean containsNot = condition.startsWith("not ");
-        if (!containsNot) return stateList.contains(condition);
-        return (!stateList.contains(condition.split(" ")[1]));
+
+        String invertedCondition = conditionContainsNot() ? condition.split(" ")[1] : "not " + condition;
+        int condition_index = stateList.lastIndexOf(condition);
+        int inverted_condition_index = stateList.lastIndexOf(invertedCondition);
+
+        if (conditionContainsNot()) {
+            if (condition_index == -1 && inverted_condition_index == -1) return true;
+        } else {
+            if (condition_index == -1) return false;
+        }
+
+        return (condition_index > inverted_condition_index);
+    }
+
+    private boolean conditionContainsNot() {
+        return condition.startsWith("not ");
     }
 
     public List<BasePart> findAll(String somePart) {

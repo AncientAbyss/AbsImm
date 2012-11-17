@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BasePart {
-    protected List<BasePart> parts = new ArrayList<>();
+    protected List<BasePart> parts = new ArrayList<BasePart>();
     protected String name = "";
     protected String condition = "";
     protected StateList stateList;

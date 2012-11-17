@@ -6,7 +6,7 @@ import java.util.List;
 // TODO: kill
 @Deprecated
 public class StateList {
-    private List<String> list = new ArrayList<>();
+    private List<String> list = new ArrayList<String>();
 
     @Override
     public boolean equals(Object o) {

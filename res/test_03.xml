@@ -16,7 +16,7 @@
     </part>
     <part name="chapter_02" condition="in_chapter02">
         <action name="enter" text="chapter_02"/>
-        <part name="smalllocker">
+        <part name="small locker">
             <action name="look" text="A very nice locker!" state="looked_at_very_nice_locker"/>
             <action name="open" condition="have_small_key" text="The very nice locker is open now!" state="very_nice_locker_is_open"/>
         </part>

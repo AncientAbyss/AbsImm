@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Part extends BasePart {
-    private List<Action> actions = new ArrayList<>();
+    private List<Action> actions = new ArrayList<Action>();
 
 
     @Override
@@ -40,7 +40,7 @@ public class Part extends BasePart {
     }
 
     public List<Action> getActions(String name) throws StoryException {
-        List<Action> tmpActions = new ArrayList<>();
+        List<Action> tmpActions = new ArrayList<Action>();
         for (Action action : actions) {
             if (action.getName().equals(name) && action.conditionMet()) {
                 tmpActions.add(action);

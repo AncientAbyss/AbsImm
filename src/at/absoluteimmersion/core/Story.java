@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Story extends BasePart {
     public static final String INITIAL_ACTION = "enter";
-    private List<ReactionClient> clients = new ArrayList<>();
+    private List<ReactionClient> clients = new ArrayList<ReactionClient>();
 
     @Override
     public boolean equals(Object o) {
@@ -33,11 +33,12 @@ public class Story extends BasePart {
 
     public void interact(String interaction) throws StoryException {
         if (!isInitialized()) throw new StoryException("Cannot run empty tale!");
-        String[] splitted = interaction.split(" ");
+        String[] splitted = interaction.split(" ", 2);
+        if (splitted.length < 2) throw new StoryException("Invalid command!");
         String target = splitted[1];
         String actionName = splitted[0];
         List<BasePart> allParts = findAll(target);
-        List<Action> actions = new ArrayList<>();
+        List<Action> actions = new ArrayList<Action>();
         for (BasePart part : allParts) {
             actions.addAll(((Part) part).getActions(actionName));
         }

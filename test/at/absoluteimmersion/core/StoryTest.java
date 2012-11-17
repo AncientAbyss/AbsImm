@@ -1,5 +1,6 @@
 package at.absoluteimmersion.core;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
@@ -202,6 +203,19 @@ public class StoryTest {
         verify(client).reaction("No such object!");
     }
 
+    @Test(expected = StoryException.class)
+    public void interact_onlyOneWord_throwsException() throws StoryException {
+        Loader loader = new Loader();
+        Story story = null;
+        try {
+            story = loader.fromFile("res/test_03.xml");
+            story.tell();
+        } catch (Exception e) {
+            Assert.fail();
+        }
+        story.interact("ranz");
+    }
+
     @Test
     public void tell_multipleChaptersWithConditions_playsGameWithoutProblem() throws StoryException {
         Loader loader = new Loader();
@@ -225,15 +239,15 @@ public class StoryTest {
         story.interact("enter locker");
         inOrder.verify(client).reaction("chapter_02");
         inOrder.verify(client).reaction("You entered the locker!");
-        story.interact("open smalllocker");
+        story.interact("open small locker");
         inOrder.verify(client).reaction("You can not do this with this object!");
-        story.interact("enter smalllocker");
+        story.interact("enter small locker");
         inOrder.verify(client).reaction("You can not do this with this object!");
-        story.interact("look smalllocker");
+        story.interact("look small locker");
         inOrder.verify(client).reaction("A very nice locker!");
         story.interact("take key");
         inOrder.verify(client).reaction("You found a small key!");
-        story.interact("open smalllocker");
+        story.interact("open small locker");
         inOrder.verify(client).reaction("The very nice locker is open now!");
         story.interact("leave locker");
         inOrder.verify(client).reaction("You left the locker!");

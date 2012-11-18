@@ -193,6 +193,23 @@ public class StoryTest {
     }
 
     @Test
+    public void interact_spacesInActionNames_work() throws StoryException {
+        Loader loader = new Loader();
+        Story story = loader.fromFile("res/test_04.xml");
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        story.interact("take key");
+        verify(client).reaction("You found a small key!");
+        story.interact("use small locker with key blah");
+        verify(client).reaction("No such object!");
+        story.interact("use small locker with blah key");
+        verify(client).reaction("You can not do this with this object!");
+        story.interact("use small locker with key");
+        verify(client).reaction("The very nice locker is unlocked now!");
+    }
+
+    @Test
     public void interact_hint_returnsAllPossibleActions() throws StoryException {
         Loader loader = new Loader();
         Story story = loader.fromFile("res/test_03.xml");

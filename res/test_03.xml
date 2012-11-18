@@ -22,6 +22,7 @@
         </part>
         <part name="locker">
             <action name="leave" state="in_chapter01" text="You left the locker!"/>
+            <action name="leave" state="NOT in_chapter02"/>
         </part>
         <part name="key">
             <action name="take" condition="NOT have_small_key" text="You found a small key!" state="have_small_key"/>

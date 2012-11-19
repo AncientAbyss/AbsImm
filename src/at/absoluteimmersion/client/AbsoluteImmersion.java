@@ -4,6 +4,7 @@ import at.absoluteimmersion.core.Loader;
 import at.absoluteimmersion.core.ReactionClient;
 import at.absoluteimmersion.core.Story;
 import at.absoluteimmersion.core.StoryException;
+import org.apache.commons.lang3.text.WordUtils;
 
 public class AbsoluteImmersion implements ReactionClient {
     public static void main(String[] args) {
@@ -32,8 +33,7 @@ public class AbsoluteImmersion implements ReactionClient {
         } catch (StoryException e) {
             System.err.println("Failed telling story: " + e.getMessage());
         }
-        while (42 != 23)
-        {
+        while (42 != 23) {
             String user_input = System.console().readLine();
             if (user_input.equals(story.getSettings().getSetting("quit_command"))) break;
 
@@ -51,6 +51,8 @@ public class AbsoluteImmersion implements ReactionClient {
 
     @Override
     public void reaction(String text) {
-         System.out.println(text);
+        // TODO: hackzzzz
+        String[] lines = text.split("\\\\n");
+        for (String line : lines) System.out.println("" + WordUtils.wrap(line.trim(), 80, "\n", true));
     }
 }

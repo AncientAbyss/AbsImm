@@ -1,6 +1,7 @@
 package at.absoluteimmersion.core;
 
 import at.absoluteimmersion.util.AbsimmFile;
+import org.hamcrest.core.AnyOf;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -14,24 +15,23 @@ public class StoryTest {
 
     @Test(expected = StoryException.class)
     public void interact_noContent_throwsException() throws StoryException {
-        Story story = new Story(new StateList());
+        Story story = new Story(new StateList(), new Settings());
         story.interact("test");
     }
 
     @Test(expected = StoryException.class)
     public void tell_noContent_throwsException() throws StoryException {
-        Story story = new Story(new StateList());
+        Story story = new Story(new StateList(), new Settings());
         story.tell();
     }
 
-    @Test
-    public void tell_noEnterAction_throwsException() throws StoryException {
-        Story story = new Story(new StateList());
+    @Test(expected = StoryException.class)
+    public void tell_noInitialCommandAction_throwsException() throws StoryException {
+        Story story = new Story(new StateList(), new Settings());
         story.addPart(new Part("chapter"));
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("You can not do this with this object!");
     }
 
     @Test()
@@ -54,10 +54,12 @@ public class StoryTest {
     }
 
     private Story createStory() {
-        Story story = new Story(new StateList());
+        Settings settings = new Settings();
+        settings.addSetting("initial_command", "enter chapter01");
+        Story story = new Story(new StateList(), settings);
         Part part = new Part("chapter01");
-        Action action = new Action(Story.INITIAL_ACTION, part.getName(), mock(StateList.class), story);
-        Action action2 = new Action(Story.INITIAL_ACTION, "introduction", mock(StateList.class), story);
+        Action action = new Action("enter", part.getName(), mock(StateList.class), story);
+        Action action2 = new Action("enter", "introduction", mock(StateList.class), story);
         part.addAction(action);
         part.addAction(action2);
         story.addPart(part);
@@ -83,11 +85,11 @@ public class StoryTest {
         Action open;
         StateList list = new StateList();
         if (condition) {
-            open = new Action("open", "Locker is open now!", "have_key", "locker_open", list, new Story(list));
-            Action locked = new Action("open", "You need a key!", "NOT have_key", "", list, new Story(list));
+            open = new Action("open", "Locker is open now!", "have_key", "locker_open", list, new Story(list, new Settings()));
+            Action locked = new Action("open", "You need a key!", "NOT have_key", "", list, new Story(list, new Settings()));
             locker.addAction(locked);
         } else {
-            open = new Action("open", "Locker is open now!", mock(StateList.class), new Story(list));
+            open = new Action("open", "Locker is open now!", mock(StateList.class), new Story(list, new Settings()));
         }
         locker.addAction(open);
         return locker;
@@ -156,9 +158,11 @@ public class StoryTest {
     @Test
     public void tell_multipleChaptersWithConditions_executesOneAction() throws StoryException {
         StateList stateList = new StateList();
-        Story story = new Story(stateList);
+        Settings settings = new Settings();
+        settings.addSetting("initial_command", "enter chapter01");
+        Story story = new Story(stateList, settings);
         Part part = new Part("chapter01", "", stateList);
-        Action action = new Action(Story.INITIAL_ACTION, "introduction", "", "in_chapter01", stateList, story);
+        Action action = new Action("enter", "introduction", "", "in_chapter01", stateList, story);
         part.addAction(action);
         story.addPart(part);
         Part locker = new Part("locker");
@@ -192,7 +196,7 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("You can not do this with this object!");
+        verify(client).reaction("You cannot do this with this object!");
     }
 
     @Test
@@ -207,7 +211,7 @@ public class StoryTest {
         story.interact("use small locker with key blah");
         verify(client).reaction("No such object!");
         story.interact("use small locker with blah key");
-        verify(client).reaction("You can not do this with this object!");
+        verify(client).reaction("You cannot do this with this object!");
         story.interact("use small locker with key");
         verify(client).reaction("The very nice locker is unlocked now!");
     }
@@ -269,9 +273,9 @@ public class StoryTest {
         inOrder.verify(client).reaction("chapter_01");
         inOrder.verify(client).reaction("Entered chapter 01!");
         story.interact("open locker");
-        inOrder.verify(client).reaction("You can not do this with this object!");
+        inOrder.verify(client).reaction("You cannot do this with this object!");
         story.interact("enter locker");
-        inOrder.verify(client).reaction("You can not do this with this object!");
+        inOrder.verify(client).reaction("You cannot do this with this object!");
         story.interact("look locker");
         inOrder.verify(client).reaction("A nice locker!");
         story.interact("take key");
@@ -282,9 +286,9 @@ public class StoryTest {
         inOrder.verify(client).reaction("chapter_02");
         inOrder.verify(client).reaction("You entered the locker!");
         story.interact("open small locker");
-        inOrder.verify(client).reaction("You can not do this with this object!");
+        inOrder.verify(client).reaction("You cannot do this with this object!");
         story.interact("enter small locker");
-        inOrder.verify(client).reaction("You can not do this with this object!");
+        inOrder.verify(client).reaction("You cannot do this with this object!");
         story.interact("look small locker");
         inOrder.verify(client).reaction("A very nice locker!");
         story.interact("take key");
@@ -300,11 +304,11 @@ public class StoryTest {
         Loader loader = new Loader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
-        story.addClient(client);
         story.tell();
         story.interact("take key");
+        story.addClient(client);
         story.interact("save 01.dat");
-        verify(client).reaction("Save successful.");
+        verify(client).reaction("Game successfully saved.");
         Assert.assertEquals("game_started,in_chapter01,have_key", AbsimmFile.readFileAsString("01.dat"));
     }
 
@@ -319,7 +323,7 @@ public class StoryTest {
         story = loader.fromFile("res/test_03.xml");
         story.addClient(client);
         story.interact("load 01.dat");
-        verify(client).reaction("Load successful.");
+        verify(client).reaction("Game successfully loaded.");
         story.interact("open locker");
         verify(client).reaction("The locker is open now!");
     }

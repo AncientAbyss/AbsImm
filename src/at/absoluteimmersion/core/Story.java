@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 public class Story extends BasePart {
-    public static final String INITIAL_ACTION = "enter";
     private List<ReactionClient> clients = new ArrayList<ReactionClient>();
+    private Settings settings;
 
-    public Story(StateList stateList) {
+    public Story(StateList stateList, Settings settings) {
         super("", "", stateList);
+        this.settings = settings;
     }
 
     @Override
@@ -23,6 +24,7 @@ public class Story extends BasePart {
         Story story = (Story) o;
 
         if (clients != null ? !clients.equals(story.clients) : story.clients != null) return false;
+        if (settings != null ? !settings.equals(story.settings) : story.settings != null) return false;
 
         return true;
     }
@@ -31,6 +33,7 @@ public class Story extends BasePart {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (clients != null ? clients.hashCode() : 0);
+        result = 31 * result + (settings != null ? settings.hashCode() : 0);
         return result;
     }
 
@@ -39,7 +42,7 @@ public class Story extends BasePart {
     }
 
     public void interact(String interaction) throws StoryException {
-        if (!isInitialized()) throw new StoryException("Cannot run empty tale!");
+        if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
 
         if (handleSystemCommands(interaction)) return;
 
@@ -48,9 +51,9 @@ public class Story extends BasePart {
         List<BasePart> allParts = processed_interaction.containsKey("target") ? findAll(processed_interaction.get("target")) : new ArrayList<BasePart>();
         List<Action> actions = findActions(processed_interaction.get("action"), allParts);
 
-        if (allParts.isEmpty()) sendMessageToAllClients("No such object!");
+        if (allParts.isEmpty()) sendMessageToAllClients(settings.getSetting("object_error"));
         else if (actions.isEmpty())
-            sendMessageToAllClients("You can not do this with this object!"); //TODO not hardcoded
+            sendMessageToAllClients(settings.getSetting("action_error"));
         else {
             for (Action action : actions) {
                 String result = action.execute();
@@ -71,35 +74,35 @@ public class Story extends BasePart {
 
     private boolean handleSystemCommands(String interaction) {
         String command = interaction.split(" ")[0];
-        if (command.equals("hint")) {
+        if (command.equals(settings.getSetting("hint_command"))) {
             hint();
             return true;
         }
 
-        if (command.equals("save")) {
+        if (command.equals(settings.getSetting("save_command"))) {
             if (!interaction.contains(" ")) {
-                sendMessageToAllClients("Argument missing!");
+                sendMessageToAllClients(settings.getSetting("save_invalid_command"));
                 return true;
             }
             try {
                 stateList.save(interaction.split(" ", 2)[1]);
-                sendMessageToAllClients("Save successful.");
+                sendMessageToAllClients(settings.getSetting("save_success"));
             } catch (IOException e) {
-                sendMessageToAllClients("Unable to save game.");
+                sendMessageToAllClients(settings.getSetting("save_error"));
             }
             return true;
         }
 
-        if (command.equals("load")) {
+        if (command.equals(settings.getSetting("load_command"))) {
             if (!interaction.contains(" ")) {
-                sendMessageToAllClients("Argument missing!");
+                sendMessageToAllClients(settings.getSetting("load_invalid_command"));
                 return true;
             }
             try {
                 stateList.load(interaction.split(" ", 2)[1]);
-                sendMessageToAllClients("Load successful.");
+                sendMessageToAllClients(settings.getSetting("load_success"));
             } catch (IOException e) {
-                sendMessageToAllClients("Unable to load game.");
+                sendMessageToAllClients(settings.getSetting("load_error"));
             }
 
             return true;
@@ -120,7 +123,7 @@ public class Story extends BasePart {
             splitted = splitted[1].split(" ", 2);
 
             if (splitted.length < 2) {
-                if (!processed_interaction.containsKey("action")) throw new StoryException("Invalid command!");
+                if (!processed_interaction.containsKey("action")) throw new StoryException(settings.getSetting("invalid_command"));
                 else return;
             }
 
@@ -147,12 +150,17 @@ public class Story extends BasePart {
     }
 
     public void tell() throws StoryException {
-        if (!isInitialized()) throw new StoryException("Cannot run empty tale!");
+        if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
         String initial_action = parts.get(0).getName();
-        interact(INITIAL_ACTION + " " + initial_action);
+        if (settings.getSetting("initial_command") == null) throw new StoryException(settings.getSetting("initial_command_missing"));
+        interact(settings.getSetting("initial_command"));
     }
 
     public boolean isInitialized() {
         return parts.size() > 0;
+    }
+
+    public Settings getSettings() {
+        return settings;
     }
 }

@@ -1,4 +1,7 @@
 <story>
+    <settings>
+        <setting name="initial_command" value="enter chapter_01"/>
+    </settings>
     <part name="chapter_01" condition="NOT game_started">
         <action name="enter" state="game_started" text="chapter_01"/>
         <action name="enter" state="in_chapter01" text="Entered chapter 01!"/>

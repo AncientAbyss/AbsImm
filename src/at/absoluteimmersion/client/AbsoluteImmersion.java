@@ -35,7 +35,7 @@ public class AbsoluteImmersion implements ReactionClient {
         while (42 != 23)
         {
             String user_input = System.console().readLine();
-            if (user_input.equals("quit")) break;
+            if (user_input.equals(story.getSettings().getSetting("quit_command"))) break;
 
             try {
                 story.interact(user_input);

@@ -1,0 +1,19 @@
+<story>
+    <settings>
+        <setting name="quit_command" value="quit"/>
+        <setting name="hint_command" value="hint"/>
+        <setting name="save_command" value="save"/>
+        <setting name="save_invalid_command" value="Argument missing!"/>
+        <setting name="save_error" value="Unable to save game."/>
+        <setting name="save_success" value="Game successfully saved."/>
+        <setting name="load_command" value="load"/>
+        <setting name="load_invalid_command" value="Argument missing!"/>
+        <setting name="load_error" value="Unable to load game."/>
+        <setting name="load_success" value="Game successfully loaded."/>
+        <setting name="invalid_command" value="Invalid command!"/>
+        <setting name="empty_story_error" value="Cannot tell empty story!"/>
+        <setting name="object_error" value="No such object!"/>
+        <setting name="action_error" value="You cannot do this with this object!"/>
+        <setting name="initial_command_missing" value="No initial command has been set!"/>
+    </settings>
+</story>

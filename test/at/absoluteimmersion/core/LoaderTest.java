@@ -15,14 +15,14 @@ public class LoaderTest {
     public void fromString_storyOnly_createsStory() throws StoryException {
         Loader loader = new Loader();
         Story story = loader.fromString("<story></story>");
-        Assert.assertEquals(new Story(new StateList()), story);
+        Assert.assertEquals(TestHelper.createDefaultStory(), story);
     }
 
     @Test
     public void fromString_storyWithParts_createsStoryWithParts() throws StoryException {
         Loader loader = new Loader();
         StateList stateList = new StateList();
-        Story expected = new Story(stateList);
+        Story expected = TestHelper.createDefaultStory();
         expected.addPart(new Part("chapter_01", "in_chapter01", stateList));
         expected.addPart(new Part("chapter_02", "", stateList));
         Story actual = loader.fromString("<story><part name='chapter_01' condition='in_chapter01'/><part name='chapter_02'/></story>");
@@ -33,7 +33,7 @@ public class LoaderTest {
     public void fromString_storyWithPartsAndActions_createsStoryWithPartsAndActions() throws StoryException {
         Loader loader = new Loader();
         StateList stateList = new StateList();
-        Story expected = new Story(stateList);
+        Story expected = TestHelper.createDefaultStory();
         Part part = new Part("chapter_01", "", stateList);
         part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
         expected.addPart(part);
@@ -48,7 +48,8 @@ public class LoaderTest {
      public void fromFile_storyWithPartsAndActions_createsStoryWithPartsAndActions() throws StoryException {
         Loader loader = new Loader();
         StateList stateList = new StateList();
-        Story expected = new Story(stateList);
+        Story expected = TestHelper.createDefaultStory();
+        expected.getSettings().addSetting("initial_command", "enter chapter_01");
         Part part = new Part("chapter_01", "", stateList);
         part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
         expected.addPart(part);
@@ -56,6 +57,22 @@ public class LoaderTest {
         part.addAction(new Action("enter", "opened2", "has_lock2", "in_chapter02", stateList, expected));
         expected.addPart(part);
         Story actual = loader.fromFile("res/test_01.xml");
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void fromFile_storySettings_createsStoryWithSettings() throws StoryException {
+        Loader loader = new Loader();
+        StateList stateList = new StateList();
+        Story expected = new Story(stateList, TestHelper.createDefaultSettings());
+        expected.getSettings().addSetting("initial_command", "enter chapter_01");
+        Part part = new Part("chapter_01", "", stateList);
+        part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
+        expected.addPart(part);
+        part = new Part("chapter_02", "", stateList);
+        part.addAction(new Action("enter", "opened2", "has_lock2", "in_chapter02", stateList, expected));
+        expected.addPart(part);
+        Story actual = loader.fromFile("res/test_05.xml");
         Assert.assertEquals(expected, actual);
     }
 }

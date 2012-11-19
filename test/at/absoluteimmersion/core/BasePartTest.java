@@ -59,7 +59,7 @@ public class BasePartTest {
     }
 
     private Action createAction(String condition, StateList stateList) {
-        return new Action("drink", "jamm", condition, "drunk", stateList, new Story(stateList));
+        return new Action("drink", "jamm", condition, "drunk", stateList, new Story(stateList, new Settings()));
     }
 
     @Test

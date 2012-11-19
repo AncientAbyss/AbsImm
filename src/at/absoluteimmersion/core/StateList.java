@@ -1,10 +1,14 @@
 package at.absoluteimmersion.core;
 
+import at.absoluteimmersion.util.AbsimmFile;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
-// TODO: kill
-@Deprecated
 public class StateList {
     private List<String> list = new ArrayList<String>();
 
@@ -35,5 +39,13 @@ public class StateList {
 
     public int lastIndexOf(String state) {
         return list.lastIndexOf(state);
+    }
+
+    public void save(String file) throws IOException {
+        AbsimmFile.writeFile(file, StringUtils.join(list, ","));
+    }
+
+    public void load(String file) throws IOException {
+        list = new ArrayList<String>(Arrays.asList(AbsimmFile.readFileAsString(file).split(",")));
     }
 }

@@ -37,8 +37,9 @@ public class Loader {
         Document document = db.parse(is);
         Node node = document.getFirstChild();
         if (!node.getNodeName().equals("story")) throw new StoryException("Root node needs to be story!");
-        Story story = new Story();
-        parseChildNodes(story, new StateList(), node.getChildNodes(), story);
+        StateList stateList = new StateList();
+        Story story = new Story(stateList);
+        parseChildNodes(story, stateList, node.getChildNodes(), story);
         return story;
     }
 

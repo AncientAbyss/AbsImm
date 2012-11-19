@@ -1,9 +1,12 @@
 package at.absoluteimmersion.core;
 
+import at.absoluteimmersion.util.AbsimmFile;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
+
+import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
@@ -11,19 +14,19 @@ public class StoryTest {
 
     @Test(expected = StoryException.class)
     public void interact_noContent_throwsException() throws StoryException {
-        Story story = new Story();
+        Story story = new Story(new StateList());
         story.interact("test");
     }
 
     @Test(expected = StoryException.class)
     public void tell_noContent_throwsException() throws StoryException {
-        Story story = new Story();
+        Story story = new Story(new StateList());
         story.tell();
     }
 
     @Test
     public void tell_noEnterAction_throwsException() throws StoryException {
-        Story story = new Story();
+        Story story = new Story(new StateList());
         story.addPart(new Part("chapter"));
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -51,7 +54,7 @@ public class StoryTest {
     }
 
     private Story createStory() {
-        Story story = new Story();
+        Story story = new Story(new StateList());
         Part part = new Part("chapter01");
         Action action = new Action(Story.INITIAL_ACTION, part.getName(), mock(StateList.class), story);
         Action action2 = new Action(Story.INITIAL_ACTION, "introduction", mock(StateList.class), story);
@@ -80,11 +83,11 @@ public class StoryTest {
         Action open;
         StateList list = new StateList();
         if (condition) {
-            open = new Action("open", "Locker is open now!", "have_key", "locker_open", list, new Story());
-            Action locked = new Action("open", "You need a key!", "NOT have_key", "", list, new Story());
+            open = new Action("open", "Locker is open now!", "have_key", "locker_open", list, new Story(list));
+            Action locked = new Action("open", "You need a key!", "NOT have_key", "", list, new Story(list));
             locker.addAction(locked);
         } else {
-            open = new Action("open", "Locker is open now!", mock(StateList.class), new Story());
+            open = new Action("open", "Locker is open now!", mock(StateList.class), new Story(list));
         }
         locker.addAction(open);
         return locker;
@@ -153,7 +156,7 @@ public class StoryTest {
     @Test
     public void tell_multipleChaptersWithConditions_executesOneAction() throws StoryException {
         StateList stateList = new StateList();
-        Story story = new Story();
+        Story story = new Story(stateList);
         Part part = new Part("chapter01", "", stateList);
         Action action = new Action(Story.INITIAL_ACTION, "introduction", "", "in_chapter01", stateList, story);
         part.addAction(action);
@@ -290,5 +293,34 @@ public class StoryTest {
         inOrder.verify(client).reaction("The very nice locker is open now!");
         story.interact("leave locker");
         inOrder.verify(client).reaction("You left the locker!");
+    }
+
+    @Test()
+    public void interact_save_savesStateList() throws StoryException, IOException {
+        Loader loader = new Loader();
+        Story story = loader.fromFile("res/test_03.xml");
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        story.interact("take key");
+        story.interact("save 01.dat");
+        verify(client).reaction("Save successful.");
+        Assert.assertEquals("game_started,in_chapter01,have_key", AbsimmFile.readFileAsString("01.dat"));
+    }
+
+    @Test()
+    public void interact_load_loadsStateList() throws StoryException, IOException {
+        Loader loader = new Loader();
+        Story story = loader.fromFile("res/test_03.xml");
+        ReactionClient client = mock(ReactionClient.class);
+        story.tell();
+        story.interact("take key");
+        story.interact("save 01.dat");
+        story = loader.fromFile("res/test_03.xml");
+        story.addClient(client);
+        story.interact("load 01.dat");
+        verify(client).reaction("Load successful.");
+        story.interact("open locker");
+        verify(client).reaction("The locker is open now!");
     }
 }

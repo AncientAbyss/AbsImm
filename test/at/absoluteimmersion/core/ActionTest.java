@@ -25,7 +25,7 @@ public class ActionTest {
     @Test
     public void execute_executes_savesState() throws StoryException {
         StateList stateList = new StateList();
-        Action action = new Action("drink", "jamm", "", "", stateList, new Story());
+        Action action = new Action("drink", "jamm", "", "", stateList, new Story(stateList));
         action.execute();
         Assert.assertFalse(stateList.contains(""));
     }
@@ -47,6 +47,6 @@ public class ActionTest {
     }
 
     private Action createAction(String condition, StateList stateList) {
-        return new Action("drink", "jamm", condition, "drunk", stateList, new Story());
+        return new Action("drink", "jamm", condition, "drunk", stateList, new Story(stateList));
     }
 }

@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.net.URISyntaxException;
 
 public class Loader {
 
@@ -34,8 +35,7 @@ public class Loader {
         Settings settings = new Settings();
 
         if (load_default) {
-            File default_file = new File("res/default_settings.xml");
-            Story default_story = fromStream(new DataInputStream(new FileInputStream(default_file)), false);
+            Story default_story = fromStream(new DataInputStream(getClass().getResourceAsStream("/default_settings.xml")), false);
             settings = default_story.getSettings();
         }
 

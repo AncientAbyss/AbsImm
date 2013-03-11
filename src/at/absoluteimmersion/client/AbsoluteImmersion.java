@@ -6,6 +6,7 @@ import at.absoluteimmersion.core.Story;
 import at.absoluteimmersion.core.StoryException;
 import org.apache.commons.lang3.text.WordUtils;
 
+@Deprecated
 public class AbsoluteImmersion implements ReactionClient {
     public static void main(String[] args) {
         new AbsoluteImmersion().run(args);

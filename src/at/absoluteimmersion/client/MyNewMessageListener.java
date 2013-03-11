@@ -1,0 +1,65 @@
+package at.absoluteimmersion.client;
+
+import at.absoluteimmersion.core.ReactionClient;
+import at.absoluteimmersion.core.Story;
+import at.absoluteimmersion.core.StoryException;
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Message;
+
+public class MyNewMessageListener implements MessageListener, ReactionClient {
+    private Story story;
+    private Chat chat;
+
+    public MyNewMessageListener(Chat chat, Story story) {
+        this.chat = chat;
+        this.story = story;
+        story.addClient(this);
+        try {
+            story.tell();
+        } catch (StoryException e) {
+            System.err.println("Failed telling story: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void processMessage(Chat chat, Message message) {
+        System.out.println(chat.getParticipant());
+        System.out.println(message.getBody());
+        try {
+            if (message.getBody() != null && !message.getBody().isEmpty()) {
+                if (message.getBody().equals(story.getSettings().getSetting("quit_command"))) {
+                    // TODO: properly cleanup
+                    chat.removeMessageListener(this);
+                    return;
+                }
+                story.interact(message.getBody());
+            }
+        } catch (StoryException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void reaction(String text) {
+        try {
+            /*
+            // TODO: the message is not delivered properly if sent as a whole in fb
+            String blah = text.replaceAll("\\\\n", "\n");
+            System.out.println(": " + blah);
+            Thread.sleep(2 * 100);
+            chat.sendMessage(blah);
+            */
+            for (String part : text.split("\\\\n")) {
+                Thread.sleep(2*100);
+                System.out.println(": " + part);
+                chat.sendMessage(part);
+            }
+        } catch (XMPPException e) {
+            System.err.println(e.getMessage());
+        } catch (InterruptedException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+}

@@ -8,9 +8,15 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
+import java.util.logging.Logger;
+
 public class MyNewMessageListener implements MessageListener, ReactionClient {
+
+    private static final Logger LOG = Logger.getLogger(MyNewMessageListener.class.getCanonicalName());
+
     private Story story;
     private Chat chat;
+    private boolean closed = false;
 
     public MyNewMessageListener(Chat chat, Story story) {
         this.chat = chat;
@@ -19,26 +25,44 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
         try {
             story.tell();
         } catch (StoryException e) {
-            System.err.println("Failed telling story: " + e.getMessage());
+            LOG.severe("Failed telling story: " + e.getMessage());
         }
     }
 
     @Override
     public void processMessage(Chat chat, Message message) {
-        System.out.println(chat.getParticipant());
-        System.out.println(message.getBody());
+        LOG.info(chat.getParticipant());
+        LOG.info(message.getBody());
         try {
             if (message.getBody() != null && !message.getBody().isEmpty()) {
                 if (message.getBody().equals(story.getSettings().getSetting("quit_command"))) {
-                    // TODO: properly cleanup
-                    chat.removeMessageListener(this);
+                    quit(chat);
+                    return;
+                }
+                if (message.getBody().equals("admin_quit")) {  // TODO: extract generic admin command interface
+                    closed = true;
+                    quit(chat);
                     return;
                 }
                 story.interact(message.getBody());
             }
         } catch (StoryException e) {
-            System.err.println(e.getMessage());
+            try {
+                chat.sendMessage(e.getMessage());
+            } catch (XMPPException e1) {
+                LOG.severe(e.getMessage());
+            }
+            LOG.severe(e.getMessage());
+        } catch (XMPPException e) {
+            LOG.severe(e.getMessage());
         }
+    }
+
+    private void quit(Chat chat) throws XMPPException {
+        // TODO: properly cleanup
+        chat.sendMessage("kthxbye");
+        chat.removeMessageListener(this);
+        return;
     }
 
     @Override
@@ -52,14 +76,18 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
             chat.sendMessage(blah);
             */
             for (String part : text.split("\\\\n")) {
-                Thread.sleep(2*100);
-                System.out.println(": " + part);
+                Thread.sleep(2 * 100);
+                LOG.info(": " + part);
                 chat.sendMessage(part);
             }
         } catch (XMPPException e) {
-            System.err.println(e.getMessage());
+            LOG.severe(e.getMessage());
         } catch (InterruptedException e) {
-            System.err.println(e.getMessage());
+            LOG.severe(e.getMessage());
         }
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 }

@@ -6,23 +6,27 @@ import at.absoluteimmersion.core.StoryException;
 import org.jivesoftware.smack.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 @Deprecated
 public class AbsoluteImmersionXmpp {
 
-    public static void main(String[] args) throws XMPPException, IOException {
+    private static final Logger LOG = Logger.getLogger(AbsoluteImmersionXmpp.class.getCanonicalName());
+
+    private List<MyNewMessageListener> listeners = new ArrayList<>();
+
+    public static void main(String[] args) throws XMPPException, IOException, InterruptedException {
         if (args.length < 5) {
             printUsage();
             return;
         }
-        if (System.console() == null) {
-            System.err.println("Failed getting a console.");
-            return;
-        }
-        init(args[0], args[1], args[2], args[3], Integer.parseInt(args[4]));
+
+        new AbsoluteImmersionXmpp().init(args[0], args[1], args[2], args[3], Integer.parseInt(args[4]));
     }
 
-    private static void init(final String storyFile, String username, String password, String host, int port) throws XMPPException, IOException {
+    private void init(final String storyFile, String username, String password, String host, int port) throws XMPPException, IOException, InterruptedException {
         SASLAuthentication.registerSASLMechanism("DIGEST-MD5", MySASLDigestMD5Mechanism.class);
         SASLAuthentication.supportSASLMechanism("DIGEST-MD5", 1);
 
@@ -37,28 +41,39 @@ public class AbsoluteImmersionXmpp {
                     @Override
                     public void chatCreated(Chat chat, boolean createdLocally) {
                         if (!createdLocally)
-                            new AbsoluteImmersionXmpp().run(storyFile, chat); // TODO: threads needed
+                            run(storyFile, chat); // TODO: threads needed
                     }
                 });
 
-        System.out.println("absolute immersion listens... press any key to quit");
-        System.in.read();
+        LOG.info("absolute immersion listens... press any key to quit");
+        while (!isClosed()) Thread.currentThread().sleep(1000);
+        LOG.info("absolute immersion is down...");
+    }
+
+    private boolean isClosed() {
+        for (MyNewMessageListener listener : listeners) {
+            if (listener.isClosed()) return true;
+        }
+        return false;
     }
 
     public void run(String storyFile, Chat chat) {
-        System.out.println("chat opened...");
+        LOG.info("chat opened...");
         Story story;
         try {
             story = new Loader().fromFile(storyFile);
         } catch (StoryException e) {
-            System.err.println("Failed loading story: " + e.getMessage());
+            LOG.severe("Failed loading story: " + e.getMessage());
             return;
         }
-        chat.addMessageListener(new MyNewMessageListener(chat, story));
+        MyNewMessageListener listener = new MyNewMessageListener(chat, story);
+        chat.addMessageListener(listener);
+        listeners.add(listener);
     }
 
     private static void printUsage() {
-        System.out.println("usage: AbsoluteImmersion [storyfile] [user] [password] [host] [port]");
+        LOG.info("usage: AbsoluteImmersion [storyfile] [user] [password] [host] [port]");
     }
+
 }
 

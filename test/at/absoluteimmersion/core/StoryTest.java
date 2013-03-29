@@ -327,4 +327,20 @@ public class StoryTest {
         story.interact("open locker");
         verify(client).reaction("The locker is open now!");
     }
+
+    /*
+    TODO
+    @Test
+    public void interact_quit() throws StoryException {
+        Loader loader = new Loader();
+        Story story = loader.fromFile("res/test_03.xml");
+        ReactionClient client = mock(ReactionClient.class);
+        AdminListener adminListener = mock(AdminListener.class);
+        client.addAdminListener();
+        story.tell();
+        story.interact("quit");
+
+        verify(adminListener).invoked("The locker is open now!");
+    }
+    */
 }

@@ -123,8 +123,11 @@ public class Story extends BasePart {
             splitted = splitted[1].split(" ", 2); // check each word
 
             if (splitted.length < 2) {
-                if (!processed_interaction.containsKey("action")) throw new StoryException(settings.getSetting("invalid_command"));
-                else return processed_interaction;
+                if (!processed_interaction.containsKey("action")) {
+                    processed_interaction.put("action", splitted[0]);
+                    processed_interaction.put("target", "");
+                }
+                return processed_interaction;
             }
 
             // append action word
@@ -141,7 +144,7 @@ public class Story extends BasePart {
     }
 
     private void hint() {
-        List<BasePart> allParts = findAll("");
+        List<BasePart> allParts = findAll();
         for (BasePart part : allParts) {
             String hint_message = part.getName() + " (";
             List<String> send_actions = new ArrayList<>();

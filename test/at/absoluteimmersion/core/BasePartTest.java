@@ -13,6 +13,15 @@ public class BasePartTest {
         Assert.assertEquals(2, part.findAll("somePart").size());
     }
 
+    @Test()
+    public void findAll_partsAdded_findAllParts() throws StoryException {
+        BasePart part = new BasePart();
+        part.addPart(new Part("somePart"));
+        part.addPart(new Part("somePart"));
+        part.addPart(new Part(""));
+        part.addPart(new Part("x"));
+        Assert.assertEquals(4, part.findAll().size());
+    }
 
     @Test
     public void conditionMet_noCondition_isMet() {

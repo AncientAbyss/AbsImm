@@ -249,17 +249,22 @@ public class StoryTest {
         verify(client).reaction("No such object!");
     }
 
-    @Test(expected = StoryException.class)
+    @Test
     public void interact_onlyOneWord_throwsException() throws StoryException {
         Loader loader = new Loader();
         Story story = null;
+        ReactionClient client = mock(ReactionClient.class);
         try {
             story = loader.fromFile("res/test_03.xml");
+            story.addClient(client);
             story.tell();
         } catch (Exception e) {
             Assert.fail();
         }
         story.interact("ranz");
+        InOrder inOrder = inOrder(client);
+        inOrder.verify(client).reaction("chapter_01");
+        inOrder.verify(client).reaction("No such object!");
     }
 
     @Test

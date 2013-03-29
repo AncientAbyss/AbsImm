@@ -88,12 +88,20 @@ public class BasePart {
     }
 
     public List<BasePart> findAll(String somePart) {
-        List<BasePart> result = new ArrayList<BasePart>();
+        return findAll(somePart, false);
+    }
+
+    private List<BasePart> findAll(String somePart, boolean ignoreArgument) {
+        List<BasePart> result = new ArrayList<>();
         for (BasePart part : parts) {
             if (!part.conditionsMet()) continue;
-            if (part.getName().equals(somePart) || somePart.equals("")) result.add(part);
-            result.addAll(part.findAll(somePart));
+            if (part.getName().equals(somePart) || ignoreArgument) result.add(part);
+            result.addAll(part.findAll(somePart, ignoreArgument));
         }
         return result;
+    }
+
+    public List<BasePart> findAll() {
+        return findAll("", true);
     }
 }

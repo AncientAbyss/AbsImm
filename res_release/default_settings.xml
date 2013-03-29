@@ -2,11 +2,13 @@
     <settings>
         <setting name="quit_command" value="quit"/>
         <setting name="hint_command" value="hint"/>
+        <setting name="help_command" value="help"/>
         <setting name="save_command" value="save"/>
         <setting name="save_invalid_command" value="Argument missing!"/>
         <setting name="save_error" value="Unable to save game."/>
         <setting name="save_success" value="Game successfully saved."/>
         <setting name="load_command" value="load"/>
+        <setting name="quit_message" value="Thanks for playing, have a nice day!"/>
         <setting name="load_invalid_command" value="Argument missing!"/>
         <setting name="load_error" value="Unable to load game."/>
         <setting name="load_success" value="Game successfully loaded."/>
@@ -15,5 +17,6 @@
         <setting name="object_error" value="No such object!"/>
         <setting name="action_error" value="You cannot do this with this object!"/>
         <setting name="initial_command_missing" value="No initial command has been set!"/>
+        <setting name="help_message" value="\n-------------\nType 'hint' if you are stuck and 'quit' if you want to stop playing.\nUse 'save xx' to save your progress to the slot 'xx' and 'load xx' to load your progress from slot 'xx'.\n'help' will bring this info up again.\n-------------\n"/>
     </settings>
 </story>

@@ -30,4 +30,11 @@ public class Settings {
     public String getSetting(String name) {
         return settings.get(name);
     }
+
+    @Override
+    public String toString() {
+        return "Settings{" +
+                "settings=" + settings +
+                '}';
+    }
 }

@@ -77,6 +77,10 @@ public class Story extends BasePart {
             hint();
             return true;
         }
+        if (command.equals(settings.getSetting("help_command"))) {
+            help();
+            return true;
+        }
 
         if (command.equals(settings.getSetting("save_command"))) {
             if (!interaction.contains(" ")) {
@@ -158,6 +162,10 @@ public class Story extends BasePart {
         }
     }
 
+    private void help() {
+        sendMessageToAllClients(settings.getSetting("help_message"));
+    }
+
     public void tell() throws StoryException {
         if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
         if (settings.getSetting("initial_command") == null) throw new StoryException(settings.getSetting("initial_command_missing"));
@@ -170,5 +178,13 @@ public class Story extends BasePart {
 
     public Settings getSettings() {
         return settings;
+    }
+
+    @Override
+    public String toString() {
+        return "Story{" +
+                "clients=" + clients +
+                ", settings=" + settings +
+                '}';
     }
 }

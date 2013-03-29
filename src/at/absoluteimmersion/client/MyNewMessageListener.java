@@ -67,7 +67,7 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
         // TODO: properly cleanup
         if (chat.getListeners().isEmpty()) return;
 
-        chat.sendMessage("kthxbye");
+        chat.sendMessage(story.getSettings().getSetting("quit_message"));
         chat.removeMessageListener(this); // TODO: how to resume game in this chat session
         return;
     }

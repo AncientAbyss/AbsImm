@@ -239,6 +239,19 @@ public class StoryTest {
     }
 
     @Test
+    public void interact_help_showsHelp() throws StoryException {
+        Loader loader = new Loader();
+        Story story = loader.fromFile("res/test_03.xml");
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client).reaction("chapter_01");
+        verify(client).reaction("Entered chapter 01!");
+        story.interact("help");
+        verify(client).reaction("\\n-------------\\nType 'hint' if you are stuck and 'quit' if you want to stop playing.\\nUse 'save xx' to save your progress to the slot 'xx' and 'load xx' to load your progress from slot 'xx'.\\n'help' will bring this info up again.\\n-------------\\n");
+    }
+
+    @Test
     public void interact_nonexistentObject_returnsErrorMessage() throws StoryException {
         Loader loader = new Loader();
         Story story = loader.fromFile("res/test_02.xml");

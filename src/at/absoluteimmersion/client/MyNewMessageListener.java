@@ -17,6 +17,7 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
     private Story story;
     private Chat chat;
     private boolean closed = false;
+    private boolean firstMessage = true;
 
     public MyNewMessageListener(Chat chat, Story story) {
         this.chat = chat;
@@ -31,6 +32,11 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
 
     @Override
     public void processMessage(Chat chat, Message message) {
+        if (firstMessage) {
+            firstMessage = false;
+            return;
+        }
+
         LOG.info(chat.getParticipant());
         LOG.info(message.getBody());
         try {

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Story extends BasePart {
-    private List<ReactionClient> clients = new ArrayList<ReactionClient>();
+    private List<ReactionClient> clients = new ArrayList<>();
     private Settings settings;
 
     public Story(StateList stateList, Settings settings) {
@@ -46,8 +46,7 @@ public class Story extends BasePart {
 
         if (handleSystemCommands(interaction)) return;
 
-        Map<String, String> processed_interaction = new HashMap<String, String>();
-        processInteraction(interaction, processed_interaction);
+        Map<String, String> processed_interaction = extractActionAndTargetFromCommand(interaction);
         List<BasePart> allParts = processed_interaction.containsKey("target") ? findAll(processed_interaction.get("target")) : new ArrayList<BasePart>();
         List<Action> actions = findActions(processed_interaction.get("action"), allParts);
 
@@ -116,29 +115,36 @@ public class Story extends BasePart {
         }
     }
 
-    private void processInteraction(String interaction, Map<String, String> processed_interaction) throws StoryException {
-        String[] splitted = new String[]{"", interaction};
-        List<BasePart> allParts = new ArrayList<BasePart>();
+    private Map<String, String> extractActionAndTargetFromCommand(String interaction) throws StoryException {
+        Map<String, String> processed_interaction = new HashMap<>();
+        String[] splitted = new String[]{"", interaction}; // prepare array
+        // for all possible actions...
         do {
-            splitted = splitted[1].split(" ", 2);
+            splitted = splitted[1].split(" ", 2); // check each word
 
             if (splitted.length < 2) {
                 if (!processed_interaction.containsKey("action")) throw new StoryException(settings.getSetting("invalid_command"));
-                else return;
+                else return processed_interaction;
             }
 
+            // append action word
             processed_interaction.put("action", processed_interaction.containsKey("action") ? processed_interaction.get("action") + " " + splitted[0] : splitted[0]);
-            allParts = findAll(splitted[1]);
-        } while (allParts.size() == 0);
-
+        } while (isAction(splitted));
+        // ... for the remaining target, do
         processed_interaction.put("target", splitted[1]);
+
+        return processed_interaction;
+    }
+
+    private boolean isAction(String[] splitted) {
+        return findAll(splitted[1]).size() == 0;
     }
 
     private void hint() {
         List<BasePart> allParts = findAll("");
         for (BasePart part : allParts) {
             String hint_message = part.getName() + " (";
-            List<String> send_actions = new ArrayList<String>();
+            List<String> send_actions = new ArrayList<>();
             for (Action action : ((Part) part).findActions("")) {
                 if (send_actions.contains(action.getName())) continue;
                 if (send_actions.size() > 0) hint_message += ", ";
@@ -151,7 +157,6 @@ public class Story extends BasePart {
 
     public void tell() throws StoryException {
         if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
-        String initial_action = parts.get(0).getName();
         if (settings.getSetting("initial_command") == null) throw new StoryException(settings.getSetting("initial_command_missing"));
         interact(settings.getSetting("initial_command"));
     }

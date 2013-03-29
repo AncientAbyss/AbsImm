@@ -47,6 +47,9 @@ public class AbsoluteImmersionXmpp {
 
         LOG.info("absolute immersion listens... press any key to quit");
         while (!isClosed()) Thread.currentThread().sleep(1000);
+        for (MyNewMessageListener listener : listeners) {
+            listener.quit();
+        }
         LOG.info("absolute immersion is down...");
     }
 

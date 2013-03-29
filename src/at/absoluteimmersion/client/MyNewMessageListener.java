@@ -36,12 +36,11 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
         try {
             if (message.getBody() != null && !message.getBody().isEmpty()) {
                 if (message.getBody().equals(story.getSettings().getSetting("quit_command"))) {
-                    quit(chat);
+                    quit();
                     return;
                 }
                 if (message.getBody().equals("admin_quit")) {  // TODO: extract generic admin command interface
                     closed = true;
-                    quit(chat);
                     return;
                 }
                 story.interact(message.getBody());
@@ -58,10 +57,12 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
         }
     }
 
-    private void quit(Chat chat) throws XMPPException {
+    public void quit() throws XMPPException {
         // TODO: properly cleanup
+        if (chat.getListeners().isEmpty()) return;
+
         chat.sendMessage("kthxbye");
-        chat.removeMessageListener(this);
+        chat.removeMessageListener(this); // TODO: how to resume game in this chat session
         return;
     }
 

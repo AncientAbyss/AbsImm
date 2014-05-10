@@ -3,5 +3,10 @@ out
 .*.iml
 .*~
 .dat
-absoluteimmersion.*
+absoluteimmersion\..*
 cpx2.xml
+.*.jar
+.*-reduced-pom.xml
+target
+.*.bat
+.*.orig

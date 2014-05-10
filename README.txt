@@ -2,12 +2,17 @@ Requirements
 ============
 
 * Java JRE >= 1.7
+* Maven >= 2
 
 
 Usage
 =====
 
-java -jar AbsoluteImmersion.jar [storyfile] [user] [password] [host] [port]
+To start a server for a specific XMPP account use:
+
+    java -jar AbsoluteImmersion.jar [storyfile] [user] [password] [host] [port]
+
+Play by starting a chat with this account.
 
 
 Notes

@@ -31,6 +31,10 @@ public class Settings {
         return settings.get(name);
     }
 
+    public int getSettingsCount() {
+        return settings.size();
+    }
+
     @Override
     public String toString() {
         return "Settings{" +

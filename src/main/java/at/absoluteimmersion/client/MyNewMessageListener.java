@@ -8,6 +8,8 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class MyNewMessageListener implements MessageListener, ReactionClient {
@@ -18,6 +20,7 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
     private Chat chat;
     private boolean closed = false;
     private boolean firstMessage = true;
+    private List<ReactionClient> additionalClients = new ArrayList<>();
 
     public MyNewMessageListener(Chat chat, Story story) {
         this.chat = chat;
@@ -28,6 +31,10 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
         } catch (StoryException e) {
             LOG.severe("Failed telling story: " + e.getMessage());
         }
+    }
+
+    public void addAdditionialClient(ReactionClient client) {
+        additionalClients.add(client);
     }
 
     @Override
@@ -53,7 +60,7 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
             }
         } catch (StoryException e) {
             try {
-                chat.sendMessage(e.getMessage());
+                sendMessageToAllClients(e.getMessage());
             } catch (XMPPException e1) {
                 LOG.severe(e.getMessage());
             }
@@ -67,7 +74,7 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
         // TODO: properly cleanup
         if (chat.getListeners().isEmpty()) return;
 
-        chat.sendMessage(story.getSettings().getSetting("quit_message"));
+        sendMessageToAllClients(story.getSettings().getSetting("quit_message"));
         chat.removeMessageListener(this); // TODO: how to resume game in this chat session
         return;
     }
@@ -85,13 +92,20 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
             for (String part : text.split("\\\\n")) {
                 Thread.sleep(2 * 100);
                 LOG.info(": " + part);
-                chat.sendMessage(part);
+                sendMessageToAllClients(part);
             }
         } catch (XMPPException e) {
             LOG.severe(e.getMessage());
         } catch (InterruptedException e) {
             LOG.severe(e.getMessage());
         }
+    }
+
+    private void sendMessageToAllClients(String message) throws XMPPException {
+        for (ReactionClient client : additionalClients) {
+            client.reaction(message);
+        }
+        chat.sendMessage(message);
     }
 
     public boolean isClosed() {

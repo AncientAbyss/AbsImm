@@ -9,7 +9,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.net.URISyntaxException;
 
 public class Loader {
 
@@ -35,10 +34,10 @@ public class Loader {
         Settings settings = new Settings();
 
         if (load_default) {
+            // TODO: check if exists
             Story default_story = fromStream(new DataInputStream(getClass().getResourceAsStream("/default_settings.xml")), false);
             settings = default_story.getSettings();
         }
-
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setIgnoringElementContentWhitespace(true);
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -64,7 +63,7 @@ public class Loader {
         for (int i = 0; i < children.getLength(); ++i) {
             Node n = children.item(i);
             if (isWhitespaceNode(n)) continue;
-            if (n.getParentNode().getNodeName() == "story" || n.getParentNode().getNodeName() == "part") {
+            if (n.getParentNode().getNodeName().equals("story") || n.getParentNode().getNodeName().equals("part")) {
                 if (n.getNodeName().equals("part")) {
                     String name = "";
                     Node nameNode = n.getAttributes().getNamedItem("name");
@@ -97,7 +96,7 @@ public class Loader {
                 } else {
                     throw new StoryException("Story can only contain part, action and settings!");
                 }
-            } else if (n.getParentNode().getNodeName() == "settings") {
+            } else if (n.getParentNode().getNodeName().equals("settings")) {
                 if (n.getNodeName().equals("setting")) {
                     String name = "";
                     Node nameNode = n.getAttributes().getNamedItem("name");

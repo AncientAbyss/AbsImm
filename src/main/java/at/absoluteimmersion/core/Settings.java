@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Settings {
-    private Map<String, String> settings = new HashMap<String, String>();
+    private Map<String, String> settings = new HashMap<>();
 
     @Override
     public boolean equals(Object o) {

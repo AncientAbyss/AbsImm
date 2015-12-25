@@ -1,5 +1,7 @@
 package at.absoluteimmersion.core;
 
+import org.jivesoftware.smack.SmackException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +43,7 @@ public class Story extends BasePart {
         clients.add(client);
     }
 
-    public void interact(String interaction) throws StoryException {
+    public void interact(String interaction) throws StoryException, SmackException.NotConnectedException {
         if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
 
         if (handleSystemCommands(interaction)) return;
@@ -64,14 +66,14 @@ public class Story extends BasePart {
     }
 
     private List<Action> findActions(String action, List<BasePart> allParts) {
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
         for (BasePart part : allParts) {
             actions.addAll(((Part) part).findActions(action));
         }
         return actions;
     }
 
-    private boolean handleSystemCommands(String interaction) {
+    private boolean handleSystemCommands(String interaction) throws SmackException.NotConnectedException {
         String command = interaction.split(" ")[0];
         if (command.equals(settings.getSetting("hint_command"))) {
             hint();
@@ -113,7 +115,7 @@ public class Story extends BasePart {
         return false;
     }
 
-    private void sendMessageToAllClients(String message) {
+    private void sendMessageToAllClients(String message) throws SmackException.NotConnectedException {
         for (ReactionClient client : clients) {
             client.reaction(message);
         }
@@ -147,7 +149,7 @@ public class Story extends BasePart {
         return findAll(splitted[1]).size() == 0;
     }
 
-    private void hint() {
+    private void hint() throws SmackException.NotConnectedException {
         List<BasePart> allParts = findAll();
         for (BasePart part : allParts) {
             String hint_message = part.getName() + " (";
@@ -162,11 +164,11 @@ public class Story extends BasePart {
         }
     }
 
-    private void help() {
+    private void help() throws SmackException.NotConnectedException {
         sendMessageToAllClients(settings.getSetting("help_message"));
     }
 
-    public void tell() throws StoryException {
+    public void tell() throws StoryException, SmackException.NotConnectedException {
         if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
         if (settings.getSetting("initial_command") == null) throw new StoryException(settings.getSetting("initial_command_missing"));
         interact(settings.getSetting("initial_command"));

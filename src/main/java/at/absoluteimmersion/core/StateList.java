@@ -1,16 +1,15 @@
 package at.absoluteimmersion.core;
 
-import at.absoluteimmersion.util.AbsimmFile;
+import at.absoluteimmersion.util.AbsimFile;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class StateList {
-    private List<String> list = new ArrayList<String>();
+    private List<String> list = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
@@ -42,10 +41,10 @@ public class StateList {
     }
 
     public void save(String file) throws IOException {
-        AbsimmFile.writeFile(file, StringUtils.join(list, ","));
+        AbsimFile.writeFile(file, StringUtils.join(list, ","));
     }
 
     public void load(String file) throws IOException {
-        list = new ArrayList<String>(Arrays.asList(AbsimmFile.readFileAsString(file).split(",")));
+        list = new ArrayList<>(Arrays.asList(AbsimFile.readFileAsString(file).split(",")));
     }
 }

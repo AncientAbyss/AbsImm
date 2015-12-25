@@ -2,7 +2,7 @@ package at.absoluteimmersion.util;
 
 import java.io.*;
 
-public class AbsimmFile {
+public class AbsimFile {
 
     public static String readFileAsString(String filePath) throws IOException {
         StringBuffer fileData = new StringBuffer();

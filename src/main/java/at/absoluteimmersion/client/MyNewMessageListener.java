@@ -3,16 +3,17 @@ package at.absoluteimmersion.client;
 import at.absoluteimmersion.core.ReactionClient;
 import at.absoluteimmersion.core.Story;
 import at.absoluteimmersion.core.StoryException;
-import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.chat.Chat;
+import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class MyNewMessageListener implements MessageListener, ReactionClient {
+public class MyNewMessageListener implements ReactionClient, ChatMessageListener {
 
     private static final Logger LOG = Logger.getLogger(MyNewMessageListener.class.getCanonicalName());
 
@@ -28,7 +29,7 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
         story.addClient(this);
         try {
             story.tell();
-        } catch (StoryException e) {
+        } catch (StoryException | SmackException.NotConnectedException e) {
             LOG.severe("Failed telling story: " + e.getMessage());
         }
     }
@@ -61,26 +62,25 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
         } catch (StoryException e) {
             try {
                 sendMessageToAllClients(e.getMessage());
-            } catch (XMPPException e1) {
+            } catch (XMPPException | SmackException.NotConnectedException e1) {
                 LOG.severe(e.getMessage());
             }
             LOG.severe(e.getMessage());
-        } catch (XMPPException e) {
+        } catch (XMPPException | SmackException.NotConnectedException e) {
             LOG.severe(e.getMessage());
         }
     }
 
-    public void quit() throws XMPPException {
+    public void quit() throws XMPPException, SmackException.NotConnectedException {
         // TODO: properly cleanup
         if (chat.getListeners().isEmpty()) return;
 
         sendMessageToAllClients(story.getSettings().getSetting("quit_message"));
         chat.removeMessageListener(this); // TODO: how to resume game in this chat session
-        return;
     }
 
     @Override
-    public void reaction(String text) {
+    public void reaction(String text) throws SmackException.NotConnectedException {
         try {
             /*
             // TODO: the message is not delivered properly if sent as a whole in fb
@@ -94,14 +94,12 @@ public class MyNewMessageListener implements MessageListener, ReactionClient {
                 LOG.info(": " + part);
                 sendMessageToAllClients(part);
             }
-        } catch (XMPPException e) {
-            LOG.severe(e.getMessage());
-        } catch (InterruptedException e) {
+        } catch (XMPPException | InterruptedException e) {
             LOG.severe(e.getMessage());
         }
     }
 
-    private void sendMessageToAllClients(String message) throws XMPPException {
+    private void sendMessageToAllClients(String message) throws XMPPException, SmackException.NotConnectedException {
         for (ReactionClient client : additionalClients) {
             client.reaction(message);
         }

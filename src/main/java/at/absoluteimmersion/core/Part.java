@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Part extends BasePart {
-    private List<Action> actions = new ArrayList<Action>();
+    private List<Action> actions = new ArrayList<>();
 
 
     @Override
@@ -40,7 +40,7 @@ public class Part extends BasePart {
     }
 
     public List<Action> findActions(String name) {
-        List<Action> tmpActions = new ArrayList<Action>();
+        List<Action> tmpActions = new ArrayList<>();
         for (Action action : actions) {
             if ((action.getName().equals(name) || name.equals("")) && action.conditionsMet()) {
                 tmpActions.add(action);

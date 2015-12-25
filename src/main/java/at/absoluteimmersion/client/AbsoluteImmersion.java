@@ -5,6 +5,7 @@ import at.absoluteimmersion.core.ReactionClient;
 import at.absoluteimmersion.core.Story;
 import at.absoluteimmersion.core.StoryException;
 import org.apache.commons.lang3.text.WordUtils;
+import org.jivesoftware.smack.SmackException;
 
 @Deprecated
 public class AbsoluteImmersion implements ReactionClient {
@@ -31,16 +32,16 @@ public class AbsoluteImmersion implements ReactionClient {
         story.addClient(this);
         try {
             story.tell();
-        } catch (StoryException e) {
+        } catch (StoryException | SmackException.NotConnectedException e) {
             System.err.println("Failed telling story: " + e.getMessage());
         }
-        while (42 != 23) {
+        while (true) {
             String user_input = System.console().readLine();
             if (user_input.equals(story.getSettings().getSetting("quit_command"))) break;
 
             try {
                 story.interact(user_input);
-            } catch (StoryException e) {
+            } catch (StoryException | SmackException.NotConnectedException e) {
                 System.err.println(e.getMessage());
             }
         }

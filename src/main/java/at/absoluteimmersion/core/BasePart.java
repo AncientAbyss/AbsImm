@@ -7,7 +7,7 @@ public class BasePart {
     public static final String NOT = "NOT";
     public static final String AND = "AND";
 
-    protected List<BasePart> parts = new ArrayList<BasePart>();
+    protected List<BasePart> parts = new ArrayList<>();
     protected String name = "";
     protected String condition = "";
     protected StateList stateList;

@@ -1,5 +1,7 @@
 package at.absoluteimmersion.core;
 
+import org.jivesoftware.smack.SmackException;
+
 public interface ReactionClient {
-    public void reaction(String text);
+    void reaction(String text) throws SmackException.NotConnectedException;
 }

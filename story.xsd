@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://ancientabyss.net/schemas/AbsImm.xsd" xmlns="http://ancientabyss.net/schemas/AbsImm.xsd" elementFormDefault="qualified">
+
+<xs:element name="story" type="story" />
+
+<!-- basic -->
+
+<xs:complexType name="story">
+  <xs:sequence>
+    <xs:element name="settings" type="settings"/>
+    <xs:element name="part" type="part"/>
+    <xs:element name="part" type="part"/>
+  </xs:sequence>
+</xs:complexType>
+
+<!-- configuration -->
+
+<xs:complexType name="settings">
+  <xs:sequence>
+    <xs:element name="setting" type="setting" maxOccurs="unbounded" />
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="setting">
+  <xs:attribute name="name" type="xs:string"/>
+  <xs:attribute name="value" type="xs:string"/>
+</xs:complexType>
+
+<!-- structure and logic -->
+
+<xs:complexType name="part">
+  <xs:sequence>
+    <xs:element name="action" type="action" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="name" type="xs:string"/>
+</xs:complexType>
+
+<xs:complexType name="action">
+  <xs:attribute name="name" type="xs:string"/>
+  <xs:attribute name="state" type="xs:string"/>
+  <xs:attribute name="condition" type="xs:string"/>
+  <xs:attribute name="text" type="xs:string"/>
+</xs:complexType>
+
+</xs:schema>

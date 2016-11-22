@@ -1,7 +1,7 @@
-AbsIm
-=====
+AbsImm
+======
 
-AbsIm is an open source text adventure engine. Adventures are written in an intuitive open XML-based format.
+AbsImm is an open source text adventure engine. Adventures are written in an intuitive open XML-based format.
 At the moment XMPP and console clients are available.
 
 
@@ -25,4 +25,4 @@ Play by starting a chat with this account.
 Notes
 -----
 
-Storyfiles need to be encoded as UTF-8.
+Story files need to be encoded as UTF-8.

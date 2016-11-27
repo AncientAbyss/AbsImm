@@ -61,8 +61,8 @@ gradle-app.setting
 
 .idea
 *.iml
+out
 target
 build
 dependency-reduced-pom.xml
-
 

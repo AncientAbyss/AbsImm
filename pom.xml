@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>at.absoluteimmersion</groupId>
-    <artifactId>absim-xmpp</artifactId>
+    <artifactId>absim-xmpp-android</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>absim-xmpp</name>
+    <name>Absimm Core (Android)</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

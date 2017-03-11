@@ -41,10 +41,18 @@ public class StateList {
     }
 
     public void save(String file) throws IOException {
-        AbsimFile.writeFile(file, StringUtils.join(list, ","));
+        AbsimFile.writeFile(file, serialize());
     }
 
     public void load(String file) throws IOException {
-        list = new ArrayList<>(Arrays.asList(AbsimFile.readFileAsString(file).split(",")));
+        deserialize(AbsimFile.readFileAsString(file));
+    }
+
+    public String serialize() {
+        return StringUtils.join(list, ",");
+    }
+
+    public void deserialize(String data) {
+        list = new ArrayList<>(Arrays.asList(data.split(",")));
     }
 }

@@ -15,6 +15,44 @@ Requirements
 Usage
 -----
 
+* Initialize
+
+        // load the story from a string
+        Story story = new Loader().fromString(...);
+        // or from a file
+        Story story = new Loader().fromFile(...);
+
+* Setup retrieving messages from AbsImm
+
+        story.addClient(...);
+
+* Start the adventure
+
+        story.tell();
+
+* Handle user input
+
+        story.interact(...);
+
+* Get the current state, e.g. for saving the active session
+
+        story.getState();
+
+* Restore a state
+
+        story.setState(...);
+
+
+Story file format
+-----------------
+
+Stories are defined in XML and need to be conform to the story.xsd.
+Examples can be found in the 'res' directory.
+
+
+Usage (Client)
+--------------
+
 To start a server for a specific XMPP account use:
 
     java -jar AbsoluteImmersion.jar [storyfile] [user] [password] [host] [port]

@@ -11,10 +11,12 @@ import java.util.Map;
 public class Story extends BasePart {
     private List<ReactionClient> clients = new ArrayList<>();
     private Settings settings;
+    private StateList stateList;
 
     public Story(StateList stateList, Settings settings) {
         super("", "", stateList);
         this.settings = settings;
+        this.stateList = stateList;
     }
 
     @Override
@@ -189,4 +191,13 @@ public class Story extends BasePart {
                 ", settings=" + settings +
                 '}';
     }
+
+    public String getState() {
+        return stateList.serialize();
+    }
+
+    public void setState(String state) {
+        stateList.deserialize(state);
+    }
 }
+

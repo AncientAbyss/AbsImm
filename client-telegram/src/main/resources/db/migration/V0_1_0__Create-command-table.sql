@@ -1,6 +1,0 @@
-CREATE TABLE Command (
-    id SERIAL NOT NULL PRIMARY KEY,
-    user_id INTEGER,
-    value TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);

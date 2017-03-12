@@ -15,31 +15,44 @@ Requirements
 Usage
 -----
 
+* Setup
+
+    * Gradle:
+    
+            maven {
+                url "http://rod.bplaced.net/maven2"
+            }
+            
+            dependencies {
+                compile 'at.absoluteimmersion:absim-xmpp-android:1.0-SNAPSHOT'
+            }
+            
+    * Maven:
+     
+            TBD
+
+
 * Initialize
 
         // load the story from a string
         Story story = new Loader().fromString(...);
         // or from a file
         Story story = new Loader().fromFile(...);
-
-* Setup retrieving messages from AbsImm
-
+        // set the client to which AbsImm passes messages
         story.addClient(...);
 
-* Start the adventure
+* Run
 
+        // Start the adventure
         story.tell();
-
-* Handle user input
-
+        // Handle user input
         story.interact(...);
+        
+* Load/Save
 
-* Get the current state, e.g. for saving the active session
-
+        // Get the current state, e.g. for saving the active session
         story.getState();
-
-* Restore a state
-
+        // Restore a state
         story.setState(...);
 
 
@@ -48,6 +61,7 @@ Story file format
 
 Stories are defined in XML and need to be conform to the story.xsd.
 Examples can be found in the 'res' directory.
+Story files need to be encoded as UTF-8.
 
 
 Usage (Client)
@@ -58,9 +72,3 @@ To start a server for a specific XMPP account use:
     java -jar AbsoluteImmersion.jar [storyfile] [user] [password] [host] [port]
 
 Play by starting a chat with this account.
-
-
-Notes
------
-
-Story files need to be encoded as UTF-8.

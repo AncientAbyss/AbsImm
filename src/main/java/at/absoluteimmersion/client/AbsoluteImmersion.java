@@ -4,6 +4,7 @@ import at.absoluteimmersion.core.Loader;
 import at.absoluteimmersion.core.ReactionClient;
 import at.absoluteimmersion.core.Story;
 import at.absoluteimmersion.core.StoryException;
+import at.absoluteimmersion.parser.XmlParser;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jivesoftware.smack.SmackException;
 
@@ -24,7 +25,7 @@ public class AbsoluteImmersion implements ReactionClient {
         }
         Story story;
         try {
-            story = new Loader().fromFile(args[0]);
+            story = new Loader(new XmlParser()).fromFile(args[0]);
         } catch (StoryException e) {
             System.err.println("Failed loading story: " + e.getMessage());
             return;

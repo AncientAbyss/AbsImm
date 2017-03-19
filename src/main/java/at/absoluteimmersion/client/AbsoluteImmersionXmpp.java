@@ -4,6 +4,7 @@ import at.absoluteimmersion.core.Loader;
 import at.absoluteimmersion.core.ReactionClient;
 import at.absoluteimmersion.core.Story;
 import at.absoluteimmersion.core.StoryException;
+import at.absoluteimmersion.parser.XmlParser;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
@@ -104,7 +105,7 @@ public class AbsoluteImmersionXmpp {
 
     public void initStoryFromFile(String storyFile) {
         try {
-            story = new Loader().fromFile(storyFile);
+            story = new Loader(new XmlParser()).fromFile(storyFile);
         } catch (StoryException e) {
             LOG.severe("Failed loading story: " + e.getMessage());
         }
@@ -112,7 +113,7 @@ public class AbsoluteImmersionXmpp {
 
     public void initStoryFromString(String storyContent) {
         try {
-            story = new Loader().fromString(storyContent  );
+            story = new Loader(new XmlParser()).fromString(storyContent  );
         } catch (StoryException e) {
             LOG.severe("Failed loading story: " + e.getMessage());
         }

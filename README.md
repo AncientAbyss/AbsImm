@@ -35,9 +35,9 @@ Usage
 * Initialize
 
         // load the story from a string
-        Story story = new Loader().fromString(...);
+        Story story = new Loader(new XmlParser()).fromString(...);
         // or from a file
-        Story story = new Loader().fromFile(...);
+        Story story = new Loader(new XmlParser()).fromFile(...);
         // set the client to which AbsImm passes messages
         story.addClient(...);
 

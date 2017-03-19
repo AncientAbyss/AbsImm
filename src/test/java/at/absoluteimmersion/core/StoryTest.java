@@ -1,5 +1,6 @@
 package at.absoluteimmersion.core;
 
+import at.absoluteimmersion.parser.XmlParser;
 import at.absoluteimmersion.util.AbsimFile;
 import org.jivesoftware.smack.SmackException;
 import org.junit.Assert;
@@ -191,7 +192,7 @@ public class StoryTest {
 
     @Test
     public void tell_multipleChaptersWithActionsWithUnsatisfiedConditions_returnsErrorMessage() throws StoryException, SmackException.NotConnectedException {
-        Loader loader = new Loader();
+        Loader loader = createLoader();
         Story story = loader.fromFile("res/test_02.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -201,7 +202,7 @@ public class StoryTest {
 
     @Test
     public void interact_spacesInActionNames_work() throws StoryException, SmackException.NotConnectedException {
-        Loader loader = new Loader();
+        Loader loader = createLoader();
         Story story = loader.fromFile("res/test_04.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -218,7 +219,7 @@ public class StoryTest {
 
     @Test
     public void interact_hint_returnsAllPossibleActions() throws StoryException, SmackException.NotConnectedException {
-        Loader loader = new Loader();
+        Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -240,7 +241,7 @@ public class StoryTest {
 
     @Test
     public void interact_help_showsHelp() throws StoryException, SmackException.NotConnectedException {
-        Loader loader = new Loader();
+        Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -253,7 +254,7 @@ public class StoryTest {
 
     @Test
     public void interact_nonexistentObject_returnsErrorMessage() throws StoryException, SmackException.NotConnectedException {
-        Loader loader = new Loader();
+        Loader loader = createLoader();
         Story story = loader.fromFile("res/test_02.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -264,7 +265,7 @@ public class StoryTest {
 
     @Test
     public void interact_onlyOneWord_throwsException() throws StoryException, SmackException.NotConnectedException {
-        Loader loader = new Loader();
+        Loader loader = createLoader();
         Story story = null;
         ReactionClient client = mock(ReactionClient.class);
         try {
@@ -282,7 +283,7 @@ public class StoryTest {
 
     @Test
     public void tell_multipleChaptersWithConditions_playsGameWithoutProblem() throws StoryException, SmackException.NotConnectedException {
-        Loader loader = new Loader();
+        Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         InOrder inOrder = inOrder(client);
@@ -319,7 +320,7 @@ public class StoryTest {
 
     @Test()
     public void interact_save_savesStateList() throws StoryException, IOException, SmackException.NotConnectedException {
-        Loader loader = new Loader();
+        Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.tell();
@@ -332,7 +333,7 @@ public class StoryTest {
 
     @Test()
     public void interact_load_loadsStateList() throws StoryException, IOException, SmackException.NotConnectedException {
-        Loader loader = new Loader();
+        Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.tell();
@@ -350,8 +351,8 @@ public class StoryTest {
     TODO
     @Test
     public void interact_quit() throws StoryException {
-        Loader loader = new Loader();
-        Story story = loader.fromFile("res/test_03.xml");
+        Parser parser = new Parser();
+        Story story = parser.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         AdminListener adminListener = mock(AdminListener.class);
         client.addAdminListener();
@@ -361,4 +362,8 @@ public class StoryTest {
         verify(adminListener).invoked("The locker is open now!");
     }
     */
+
+    private Loader createLoader() {
+        return new Loader(new XmlParser());
+    }
 }

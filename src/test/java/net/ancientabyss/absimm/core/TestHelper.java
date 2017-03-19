@@ -27,4 +27,50 @@ public class TestHelper {
         settings.addSetting("help_message", "\\n-------------\\nType 'hint' if you are stuck and 'quit' if you want to stop playing.\\nUse 'save xx' to save your progress to the slot 'xx' and 'load xx' to load your progress from slot 'xx'.\\n'help' will bring this info up again.\\n-------------\\n");
         return settings;
     }
+
+    public static Story createStoryWithParts() {
+        StateList stateList = new StateList();
+        Story expected = TestHelper.createDefaultStory();
+        expected.addPart(new Part("chapter_01", "in_chapter01", stateList));
+        expected.addPart(new Part("chapter_02", "", stateList));
+        return expected;
+    }
+
+    public static Story createStoryWithPartAndActions() {
+        StateList stateList = new StateList();
+        Story expected = TestHelper.createDefaultStory();
+        Part part = new Part("chapter_01", "", stateList);
+        part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
+        expected.addPart(part);
+        part = new Part("chapter_02", "", stateList);
+        part.addAction(new Action("enter", "opened2", "has_lock2", "in_chapter02", stateList, expected, "kill me"));
+        expected.addPart(part);
+        return expected;
+    }
+
+    public static Story createStoryWithPartsAndActions2() {
+        StateList stateList = new StateList();
+        Story expected = TestHelper.createDefaultStory();
+        expected.getSettings().addSetting("initial_command", "enter chapter_01");
+        Part part = new Part("chapter_01", "", stateList);
+        part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
+        expected.addPart(part);
+        part = new Part("chapter_02", "", stateList);
+        part.addAction(new Action("enter", "opened2", "has_lock2", "in_chapter02", stateList, expected));
+        expected.addPart(part);
+        return expected;
+    }
+
+    public static Story createStoryWithSettings() {
+        StateList stateList = new StateList();
+        Story expected = new Story(stateList, TestHelper.createDefaultSettings());
+        expected.getSettings().addSetting("initial_command", "enter chapter_01");
+        Part part = new Part("chapter_01", "", stateList);
+        part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
+        expected.addPart(part);
+        part = new Part("chapter_02", "", stateList);
+        part.addAction(new Action("enter", "opened2", "has_lock2", "in_chapter02", stateList, expected));
+        expected.addPart(part);
+        return expected;
+    }
 }

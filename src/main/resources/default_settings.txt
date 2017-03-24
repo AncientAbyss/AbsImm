@@ -1,0 +1,20 @@
+settings:
+quit_command=quit
+hint_command=hint
+help_command=help
+save_command=save
+save_invalid_command=Argument missing!
+save_error=Unable to save game.
+save_success=Game successfully saved.
+load_command=load
+quit_message=Thanks for playing, have a nice day!
+load_invalid_command=Argument missing!
+load_error=Unable to load game.
+load_success=Game successfully loaded.
+invalid_command=Invalid command!
+empty_story_error=Cannot tell empty story!
+object_error=No such object!
+action_error=You cannot do this with this object!
+initial_command_missing=No initial command has been set!
+help_message=\n-------------\nType 'hint' if you are stuck and 'quit' if you want to stop playing.\nUse 'save xx' to save your progress to the slot 'xx' and 'load xx' to load your progress from slot 'xx'.\n'help' will bring this info up again.\n-------------\n
+initial_command=enter main

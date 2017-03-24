@@ -16,7 +16,7 @@ public class XmlParserTest {
     public void fromString_storyOnly_createsStory() throws StoryException {
         Loader loader = createLoader();
         Story story = loader.fromString("<story></story>");
-        Assert.assertEquals(TestHelper.createDefaultStory(), story);
+        Assert.assertEquals(TestHelper.createDefaultStory(false), story);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class XmlParserTest {
     @Test
      public void fromFile_storyWithPartsAndActions_createsStoryWithPartsAndActions() throws StoryException {
         Loader loader = createLoader();
-        Story expected = TestHelper.createStoryWithPartsAndActions2();
+        Story expected = TestHelper.createStoryWithPartsAndActions2(false);
         Story actual = loader.fromFile("res/test_01.xml");
         Assert.assertEquals(expected, actual);
     }
@@ -46,7 +46,7 @@ public class XmlParserTest {
     @Test
     public void fromFile_storySettings_createsStoryWithSettings() throws StoryException {
         Loader loader = createLoader();
-        Story expected = TestHelper.createStoryWithSettings();
+        Story expected = TestHelper.createStoryWithSettings(false);
         Story actual = loader.fromFile("res/test_05.xml");
         Assert.assertEquals(expected, actual);
     }

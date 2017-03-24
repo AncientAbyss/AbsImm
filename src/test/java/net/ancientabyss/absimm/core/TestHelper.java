@@ -1,11 +1,11 @@
 package net.ancientabyss.absimm.core;
 
-public class TestHelper {
-    public static Story createDefaultStory() {
-        return new Story(new StateList(), createDefaultSettings());
+class TestHelper {
+    static Story createDefaultStory(boolean includeInitialCommand) {
+        return new Story(new StateList(), createDefaultSettings(includeInitialCommand));
     }
 
-    public static Settings createDefaultSettings() {
+    private static Settings createDefaultSettings(boolean includeInitialCommand) {
         Settings settings = new Settings();
         settings.addSetting("quit_command", "quit");
         settings.addSetting("hint_command", "hint");
@@ -25,21 +25,39 @@ public class TestHelper {
         settings.addSetting("action_error", "You cannot do this with this object!");
         settings.addSetting("initial_command_missing", "No initial command has been set!");
         settings.addSetting("help_message", "\\n-------------\\nType 'hint' if you are stuck and 'quit' if you want to stop playing.\\nUse 'save xx' to save your progress to the slot 'xx' and 'load xx' to load your progress from slot 'xx'.\\n'help' will bring this info up again.\\n-------------\\n");
+        if (includeInitialCommand) {
+            settings.addSetting("initial_command", "enter main");
+        }
         return settings;
     }
 
-    public static Story createStoryWithParts() {
+    static Story createStoryWithParts() {
         StateList stateList = new StateList();
-        Story expected = TestHelper.createDefaultStory();
+        Story expected = TestHelper.createDefaultStory(false);
         expected.addPart(new Part("chapter_01", "in_chapter01", stateList));
         expected.addPart(new Part("chapter_02", "", stateList));
         return expected;
     }
 
-    public static Story createStoryWithPartAndActions() {
+    static Story createStoryWithPartsTxt() {
         StateList stateList = new StateList();
-        Story expected = TestHelper.createDefaultStory();
-        Part part = new Part("chapter_01", "", stateList);
+        Story expected = TestHelper.createDefaultStory(true);
+        Part part = new Part("main", "", stateList);
+        part.addAction(new Action("enter", "", "", "", stateList, expected));
+        expected.addPart(part);
+        part = new Part("chapter_01", "in_chapter_01", stateList);
+        part.addAction(new Action("enter", "", "", "", stateList, expected));
+        expected.addPart(part);
+        part = new Part("chapter_02", "in_chapter_02", stateList);
+        part.addAction(new Action("enter", "", "", "", stateList, expected));
+        expected.addPart(part);
+        return expected;
+    }
+
+    static Story createStoryWithPartAndActions() {
+        StateList stateList = new StateList();
+        Story expected = TestHelper.createDefaultStory(false);
+        Part part = new Part("chapter01", "", stateList);
         part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
         expected.addPart(part);
         part = new Part("chapter_02", "", stateList);
@@ -48,9 +66,25 @@ public class TestHelper {
         return expected;
     }
 
-    public static Story createStoryWithPartsAndActions2() {
+    static Story createStoryWithPartAndActionsTxt() {
         StateList stateList = new StateList();
-        Story expected = TestHelper.createDefaultStory();
+        Story expected = TestHelper.createDefaultStory(true);
+        Part part = new Part("main", "", stateList);
+        part.addAction(new Action("enter", "hello!", "", "", stateList, expected));
+        expected.addPart(part);
+        part = new Part("chapter01", "in_chapter01", stateList);
+        part.addAction(new Action("chapter02", "", "", "in_chapter02", stateList, expected));
+        part.addAction(new Action("enter", "welcome!", "", "", stateList, expected));
+        expected.addPart(part);
+        part = new Part("chapter02", "in_chapter02", stateList);
+        part.addAction(new Action("enter", "goodbye!", "", "", stateList, expected));
+        expected.addPart(part);
+        return expected;
+    }
+
+    static Story createStoryWithPartsAndActions2(boolean includeInitialCommand) {
+        StateList stateList = new StateList();
+        Story expected = TestHelper.createDefaultStory(includeInitialCommand);
         expected.getSettings().addSetting("initial_command", "enter chapter_01");
         Part part = new Part("chapter_01", "", stateList);
         part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
@@ -61,9 +95,9 @@ public class TestHelper {
         return expected;
     }
 
-    public static Story createStoryWithSettings() {
+    static Story createStoryWithSettings(boolean includeInitialCommand) {
         StateList stateList = new StateList();
-        Story expected = new Story(stateList, TestHelper.createDefaultSettings());
+        Story expected = new Story(stateList, TestHelper.createDefaultSettings(includeInitialCommand));
         expected.getSettings().addSetting("initial_command", "enter chapter_01");
         Part part = new Part("chapter_01", "", stateList);
         part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));

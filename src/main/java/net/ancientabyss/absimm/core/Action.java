@@ -1,7 +1,5 @@
 package net.ancientabyss.absimm.core;
 
-import org.jivesoftware.smack.SmackException;
-
 public class Action extends BasePart {
 
     private String text;
@@ -53,7 +51,7 @@ public class Action extends BasePart {
         return result;
     }
 
-    public String execute() throws StoryException, SmackException.NotConnectedException {
+    public String execute() throws StoryException {
         if (!conditionsMet()) return "";
         if (!state.isEmpty()) stateList.add(state);
         if (!command.isEmpty()) story.interact(command);

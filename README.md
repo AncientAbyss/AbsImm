@@ -8,7 +8,7 @@ At the moment XMPP and console clients are available.
 Requirements
 ------------
 
-* Java JRE >= 1.7
+* Java JDK >= 1.7
 * Maven >= 2
 
 
@@ -19,17 +19,36 @@ Usage
 
     * Gradle:
     
-            maven {
-                url "http://rod.bplaced.net/maven2"
+            repositories {
+                ...
+                maven {
+                    url "http://rod.bplaced.net/maven2"
+                }
             }
-            
+                
             dependencies {
-                compile 'at.absoluteimmersion:absim-xmpp-android:1.0-SNAPSHOT'
+                ...
+                compile 'net.ancientabyss.absimm:absimm-core:0.2-SNAPSHOT'
             }
-            
+                
     * Maven:
      
-            TBD
+            <repositories>
+                ....
+                <repository>
+                    <id>ancientabyss</id>
+                    <url>ftp://rod.bplaced.net/maven2</url>
+                </repository>
+            </repositories>
+            
+            <dependencies>
+                ...
+                <dependency>
+                    <groupId>net.ancientabyss.absimm</groupId>
+                    <artifactId>absimm-core</artifactId>
+                    <version>0.2-SNAPSHOT</version>
+                </dependency>
+            </dependencies>
 
 
 * Initialize
@@ -63,12 +82,3 @@ Stories are defined in XML and need to be conform to the story.xsd.
 Examples can be found in the 'res' directory.
 Story files need to be encoded as UTF-8.
 
-
-Usage (Client)
---------------
-
-To start a server for a specific XMPP account use:
-
-    java -jar AbsoluteImmersion.jar [storyfile] [user] [password] [host] [port]
-
-Play by starting a chat with this account.

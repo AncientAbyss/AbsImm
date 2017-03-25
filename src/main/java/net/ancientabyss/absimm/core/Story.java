@@ -1,7 +1,5 @@
 package net.ancientabyss.absimm.core;
 
-import org.jivesoftware.smack.SmackException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +43,7 @@ public class Story extends BasePart {
         clients.add(client);
     }
 
-    public void interact(String interaction) throws StoryException, SmackException.NotConnectedException {
+    public void interact(String interaction) throws StoryException  {
         if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
 
         if (handleSystemCommands(interaction)) return;
@@ -75,7 +73,7 @@ public class Story extends BasePart {
         return actions;
     }
 
-    private boolean handleSystemCommands(String interaction) throws SmackException.NotConnectedException {
+    private boolean handleSystemCommands(String interaction)  {
         String command = interaction.split(" ")[0];
         if (command.equals(settings.getSetting("hint_command"))) {
             hint();
@@ -117,7 +115,7 @@ public class Story extends BasePart {
         return false;
     }
 
-    private void sendMessageToAllClients(String message) throws SmackException.NotConnectedException {
+    private void sendMessageToAllClients(String message) {
         for (ReactionClient client : clients) {
             client.reaction(message);
         }
@@ -151,7 +149,7 @@ public class Story extends BasePart {
         return findAll(splitted[1]).size() == 0;
     }
 
-    private void hint() throws SmackException.NotConnectedException {
+    private void hint() {
         List<BasePart> allParts = findAll();
         for (BasePart part : allParts) {
             String hint_message = part.getName() + " (";
@@ -166,11 +164,11 @@ public class Story extends BasePart {
         }
     }
 
-    private void help() throws SmackException.NotConnectedException {
+    private void help() {
         sendMessageToAllClients(settings.getSetting("help_message"));
     }
 
-    public void tell() throws StoryException, SmackException.NotConnectedException {
+    public void tell() throws StoryException {
         if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
         if (settings.getSetting("initial_command") == null) throw new StoryException(settings.getSetting("initial_command_missing"));
         interact(settings.getSetting("initial_command"));

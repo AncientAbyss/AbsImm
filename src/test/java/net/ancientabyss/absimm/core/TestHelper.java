@@ -57,7 +57,7 @@ class TestHelper {
     static Story createStoryWithPartAndActions() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(false);
-        Part part = new Part("chapter01", "", stateList);
+        Part part = new Part("chapter_01", "", stateList);
         part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
         expected.addPart(part);
         part = new Part("chapter_02", "", stateList);

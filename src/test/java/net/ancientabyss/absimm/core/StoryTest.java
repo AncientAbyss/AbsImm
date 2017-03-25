@@ -2,7 +2,6 @@ package net.ancientabyss.absimm.core;
 
 import net.ancientabyss.absimm.parser.XmlParser;
 import net.ancientabyss.absimm.util.AbsimFile;
-import org.jivesoftware.smack.SmackException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -15,19 +14,19 @@ import static org.mockito.Mockito.*;
 public class StoryTest {
 
     @Test(expected = StoryException.class)
-    public void interact_noContent_throwsException() throws StoryException, SmackException.NotConnectedException {
+    public void interact_noContent_throwsException() throws StoryException {
         Story story = new Story(new StateList(), new Settings());
         story.interact("test");
     }
 
     @Test(expected = StoryException.class)
-    public void tell_noContent_throwsException() throws StoryException, SmackException.NotConnectedException {
+    public void tell_noContent_throwsException() throws StoryException {
         Story story = new Story(new StateList(), new Settings());
         story.tell();
     }
 
     @Test(expected = StoryException.class)
-    public void tell_noInitialCommandAction_throwsException() throws StoryException, SmackException.NotConnectedException {
+    public void tell_noInitialCommandAction_throwsException() throws StoryException {
         Story story = new Story(new StateList(), new Settings());
         story.addPart(new Part("chapter"));
         ReactionClient client = mock(ReactionClient.class);
@@ -36,7 +35,7 @@ public class StoryTest {
     }
 
     @Test()
-    public void tell_hasEnterAction_callsReaction() throws StoryException, SmackException.NotConnectedException {
+    public void tell_hasEnterAction_callsReaction() throws StoryException {
         Story story = createStory();
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -45,7 +44,7 @@ public class StoryTest {
     }
 
     @Test()
-    public void tell_hasEnterAction_callsReactionWithCorrectParameter() throws StoryException, SmackException.NotConnectedException {
+    public void tell_hasEnterAction_callsReactionWithCorrectParameter() throws StoryException {
         Story story = createStory();
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -68,7 +67,7 @@ public class StoryTest {
     }
 
     @Test()
-    public void tell_actionOnNonChapterPart_callsReactionWithCorrectParameter() throws StoryException, SmackException.NotConnectedException {
+    public void tell_actionOnNonChapterPart_callsReactionWithCorrectParameter() throws StoryException {
         Story story = createStory();
         Part part = (Part) story.findAll("chapter01").get(0);
         part.addPart(createLocker(false));
@@ -97,7 +96,7 @@ public class StoryTest {
     }
 
     @Test()
-    public void tell_actionWithConditionNotMet_returnsEmptyString() throws StoryException, SmackException.NotConnectedException {
+    public void tell_actionWithConditionNotMet_returnsEmptyString() throws StoryException {
         Story story = createStory();
         Part part = (Part) story.findAll("chapter01").get(0);
         Part locker = new Part("locker");
@@ -115,7 +114,7 @@ public class StoryTest {
     }
 
     @Test()
-    public void tell_actionWithCondition_callsReactionWithCorrectParameter() throws StoryException, SmackException.NotConnectedException {
+    public void tell_actionWithCondition_callsReactionWithCorrectParameter() throws StoryException {
         Story story = createStory();
         Part part = (Part) story.findAll("chapter01").get(0);
         part.addPart(createLocker(true));
@@ -129,7 +128,7 @@ public class StoryTest {
     }
 
     @Test
-    public void tell_multipleChapters_executesAllActions() throws StoryException, SmackException.NotConnectedException {
+    public void tell_multipleChapters_executesAllActions() throws StoryException {
         Story story = createStory();
         Part part = (Part) story.findAll("chapter01").get(0);
         Part locker = new Part("locker");
@@ -157,7 +156,7 @@ public class StoryTest {
     }
 
     @Test
-    public void tell_multipleChaptersWithConditions_executesOneAction() throws StoryException, SmackException.NotConnectedException {
+    public void tell_multipleChaptersWithConditions_executesOneAction() throws StoryException {
         StateList stateList = new StateList();
         Settings settings = new Settings();
         settings.addSetting("initial_command", "enter chapter01");
@@ -191,7 +190,7 @@ public class StoryTest {
     }
 
     @Test
-    public void tell_multipleChaptersWithActionsWithUnsatisfiedConditions_returnsErrorMessage() throws StoryException, SmackException.NotConnectedException {
+    public void tell_multipleChaptersWithActionsWithUnsatisfiedConditions_returnsErrorMessage() throws StoryException {
         Loader loader = createLoader();
         Story story = loader.fromFile("res/test_02.xml");
         ReactionClient client = mock(ReactionClient.class);
@@ -201,7 +200,7 @@ public class StoryTest {
     }
 
     @Test
-    public void interact_spacesInActionNames_work() throws StoryException, SmackException.NotConnectedException {
+    public void interact_spacesInActionNames_work() throws StoryException {
         Loader loader = createLoader();
         Story story = loader.fromFile("res/test_04.xml");
         ReactionClient client = mock(ReactionClient.class);
@@ -218,7 +217,7 @@ public class StoryTest {
     }
 
     @Test
-    public void interact_hint_returnsAllPossibleActions() throws StoryException, SmackException.NotConnectedException {
+    public void interact_hint_returnsAllPossibleActions() throws StoryException {
         Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
@@ -240,7 +239,7 @@ public class StoryTest {
     }
 
     @Test
-    public void interact_help_showsHelp() throws StoryException, SmackException.NotConnectedException {
+    public void interact_help_showsHelp() throws StoryException {
         Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
@@ -253,7 +252,7 @@ public class StoryTest {
     }
 
     @Test
-    public void interact_nonexistentObject_returnsErrorMessage() throws StoryException, SmackException.NotConnectedException {
+    public void interact_nonexistentObject_returnsErrorMessage() throws StoryException {
         Loader loader = createLoader();
         Story story = loader.fromFile("res/test_02.xml");
         ReactionClient client = mock(ReactionClient.class);
@@ -264,7 +263,7 @@ public class StoryTest {
     }
 
     @Test
-    public void interact_onlyOneWord_throwsException() throws StoryException, SmackException.NotConnectedException {
+    public void interact_onlyOneWord_throwsException() throws StoryException {
         Loader loader = createLoader();
         Story story = null;
         ReactionClient client = mock(ReactionClient.class);
@@ -282,7 +281,7 @@ public class StoryTest {
     }
 
     @Test
-    public void tell_multipleChaptersWithConditions_playsGameWithoutProblem() throws StoryException, SmackException.NotConnectedException {
+    public void tell_multipleChaptersWithConditions_playsGameWithoutProblem() throws StoryException {
         Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
@@ -319,7 +318,7 @@ public class StoryTest {
     }
 
     @Test()
-    public void interact_save_savesStateList() throws StoryException, IOException, SmackException.NotConnectedException {
+    public void interact_save_savesStateList() throws StoryException, IOException {
         Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
@@ -332,7 +331,7 @@ public class StoryTest {
     }
 
     @Test()
-    public void interact_load_loadsStateList() throws StoryException, IOException, SmackException.NotConnectedException {
+    public void interact_load_loadsStateList() throws StoryException, IOException {
         Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);

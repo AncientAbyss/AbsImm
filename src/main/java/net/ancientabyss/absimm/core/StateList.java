@@ -6,7 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
+import static net.ancientabyss.absimm.core.BasePart.AND;
 
 public class StateList {
     private List<String> list = new ArrayList<>();
@@ -29,7 +32,8 @@ public class StateList {
     }
 
     public void add(String state) {
-        list.add(state);
+        String[] individualStates = state.split(" " + AND + " ");
+        Collections.addAll(list, individualStates);
     }
 
     public boolean contains(String state) {

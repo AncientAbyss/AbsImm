@@ -1,5 +1,6 @@
 package net.ancientabyss.absimm.core;
 
+import net.ancientabyss.absimm.parser.TxtParser;
 import net.ancientabyss.absimm.parser.XmlParser;
 import net.ancientabyss.absimm.util.AbsimFile;
 import org.junit.Assert;
@@ -344,6 +345,17 @@ public class StoryTest {
         verify(client).reaction("Game successfully loaded.");
         story.interact("open locker");
         verify(client).reaction("The locker is open now!");
+    }
+
+    @Test()
+    public void interact_txtFile_shouldAddActions() throws StoryException, IOException {
+        Loader loader = new Loader(new TxtParser());
+        Story story = loader.fromFile("res/test_06.txt");
+        ReactionClient client = mock(ReactionClient.class);
+        story.tell();
+        story.addClient(client);
+        story.interact("a");
+        verify(client).reaction("a!");
     }
 
     /*

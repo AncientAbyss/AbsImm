@@ -2,7 +2,7 @@ AbsImm
 ======
 
 AbsImm is an open source text adventure engine. Adventures are written in an intuitive open XML-based format.
-At the moment XMPP and console clients are available.
+Several clients for different platforms are already available.
 
 
 Requirements
@@ -15,43 +15,45 @@ Requirements
 Usage
 -----
 
-* Setup
+For an example project, see the [Cli client](https://github.com/AncientAbyss/AbsImm-Cli).
 
-    * Gradle:
-    
-            repositories {
-                ...
-                maven {
-                    url "http://rod.bplaced.net/maven2"
-                }
+### Setup
+
+* Gradle:
+
+        repositories {
+            ...
+            maven {
+                url "http://rod.bplaced.net/maven2"
             }
-                
-            dependencies {
-                ...
-                compile 'net.ancientabyss.absimm:absimm-core:0.2-SNAPSHOT'
-            }
-                
-    * Maven:
-     
-            <repositories>
-                ....
-                <repository>
-                    <id>ancientabyss</id>
-                    <url>ftp://rod.bplaced.net/maven2</url>
-                </repository>
-            </repositories>
+        }
             
-            <dependencies>
-                ...
-                <dependency>
-                    <groupId>net.ancientabyss.absimm</groupId>
-                    <artifactId>absimm-core</artifactId>
-                    <version>0.2-SNAPSHOT</version>
-                </dependency>
-            </dependencies>
+        dependencies {
+            ...
+            compile 'net.ancientabyss.absimm:absimm-core:0.2-SNAPSHOT'
+        }
+            
+* Maven:
+ 
+        <repositories>
+            ....
+            <repository>
+                <id>ancientabyss</id>
+                <url>ftp://rod.bplaced.net/maven2</url>
+            </repository>
+        </repositories>
+        
+        <dependencies>
+            ...
+            <dependency>
+                <groupId>net.ancientabyss.absimm</groupId>
+                <artifactId>absimm-core</artifactId>
+                <version>0.2-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
 
 
-* Initialize
+### Initialize
 
         // load the story from a string
         Story story = new Loader(new XmlParser()).fromString(...);
@@ -60,14 +62,16 @@ Usage
         // set the client to which AbsImm passes messages
         story.addClient(...);
 
-* Run
+### Run
 
         // Start the adventure
         story.tell();
         // Handle user input
-        story.interact(...);
+        while (...) {
+            story.interact(...);
+        }
         
-* Load/Save
+### Load/Save
 
         // Get the current state, e.g. for saving the active session
         story.getState();
@@ -78,7 +82,7 @@ Usage
 Story file format
 -----------------
 
-Stories are defined in XML and need to be conform to the story.xsd.
-Examples can be found in the 'res' directory.
+Stories are defined in XML and need to be conform to the [story.xsd](story.xsd).
+Examples can be found in the [res](res) directory.
 Story files need to be encoded as UTF-8.
 

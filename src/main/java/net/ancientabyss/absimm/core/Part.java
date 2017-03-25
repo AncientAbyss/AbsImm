@@ -6,7 +6,6 @@ import java.util.List;
 public class Part extends BasePart {
     private List<Action> actions = new ArrayList<>();
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,5 +46,12 @@ public class Part extends BasePart {
             }
         }
         return tmpActions;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " - Part{" +
+                "actions=" + actions +
+                '}';
     }
 }

@@ -24,7 +24,7 @@ public class TxtParserTest {
     public void fromString_storyWithPartsAndActions_createsStoryWithPartsAndActions() throws StoryException {
         Loader loader = createLoader();
         Story expected = TestHelper.createStoryWithPartAndActionsTxt();
-        Story actual = loader.fromString("hello!\nchapter01:\nwelcome!\n* proceed (chapter02)\nchapter02:\ngoodbye!");
+        Story actual = loader.fromString("welcome!\n* proceed (chapter01)\nchapter01:\nhello!");
         Assert.assertEquals(expected, actual);
     }
 

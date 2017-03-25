@@ -37,7 +37,7 @@ public class TxtParser implements Parser {
         Story story = new Story(stateList, settings);
         boolean isMainPart = true;
         Part part = null;
-        String text = "";
+        StringBuilder text = new StringBuilder();
         while (reader.ready()) {
             String line = reader.readLine().trim();
             if (line.isEmpty()) continue;
@@ -47,17 +47,17 @@ public class TxtParser implements Parser {
                 // the story starts with a part, so create a dummy main part
                 // which is needed to initiate the story (initial_command=enter main)
                 if (isNewPart && isMainPart) {
-                    part = new Part("main", "", stateList);
+                    part = createMainPart(stateList);
                     isMainPart = false;
                 }
                 // add the previous part
                 if (part != null) {
-                    addPart(stateList, story, part, text);
-                    text = "";
+                    addPart(stateList, story, part, text.toString());
+                    text = new StringBuilder();
                 }
                 // add a main part if the story does not start with a part
                 if (isMainPart) {
-                    part = new Part("main", "", stateList);
+                    part = createMainPart(stateList);
                     isMainPart = false;
                 } else {
                     // add parts
@@ -72,15 +72,27 @@ public class TxtParser implements Parser {
                     int keyLength = action.indexOf("(");
                     String actionLabel = action.substring(0, keyLength).trim();
                     String actionName = StringUtils.stripEnd(action.substring(keyLength + 1).trim(), ")");
-                    part.addAction(new Action(actionName, "", "", "in_" + actionName, stateList, story));
+                    Part dummyPart = new Part("", "", stateList);
+                    String state = "in_" + actionName + (part.getName().equals("main") ? " AND started" : "");
+                    dummyPart.addAction(new Action(actionLabel, "", "", state, stateList, story, "enter " + actionName));
+                    part.addPart(dummyPart);
+                    appendText(text, "- " + actionLabel);
                 } else {
                     // handle action texts
-                    text += (text.isEmpty() ? "" : "\n") + line;
+                    appendText(text, line);
                 }
             }
         }
-        addPart(stateList, story, part, text);
+        addPart(stateList, story, part, text.toString());
         return story;
+    }
+
+    private Part createMainPart(StateList stateList) {
+        return new Part("main", "NOT started", stateList);
+    }
+
+    private void appendText(StringBuilder text, String line) {
+        text.append((text.length() == 0) ? "" : "\n").append(line);
     }
 
     private void addPart(StateList stateList, Story story, Part part, String text) {

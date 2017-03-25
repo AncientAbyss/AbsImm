@@ -104,4 +104,13 @@ public class BasePart {
     public List<BasePart> findAll() {
         return findAll("", true);
     }
+
+    @Override
+    public String toString() {
+        return "BasePart{" +
+                "parts=" + parts +
+                ", name='" + name + '\'' +
+                ", condition='" + condition + '\'' +
+                '}';
+    }
 }

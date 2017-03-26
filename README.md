@@ -2,7 +2,17 @@ AbsImm
 ======
 
 AbsImm is an open source text adventure engine. Adventures are written in an intuitive open XML-based format.
-Several clients for different platforms are already available.
+Several clients for different platforms are already [availble](https://github.com/AncientAbyss).
+
+
+Features
+--------
+
+* Simplified Text story format support allowing basic interactivity.
+* Comprehensive XML story format support, which allows modelling complex situations using states.
+* Save and load game states
+* Open story file formats
+* Cross platform
 
 
 Requirements
@@ -39,7 +49,7 @@ For an example project, see the [Cli client](https://github.com/AncientAbyss/Abs
             ....
             <repository>
                 <id>ancientabyss</id>
-                <url>ftp://rod.bplaced.net/maven2</url>
+                <url>http://rod.bplaced.net/maven2</url>
             </repository>
         </repositories>
         
@@ -81,6 +91,39 @@ For an example project, see the [Cli client](https://github.com/AncientAbyss/Abs
 
 Story file format
 -----------------
+
+### Simplified
+
+Simplified stories are text files which are divided into sections 
+that use decision nodes to allow jumping between sections, where:
+
+* section starts are indicated by lines in the form '\<section\>:'
+* lines in the form '* \<label\> (\<section\>)' define decision nodes,
+    which allow jumping to sections
+
+#### Example:
+
+        Hello
+        * world (sec_world)
+        * humans (sec_humans)
+        
+        sec_world:
+        Whoop!
+        
+        sec_humans:
+        Well.
+
+The following example prints
+
+        Hello
+        - world
+        - humans
+
+expects the user to enter either 'world' or 'humans', 
+and then responds with either 'Whoop!' or 'Well.'.
+
+
+### Comprehensive
 
 Stories are defined in XML and need to be conform to the [story.xsd](story.xsd).
 Examples can be found in the [res](res) directory.

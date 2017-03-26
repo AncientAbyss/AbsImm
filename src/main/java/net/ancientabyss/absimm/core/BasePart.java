@@ -95,7 +95,7 @@ public class BasePart {
         List<BasePart> result = new ArrayList<>();
         for (BasePart part : parts) {
             if (!part.conditionsMet()) continue;
-            if (part.getName().equals(somePart) || ignoreArgument) result.add(part);
+            if (part.getName().equalsIgnoreCase(somePart) || ignoreArgument) result.add(part);
             result.addAll(part.findAll(somePart, ignoreArgument));
         }
         return result;

@@ -41,7 +41,7 @@ public class Part extends BasePart {
     public List<Action> findActions(String name) {
         List<Action> tmpActions = new ArrayList<>();
         for (Action action : actions) {
-            if ((action.getName().equals(name) || name.equals("")) && action.conditionsMet()) {
+            if ((action.getName().equalsIgnoreCase(name) || name.equals("")) && action.conditionsMet()) {
                 tmpActions.add(action);
             }
         }

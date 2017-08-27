@@ -57,6 +57,8 @@ public class StoryTest {
     private Story createStory() {
         Settings settings = new Settings();
         settings.addSetting("initial_command", "enter chapter01");
+        settings.addSetting("object_error", "No such object!");
+        settings.addSetting("action_error", "You cannot do this with this object!");
         Story story = new Story(new StateList(), settings);
         Part part = new Part("chapter01");
         Action action = new Action("enter", part.getName(), mock(StateList.class), story);

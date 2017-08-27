@@ -1,11 +1,11 @@
 package net.ancientabyss.absimm.core;
 
 class TestHelper {
-    static Story createDefaultStory(boolean includeInitialCommand) {
-        return new Story(new StateList(), createDefaultSettings(includeInitialCommand));
+    static Story createDefaultStory(boolean useTxtFormat) {
+        return new Story(new StateList(), createDefaultSettings(useTxtFormat));
     }
 
-    private static Settings createDefaultSettings(boolean includeInitialCommand) {
+    private static Settings createDefaultSettings(boolean useTxtFormat) {
         Settings settings = new Settings();
         settings.addSetting("quit_command", "quit");
         settings.addSetting("hint_command", "hint");
@@ -21,11 +21,16 @@ class TestHelper {
         settings.addSetting("load_success", "Game successfully loaded.");
         settings.addSetting("invalid_command", "Invalid command!");
         settings.addSetting("empty_story_error", "Cannot tell empty story!");
-        settings.addSetting("object_error", "No such object!");
-        settings.addSetting("action_error", "You cannot do this with this object!");
+        if (useTxtFormat) {
+            settings.addSetting("object_error", "Nah.|Nope!");
+            settings.addSetting("action_error", "Nah.|Nope!");
+        } else {
+            settings.addSetting("object_error", "No such object!");
+            settings.addSetting("action_error", "You cannot do this with this object!");
+        }
         settings.addSetting("initial_command_missing", "No initial command has been set!");
         settings.addSetting("help_message", "\\n-------------\\nType 'hint' if you are stuck and 'quit' if you want to stop playing.\\nUse 'save xx' to save your progress to the slot 'xx' and 'load xx' to load your progress from slot 'xx'.\\n'help' will bring this info up again.\\n-------------\\n");
-        if (includeInitialCommand) {
+        if (useTxtFormat) {
             settings.addSetting("initial_command", "enter main");
         }
         return settings;

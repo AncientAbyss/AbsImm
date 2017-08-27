@@ -52,9 +52,10 @@ public class Story extends BasePart {
         List<BasePart> allParts = processed_interaction.containsKey("target") ? findAll(processed_interaction.get("target")) : new ArrayList<BasePart>();
         List<Action> actions = findActions(processed_interaction.get("action"), allParts);
 
-        if (allParts.isEmpty()) sendMessageToAllClients(settings.getSetting("object_error"));
-        else if (actions.isEmpty())
-            sendMessageToAllClients(settings.getSetting("action_error"));
+        if (allParts.isEmpty()) sendMessageToAllClients(settings.getRandom("object_error"));
+        else if (actions.isEmpty()) {
+            sendMessageToAllClients(settings.getRandom("action_error"));
+        }
         else {
             for (Action action : actions) {
                 String result = action.execute();

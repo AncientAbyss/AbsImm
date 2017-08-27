@@ -4,7 +4,7 @@
 
     <groupId>net.ancientabyss.absimm</groupId>
     <artifactId>absimm-core</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>absimm-core</name>

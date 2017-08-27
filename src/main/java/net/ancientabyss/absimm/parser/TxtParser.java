@@ -37,6 +37,7 @@ public class TxtParser implements Parser {
         mainPart.addAction(new Action("enter", "", "", "in_intro", stateList, story, "enter intro"));
         story.addPart(mainPart);
         boolean isMainPart = true;
+        int numEmptyLinesToAdd = 0;
         Part part = null;
         StringBuilder text = new StringBuilder();
         boolean isPeekPart = false;
@@ -44,7 +45,10 @@ public class TxtParser implements Parser {
             String line = reader.readLine();
             if (line == null) break;
             line = line.trim();
-            if (line.isEmpty()) continue;
+            if (line.isEmpty()) {
+                ++numEmptyLinesToAdd;
+                continue;
+            }
             if (line.startsWith("settings:")) parseSettings(reader, story);
             boolean isNewPart = line.endsWith(":") && !line.contains(" ");
             if (isMainPart || isNewPart) {
@@ -69,8 +73,15 @@ public class TxtParser implements Parser {
                     String name = StringUtils.removeEnd(line, ":");
                     part = createPart(name, stateList);
                 }
+                numEmptyLinesToAdd = 0;
             }
             if (!isNewPart) {
+                if (numEmptyLinesToAdd > 0) {
+                    for (int i = 0; i < numEmptyLinesToAdd; ++i) {
+                        appendText(text, "");
+                    }
+                    numEmptyLinesToAdd = 0;
+                }
                 // handle actions
                 if (line.startsWith("* ")) {
                     String action = StringUtils.removeStart(line, "*").trim();

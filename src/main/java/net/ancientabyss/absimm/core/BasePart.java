@@ -112,8 +112,8 @@ public class BasePart {
     @Override
     public String toString() {
         return "BasePart{" +
-                "parts=" + parts +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
+                ", parts=" + parts +
                 ", condition='" + condition + '\'' +
                 '}';
     }

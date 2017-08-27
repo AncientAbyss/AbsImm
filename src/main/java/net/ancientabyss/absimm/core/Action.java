@@ -56,4 +56,13 @@ public class Action extends BasePart {
         if (!command.isEmpty()) story.interact(command);
         return text;
     }
+
+    @Override
+    public String toString() {
+        return "Action{" +
+                "text='" + text + '\'' +
+                ", state='" + state + '\'' +
+                ", command='" + command + '\'' +
+                '}';
+    }
 }

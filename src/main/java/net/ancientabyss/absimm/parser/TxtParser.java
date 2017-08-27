@@ -4,8 +4,13 @@ import net.ancientabyss.absimm.core.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TxtParser implements Parser {
+
+    private Map<String, String> parentParts = new HashMap<>();
+
     @Override
     public Story fromStream(InputStream is, boolean load_default) throws ParserException {
         Settings settings = new Settings();
@@ -28,6 +33,9 @@ public class TxtParser implements Parser {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StateList stateList = new StateList();
         Story story = new Story(stateList, settings);
+        Part mainPart = new Part("main", "", stateList);
+        mainPart.addAction(new Action("enter", "", "", "in_intro", stateList, story, "enter intro"));
+        story.addPart(mainPart);
         boolean isMainPart = true;
         Part part = null;
         StringBuilder text = new StringBuilder();
@@ -43,7 +51,7 @@ public class TxtParser implements Parser {
                 // the story starts with a part, so create a dummy main part
                 // which is needed to initiate the story (initial_command=enter main)
                 if (isNewPart && isMainPart) {
-                    part = createMainPart(stateList);
+                    part = createPart("intro", stateList);
                     isMainPart = false;
                 }
                 // add the previous part
@@ -54,12 +62,12 @@ public class TxtParser implements Parser {
                 }
                 // add a main part if the story does not start with a part
                 if (isMainPart) {
-                    part = createMainPart(stateList);
+                    part = createPart("intro", stateList);
                     isMainPart = false;
                 } else {
                     // add parts
                     String name = StringUtils.removeEnd(line, ":");
-                    part = new Part(name, "in_" + name, stateList);
+                    part = createPart(name, stateList);
                 }
             }
             if (!isNewPart) {
@@ -70,9 +78,10 @@ public class TxtParser implements Parser {
                     String actionLabel = action.substring(0, keyLength).trim();
                     String actionName = StringUtils.stripEnd(action.substring(keyLength + 1).trim(), ")");
                     Part dummyPart = new Part("", "", stateList);
-                    String state = "in_" + actionName + (part.getName().equals("main") ? " AND started" : "");
+                    String state = String.format("in_%s %s %s in_%s", actionName, BasePart.AND, BasePart.NOT, part.getName());
                     dummyPart.addAction(new Action(actionLabel, "", "", state, stateList, story, "enter " + actionName));
                     part.addPart(dummyPart);
+                    parentParts.put(actionName, part.getName());
                     appendText(text, "- " + actionLabel);
                 } else if (line.startsWith("<<")) {
                     isPeekPart = true;
@@ -86,8 +95,8 @@ public class TxtParser implements Parser {
         return story;
     }
 
-    private Part createMainPart(StateList stateList) {
-        return new Part("main", "NOT started", stateList);
+    private Part createPart(String name, StateList stateList) {
+        return new Part(name,"in_" + name, stateList);
     }
 
     private void appendText(StringBuilder text, String line) {
@@ -95,7 +104,8 @@ public class TxtParser implements Parser {
     }
 
     private void addPart(StateList stateList, Story story, Part part, String text, boolean isPeekPart) {
-        part.addAction(new Action("enter", text, "", isPeekPart ? (BasePart.NOT + " " + part.getCondition()) : "", stateList, story, ""));
+        part.addAction(new Action("enter", text, "", isPeekPart ?
+                String.format("%s in_%s %s in_%s", BasePart.NOT, part.getName(), BasePart.AND, parentParts.get(part.getName())) : "", stateList, story, ""));
         story.addPart(part);
     }
 

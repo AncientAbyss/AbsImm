@@ -50,8 +50,12 @@ public class Part extends BasePart {
 
     @Override
     public String toString() {
-        return super.toString() + " - Part{" +
+        return "Part{" +
                 "actions=" + actions +
+                ", name='" + name + '\'' +
+                ", condition='" + condition + '\'' +
+                ", stateList=" + stateList +
+                ", parts=" + parts +
                 '}';
     }
 }

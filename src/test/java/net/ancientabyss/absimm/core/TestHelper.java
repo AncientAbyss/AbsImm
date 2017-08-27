@@ -42,7 +42,10 @@ class TestHelper {
     static Story createStoryWithPartsTxt() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(true);
-        Part part = new Part("main", "NOT started", stateList);
+        Part part = new Part("main", "", stateList);
+        part.addAction(new Action("enter", "", "", "in_intro", stateList, expected, "enter intro"));
+        expected.addPart(part);
+        part = new Part("intro", "in_intro", stateList);
         part.addAction(new Action("enter", "", "", "", stateList, expected));
         expected.addPart(part);
         part = new Part("chapter_01", "in_chapter_01", stateList);
@@ -69,10 +72,13 @@ class TestHelper {
     static Story createStoryWithPartAndActionsTxt() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(true);
-        Part part = new Part("main", "NOT started", stateList);
+        Part part = new Part("main", "", stateList);
+        part.addAction(new Action("enter", "", "", "in_intro", stateList, expected, "enter intro"));
+        expected.addPart(part);
+        part = new Part("intro", "in_intro", stateList);
         part.addAction(new Action("enter", "welcome!\n- proceed", "", "", stateList, expected));
         Part dummyPart = new Part("", "", stateList);
-        dummyPart.addAction(new Action("proceed", "", "", "in_chapter01 AND started", stateList, expected, "enter chapter01"));
+        dummyPart.addAction(new Action("proceed", "", "", "in_chapter01 AND NOT in_intro", stateList, expected, "enter chapter01"));
         part.addPart(dummyPart);
         expected.addPart(part);
         part = new Part("chapter01", "in_chapter01", stateList);
@@ -84,14 +90,17 @@ class TestHelper {
     static Story createStoryWithPartAndActionsIncludingPeekPartsTxt() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(true);
-        Part part = new Part("main", "NOT started", stateList);
+        Part part = new Part("main", "", stateList);
+        part.addAction(new Action("enter", "", "", "in_intro", stateList, expected, "enter intro"));
+        expected.addPart(part);
+        part = new Part("intro", "in_intro", stateList);
         part.addAction(new Action("enter", "welcome!\n- proceed", "", "", stateList, expected));
         Part dummyPart = new Part("", "", stateList);
-        dummyPart.addAction(new Action("proceed", "", "", "in_chapter01 AND started", stateList, expected, "enter chapter01"));
+        dummyPart.addAction(new Action("proceed", "", "", "in_chapter01 AND NOT in_intro", stateList, expected, "enter chapter01"));
         part.addPart(dummyPart);
         expected.addPart(part);
         part = new Part("chapter01", "in_chapter01", stateList);
-        part.addAction(new Action("enter", "hello!", "", "NOT in_chapter01", stateList, expected));
+        part.addAction(new Action("enter", "hello!", "", "NOT in_chapter01 AND in_intro", stateList, expected));
         expected.addPart(part);
         return expected;
     }

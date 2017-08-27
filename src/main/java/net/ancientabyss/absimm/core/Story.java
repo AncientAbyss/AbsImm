@@ -184,10 +184,6 @@ public class Story extends BasePart {
 
     @Override
     public String toString() {
-        StringBuilder res = new StringBuilder();
-        for (BasePart part : parts) {
-            res.append(part);
-        }
         return String.format("Story{\nclients=%s\nsettings=%s\nparts=%s}", clients, settings, parts);
     }
 

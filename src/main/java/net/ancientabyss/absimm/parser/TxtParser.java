@@ -31,6 +31,7 @@ public class TxtParser implements Parser {
         boolean isMainPart = true;
         Part part = null;
         StringBuilder text = new StringBuilder();
+        boolean isPeekPart = false;
         while (reader.ready()) {
             String line = reader.readLine();
             if (line == null) break;
@@ -47,8 +48,9 @@ public class TxtParser implements Parser {
                 }
                 // add the previous part
                 if (part != null) {
-                    addPart(stateList, story, part, text.toString());
+                    addPart(stateList, story, part, text.toString(), isPeekPart);
                     text = new StringBuilder();
+                    isPeekPart = false;
                 }
                 // add a main part if the story does not start with a part
                 if (isMainPart) {
@@ -72,13 +74,15 @@ public class TxtParser implements Parser {
                     dummyPart.addAction(new Action(actionLabel, "", "", state, stateList, story, "enter " + actionName));
                     part.addPart(dummyPart);
                     appendText(text, "- " + actionLabel);
+                } else if (line.startsWith("<<")) {
+                    isPeekPart = true;
                 } else {
                     // handle action texts
                     appendText(text, line);
                 }
             }
         }
-        addPart(stateList, story, part, text.toString());
+        addPart(stateList, story, part, text.toString(), isPeekPart);
         return story;
     }
 
@@ -90,8 +94,8 @@ public class TxtParser implements Parser {
         text.append((text.length() == 0) ? "" : "\n").append(line);
     }
 
-    private void addPart(StateList stateList, Story story, Part part, String text) {
-        part.addAction(new Action("enter", text, "", "", stateList, story, ""));
+    private void addPart(StateList stateList, Story story, Part part, String text, boolean isPeekPart) {
+        part.addAction(new Action("enter", text, "", isPeekPart ? (BasePart.NOT + " " + part.getCondition()) : "", stateList, story, ""));
         story.addPart(part);
     }
 

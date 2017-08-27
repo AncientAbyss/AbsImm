@@ -28,6 +28,14 @@ public class TxtParserTest {
         Assert.assertEquals(expected, actual);
     }
 
+    @Test
+    public void fromString_storyWithPartsAndPeekActions_createsStoryWithPartsAndPeekParts() throws StoryException {
+        Loader loader = createLoader();
+        Story expected = TestHelper.createStoryWithPartAndActionsIncludingPeekPartsTxt();
+        Story actual = loader.fromString("welcome!\n* proceed (chapter01)\nchapter01:\nhello!\n<<\n\n");
+        Assert.assertEquals(expected, actual);
+    }
+
     private Loader createLoader() {
         return new Loader(new TxtParser());
     }

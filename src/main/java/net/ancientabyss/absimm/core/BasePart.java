@@ -105,6 +105,10 @@ public class BasePart {
         return findAll("", true);
     }
 
+    public String getCondition() {
+        return condition;
+    }
+
     @Override
     public String toString() {
         return "BasePart{" +

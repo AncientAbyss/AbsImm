@@ -23,7 +23,7 @@ public class XmlParser implements Parser {
             Story default_story = fromStream(new DataInputStream(getClass().getResourceAsStream("/default_settings.xml")), false);
             settings = default_story.getSettings();
         }
-        Story story = null;
+        Story story;
         try {
             story = parseXml(is, settings);
         } catch (ParserConfigurationException | SAXException | IOException | StoryException e) {

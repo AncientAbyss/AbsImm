@@ -7,7 +7,6 @@ public class Action extends BasePart {
     private String command;
     private Story story;
 
-
     public Action(String name, String text, String condition, String state, StateList stateList, Story story) {
         super(name, condition, stateList);
         this.story = story;

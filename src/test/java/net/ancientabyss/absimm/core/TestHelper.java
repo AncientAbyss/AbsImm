@@ -81,6 +81,21 @@ class TestHelper {
         return expected;
     }
 
+    static Story createStoryWithPartAndActionsIncludingPeekPartsTxt() {
+        StateList stateList = new StateList();
+        Story expected = TestHelper.createDefaultStory(true);
+        Part part = new Part("main", "NOT started", stateList);
+        part.addAction(new Action("enter", "welcome!\n- proceed", "", "", stateList, expected));
+        Part dummyPart = new Part("", "", stateList);
+        dummyPart.addAction(new Action("proceed", "", "", "in_chapter01 AND started", stateList, expected, "enter chapter01"));
+        part.addPart(dummyPart);
+        expected.addPart(part);
+        part = new Part("chapter01", "in_chapter01", stateList);
+        part.addAction(new Action("enter", "hello!", "", "NOT in_chapter01", stateList, expected));
+        expected.addPart(part);
+        return expected;
+    }
+
     static Story createStoryWithPartsAndActions2(boolean includeInitialCommand) {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(includeInitialCommand);

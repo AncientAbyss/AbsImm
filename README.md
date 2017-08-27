@@ -92,7 +92,7 @@ For an example project, see the [Cli client](https://github.com/AncientAbyss/Abs
 Story file format
 -----------------
 
-### Simplified
+### Simplified (TXT)
 
 Simplified stories are text files which are divided into sections 
 that use decision nodes to allow jumping between sections, where:
@@ -100,6 +100,9 @@ that use decision nodes to allow jumping between sections, where:
 * section starts are indicated by lines in the form '\<section\>:'
 * lines in the form '* \<label\> (\<section\>)' define decision nodes,
     which allow jumping to sections
+
+Other commands:
+* To immediately return to the previous section use the peek section operator: '<<'.
 
 #### Example:
 
@@ -123,7 +126,7 @@ expects the user to enter either 'world' or 'humans',
 and then responds with either 'Whoop!' or 'Well.'.
 
 
-### Comprehensive
+### Comprehensive (XML)
 
 Stories are defined in XML and need to be conform to the [story.xsd](story.xsd).
 Examples can be found in the [res](res) directory.

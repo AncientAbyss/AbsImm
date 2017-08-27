@@ -2,14 +2,7 @@ package net.ancientabyss.absimm.parser;
 
 import net.ancientabyss.absimm.core.*;
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 
 public class TxtParser implements Parser {
@@ -22,16 +15,16 @@ public class TxtParser implements Parser {
             Story default_story = fromStream(new DataInputStream(getClass().getResourceAsStream("/default_settings.txt")), false);
             settings = default_story.getSettings();
         }
-        Story story = null;
+        Story story;
         try {
             story = parseTxt(is, settings);
-        } catch (ParserConfigurationException | SAXException | IOException | StoryException e) {
+        } catch (IOException e) {
             throw new ParserException(e);
         }
         return story;
     }
 
-    private Story parseTxt(InputStream is, Settings settings) throws ParserConfigurationException, SAXException, IOException, ParserException, StoryException {
+    private Story parseTxt(InputStream is, Settings settings) throws IOException  {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StateList stateList = new StateList();
         Story story = new Story(stateList, settings);
@@ -39,7 +32,9 @@ public class TxtParser implements Parser {
         Part part = null;
         StringBuilder text = new StringBuilder();
         while (reader.ready()) {
-            String line = reader.readLine().trim();
+            String line = reader.readLine();
+            if (line == null) break;
+            line = line.trim();
             if (line.isEmpty()) continue;
             if (line.startsWith("settings:")) parseSettings(reader, story);
             boolean isNewPart = line.endsWith(":") && !line.contains(" ");
@@ -102,7 +97,9 @@ public class TxtParser implements Parser {
 
     private void parseSettings(BufferedReader reader, Story story) throws IOException {
         while (reader.ready()) {
-            String line = reader.readLine().trim();
+            String line = reader.readLine();
+            if (line == null) break;
+            line = line.trim();
             if (line.isEmpty()) return; // done with settings, move on
             int keyLength = line.indexOf("=");
             String key = line.substring(0, keyLength);

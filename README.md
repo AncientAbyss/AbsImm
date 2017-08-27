@@ -2,7 +2,7 @@ AbsImm
 ======
 
 AbsImm is an open source text adventure engine. Adventures are written in an intuitive open XML-based format.
-Several clients for different platforms are already [availble](https://github.com/AncientAbyss).
+Several clients for different platforms are already [available](https://github.com/AncientAbyss).
 
 
 Features
@@ -66,9 +66,9 @@ For an example project, see the [Cli client](https://github.com/AncientAbyss/Abs
 ### Initialize
 
         // load the story from a string
-        Story story = new Loader(new XmlParser()).fromString(...);
+        Story story = new Loader(new XmlParser()).fromString(...); // or TxtParser() for the simplified format
         // or from a file
-        Story story = new Loader(new XmlParser()).fromFile(...);
+        Story story = new Loader(new XmlParser()).fromFile(...); // or TxtParser() for the simplified format
         // set the client to which AbsImm passes messages
         story.addClient(...);
 

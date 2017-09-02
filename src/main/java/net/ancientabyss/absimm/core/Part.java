@@ -6,26 +6,6 @@ import java.util.List;
 public class Part extends BasePart {
     private List<Action> actions = new ArrayList<>();
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        Part part = (Part) o;
-
-        if (actions != null ? !actions.equals(part.actions) : part.actions != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (actions != null ? actions.hashCode() : 0);
-        return result;
-    }
-
     public Part(String name) {
         super(name);
     }
@@ -50,7 +30,7 @@ public class Part extends BasePart {
 
     @Override
     public String toString() {
-        return "Part{" +
+        return super.toString() + " >> Part{" +
                 "actions=" + actions +
                 ", name='" + name + '\'' +
                 ", condition='" + condition + '\'' +

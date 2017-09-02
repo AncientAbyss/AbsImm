@@ -19,30 +19,6 @@ public class BasePart {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BasePart basePart = (BasePart) o;
-
-        if (condition != null ? !condition.equals(basePart.condition) : basePart.condition != null) return false;
-        if (name != null ? !name.equals(basePart.name) : basePart.name != null) return false;
-        if (parts != null ? !parts.equals(basePart.parts) : basePart.parts != null) return false;
-        if (stateList != null ? !stateList.equals(basePart.stateList) : basePart.stateList != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = parts != null ? parts.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (condition != null ? condition.hashCode() : 0);
-        result = 31 * result + (stateList != null ? stateList.hashCode() : 0);
-        return result;
-    }
-
     public BasePart(String name, String condition, StateList stateList) {
         this.name = name;
         this.condition = condition;
@@ -103,10 +79,6 @@ public class BasePart {
 
     public List<BasePart> findAll() {
         return findAll("", true);
-    }
-
-    public String getCondition() {
-        return condition;
     }
 
     @Override

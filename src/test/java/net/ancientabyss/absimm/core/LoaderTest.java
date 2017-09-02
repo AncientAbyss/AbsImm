@@ -5,7 +5,6 @@ import net.ancientabyss.absimm.parser.ParserException;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import static org.mockito.Matchers.any;

@@ -8,16 +8,32 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
 
+import java.io.File;
 import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
 public class StoryTest {
 
+    private String testFilename = "test.abs";
+
     @Test(expected = StoryException.class)
     public void interact_noContent_throwsException() throws StoryException {
         Story story = new Story(new StateList(), new Settings());
         story.interact("test");
+    }
+
+    @Test
+    public void setState_validState_setsState() throws StoryException {
+        StateList stateList = new StateList();
+        stateList.add("s1");
+        stateList.add("s2");
+        Story story = new Story(stateList, new Settings());
+        String expected = story.getState();
+        story.setState("");
+        Assert.assertEquals("", stateList.serialize());
+        story.setState(expected);
+        Assert.assertEquals(expected, stateList.serialize());
     }
 
     @Test(expected = StoryException.class)
@@ -59,6 +75,15 @@ public class StoryTest {
         settings.addSetting("initial_command", "enter chapter01");
         settings.addSetting("object_error", "No such object!");
         settings.addSetting("action_error", "You cannot do this with this object!");
+        settings.addSetting("save_command", "save");
+        settings.addSetting("save_error", "save error");
+        settings.addSetting("save_invalid_command", "save invalid");
+        settings.addSetting("save_success", "save success");
+        settings.addSetting("load_command", "load");
+        settings.addSetting("load_error", "load error");
+        settings.addSetting("load_invalid_command", "load invalid");
+        settings.addSetting("load_success", "load success");
+        settings.addSetting("quit_command", "quit");
         Story story = new Story(new StateList(), settings);
         Part part = new Part("chapter01");
         Action action = new Action("enter", part.getName(), mock(StateList.class), story);
@@ -360,21 +385,87 @@ public class StoryTest {
         verify(client).reaction("a!");
     }
 
-    /*
-    TODO
-    @Test
-    public void interact_quit() throws StoryException {
-        Parser parser = new Parser();
-        Story story = parser.fromFile("res/test_03.xml");
+    @Test()
+    public void save_noFilenameGiven_returnsError() throws StoryException {
+        Story story = createStory();
         ReactionClient client = mock(ReactionClient.class);
-        AdminListener adminListener = mock(AdminListener.class);
-        client.addAdminListener();
+        story.addClient(client);
         story.tell();
-        story.interact("quit");
-
-        verify(adminListener).invoked("The locker is open now!");
+        verify(client, times(2)).reaction(anyString());
+        story.interact("save");
+        verify(client).reaction("save invalid");
     }
-    */
+
+    @Test()
+    public void save_invalidFilename_returnsError() throws StoryException {
+        Story story = createStory();
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client, times(2)).reaction(anyString());
+        story.interact("save /i/do/not/exist");
+        verify(client).reaction("save error");
+    }
+
+    @Test()
+    public void save_validFilename_returnsSuccess() throws StoryException {
+        Story story = createStory();
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client, times(2)).reaction(anyString());
+        story.interact("save " + testFilename);
+        verify(client).reaction("save success");
+        //noinspection ResultOfMethodCallIgnored
+        new File(testFilename).delete();
+    }
+
+    @Test()
+    public void load_noFilenameGiven_returnsError() throws StoryException {
+        Story story = createStory();
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client, times(2)).reaction(anyString());
+        story.interact("load");
+        verify(client).reaction("load invalid");
+    }
+
+    @Test()
+    public void load_invalidFilename_returnsError() throws StoryException {
+        Story story = createStory();
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client, times(2)).reaction(anyString());
+        story.interact("load /i/do/not/exist");
+        verify(client).reaction("load error");
+    }
+
+    @Test()
+    public void load_validFilename_returnsSuccess() throws StoryException {
+        Story story = createStory();
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client, times(2)).reaction(anyString());
+        story.interact("save " + testFilename);
+        verify(client).reaction("save success");
+        story.interact("load " + testFilename);
+        verify(client).reaction("load success");
+        //noinspection ResultOfMethodCallIgnored
+        new File(testFilename).delete();
+    }
+
+    @Test
+    public void interact_quit_doesNothing() throws StoryException {
+        Story story = createStory();
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client, times(2)).reaction(anyString());
+        story.interact("quit");
+    }
 
     private Loader createLoader() {
         return new Loader(new XmlParser());

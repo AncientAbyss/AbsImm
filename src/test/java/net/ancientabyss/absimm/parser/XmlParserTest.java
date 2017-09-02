@@ -13,8 +13,9 @@ public class XmlParserTest extends ParserTestBase {
     @Test
     public void fromStream_storyOnly_createsStory() throws ParserException {
         Parser parser = createParser();
-        Story story = parser.fromStream(TestHelper.toStream("<story></story>"), true);
-        Assert.assertEquals(TestHelper.createDefaultStory(false), story);
+        Story expected = TestHelper.createDefaultStory(false);
+        Story actual = parser.fromStream(TestHelper.toStream("<story></story>"), true);
+        Assert.assertEquals(expected.toString(), actual.toString());
     }
 
     @Test
@@ -43,7 +44,7 @@ public class XmlParserTest extends ParserTestBase {
         Parser parser = createParser();
         Story expected = TestHelper.createStoryWithParts();
         Story actual = parser.fromStream(TestHelper.toStream("<story><part name='chapter_01' condition='in_chapter01'/><part name='chapter_02'/></story>"), true);
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected.toString(), actual.toString());
     }
 
     @Test
@@ -51,7 +52,7 @@ public class XmlParserTest extends ParserTestBase {
         Parser parser = createParser();
         Story expected = TestHelper.createStoryWithPartsAndActions2(false);
         Story actual = parser.fromStream(new FileInputStream("res/test_01.xml"), true);
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected.toString(), actual.toString());
     }
 
     @Test
@@ -59,7 +60,7 @@ public class XmlParserTest extends ParserTestBase {
         Parser parser = createParser();
         Story expected = TestHelper.createStoryWithSettings(false);
         Story actual = parser.fromStream(new FileInputStream("res/test_05.xml"), true);
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected.toString(), actual.toString());
     }
 
     protected XmlParser createParser() {

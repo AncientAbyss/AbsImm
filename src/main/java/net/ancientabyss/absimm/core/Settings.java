@@ -10,23 +10,6 @@ public class Settings {
     private Random rand = new Random();
     private static final String listSeparator = "\\|";
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Settings settings1 = (Settings) o;
-
-        if (!settings.equals(settings1.settings)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return settings.hashCode();
-    }
-
     public void addSetting(String name, String value) {
         settings.put(name, value);
     }
@@ -42,10 +25,6 @@ public class Settings {
 
     private String[] toArray(String name) {
         return settings.get(name).split(listSeparator);
-    }
-
-    public int getSettingsCount() {
-        return settings.size();
     }
 
     @Override

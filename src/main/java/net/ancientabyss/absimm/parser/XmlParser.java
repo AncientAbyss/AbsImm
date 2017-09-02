@@ -15,10 +15,10 @@ import java.io.InputStream;
 
 public class XmlParser implements Parser {
     @Override
-    public Story fromStream(InputStream is, boolean load_default) throws ParserException {
+    public Story fromStream(InputStream is, boolean loadDefault) throws ParserException {
         Settings settings = new Settings();
 
-        if (load_default) {
+        if (loadDefault) {
             // TODO: check if exists
             Story default_story = fromStream(new DataInputStream(getClass().getResourceAsStream("/default_settings.xml")), false);
             settings = default_story.getSettings();

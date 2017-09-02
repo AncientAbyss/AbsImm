@@ -1,7 +1,16 @@
-package net.ancientabyss.absimm.core;
+package net.ancientabyss.absimm;
 
-class TestHelper {
-    static Story createDefaultStory(boolean useTxtFormat) {
+import net.ancientabyss.absimm.core.*;
+
+import java.io.ByteArrayInputStream;
+
+public class TestHelper {
+
+    public static ByteArrayInputStream toStream(String str) {
+        return new ByteArrayInputStream(str.getBytes());
+    }
+
+    public static Story createDefaultStory(boolean useTxtFormat) {
         return new Story(new StateList(), createDefaultSettings(useTxtFormat));
     }
 
@@ -36,7 +45,7 @@ class TestHelper {
         return settings;
     }
 
-    static Story createStoryWithParts() {
+    public static Story createStoryWithParts() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(false);
         expected.addPart(new Part("chapter_01", "in_chapter01", stateList));
@@ -44,7 +53,7 @@ class TestHelper {
         return expected;
     }
 
-    static Story createStoryWithPartsTxt() {
+    public static Story createStoryWithPartsTxt() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(true);
         Part part = new Part("main", "", stateList);
@@ -62,7 +71,7 @@ class TestHelper {
         return expected;
     }
 
-    static Story createStoryWithPartAndActions() {
+    public static Story createStoryWithPartAndActions() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(false);
         Part part = new Part("chapter_01", "", stateList);
@@ -74,7 +83,7 @@ class TestHelper {
         return expected;
     }
 
-    static Story createStoryWithPartAndActionsTxt() {
+    public static Story createStoryWithPartAndActionsTxt() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(true);
         Part part = new Part("main", "", stateList);
@@ -92,7 +101,7 @@ class TestHelper {
         return expected;
     }
 
-    static Story createStoryWithPartAndActionsIncludingPeekPartsTxt() {
+    public static Story createStoryWithPartAndActionsIncludingPeekPartsTxt() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(true);
         Part part = new Part("main", "", stateList);
@@ -110,7 +119,7 @@ class TestHelper {
         return expected;
     }
 
-    static Story createStoryWithPartsAndActions2(boolean includeInitialCommand) {
+    public static Story createStoryWithPartsAndActions2(boolean includeInitialCommand) {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(includeInitialCommand);
         expected.getSettings().addSetting("initial_command", "enter chapter_01");
@@ -123,7 +132,7 @@ class TestHelper {
         return expected;
     }
 
-    static Story createStoryWithSettings(boolean includeInitialCommand) {
+    public static Story createStoryWithSettings(boolean includeInitialCommand) {
         StateList stateList = new StateList();
         Story expected = new Story(stateList, TestHelper.createDefaultSettings(includeInitialCommand));
         expected.getSettings().addSetting("initial_command", "enter chapter_01");

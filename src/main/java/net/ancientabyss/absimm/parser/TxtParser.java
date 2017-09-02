@@ -12,10 +12,10 @@ public class TxtParser implements Parser {
     private Map<String, String> parentParts = new HashMap<>();
 
     @Override
-    public Story fromStream(InputStream is, boolean load_default) throws ParserException {
+    public Story fromStream(InputStream is, boolean loadDefault) throws ParserException {
         Settings settings = new Settings();
 
-        if (load_default) {
+        if (loadDefault) {
             // TODO: check if exists
             Story default_story = fromStream(new DataInputStream(getClass().getResourceAsStream("/default_settings.txt")), false);
             settings = default_story.getSettings();
@@ -29,7 +29,7 @@ public class TxtParser implements Parser {
         return story;
     }
 
-    private Story parseTxt(InputStream is, Settings settings) throws IOException  {
+    private Story parseTxt(InputStream is, Settings settings) throws IOException, ParserException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StateList stateList = new StateList();
         Story story = new Story(stateList, settings);
@@ -114,7 +114,8 @@ public class TxtParser implements Parser {
         text.append((text.length() == 0) ? "" : "\n").append(line);
     }
 
-    private void addPart(StateList stateList, Story story, Part part, String text, boolean isPeekPart) {
+    private void addPart(StateList stateList, Story story, Part part, String text, boolean isPeekPart) throws ParserException {
+        if (part == null) throw new ParserException("Attempted adding an empty part.");
         part.addAction(new Action("enter", text, "", isPeekPart ?
                 String.format("%s in_%s %s in_%s", BasePart.NOT, part.getName(), BasePart.AND, parentParts.get(part.getName())) : "", stateList, story, ""));
         story.addPart(part);

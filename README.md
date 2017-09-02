@@ -1,7 +1,7 @@
 AbsImm
 ======
 
-[![Build Status](https://travis-ci.org/AncientAbyss/AbsImm.svg?branch=master)](https://travis-ci.org/AncientAbyss/AbsImm)[![codecov](https://codecov.io/gh/AncientAbyss/AbsImm/branch/master/graph/badge.svg)](https://codecov.io/gh/AncientAbyss/AbsImm)
+[![Build Status](https://travis-ci.org/AncientAbyss/AbsImm.svg?branch=master)](https://travis-ci.org/AncientAbyss/AbsImm) [![codecov](https://codecov.io/gh/AncientAbyss/AbsImm/branch/master/graph/badge.svg)](https://codecov.io/gh/AncientAbyss/AbsImm)
 
 AbsImm is an open source text adventure engine. Adventures are written in an intuitive open XML-based format.
 Several clients for different platforms are already [available](https://github.com/AncientAbyss).

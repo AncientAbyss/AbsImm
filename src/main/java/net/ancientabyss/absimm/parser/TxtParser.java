@@ -77,14 +77,15 @@ public class TxtParser implements Parser {
             }
             if (!isNewPart) {
                 if (numEmptyLinesToAdd > 0) {
+                    if (line.startsWith("- ")) numEmptyLinesToAdd = 0; // strip whitespace between section and hidden decision node
                     for (int i = 0; i < numEmptyLinesToAdd; ++i) {
                         appendText(text, "");
                     }
                     numEmptyLinesToAdd = 0;
                 }
                 // handle actions
-                if (line.startsWith("* ")) {
-                    String action = StringUtils.removeStart(line, "*").trim();
+                if (line.startsWith("* ") || line.startsWith("- ")) {
+                    String action = StringUtils.removeStart(StringUtils.removeStart(line, "*"), "-").trim();
                     int keyLength = action.indexOf("(");
                     String actionLabel = action.substring(0, keyLength).trim();
                     String actionName = StringUtils.stripEnd(action.substring(keyLength + 1).trim(), ")");
@@ -93,7 +94,9 @@ public class TxtParser implements Parser {
                     dummyPart.addAction(new Action(actionLabel, "", "", state, stateList, story, "enter " + actionName));
                     part.addPart(dummyPart);
                     parentParts.put(actionName, part.getName());
-                    appendText(text, "- " + actionLabel);
+                    if (!line.startsWith("- ")) {
+                        appendText(text, "- " + actionLabel);
+                    }
                 } else if (line.startsWith("<<")) {
                     isPeekPart = true;
                 } else {

@@ -54,6 +54,14 @@ public class TxtParserTest extends ParserTestBase {
         Assert.assertEquals(helpMessage, actual.getSettings().getSetting("help_message"));
     }
 
+    @Test
+    public void fromStream_storyWithPartsAndHiddenDecisionNode_createsStory() throws ParserException {
+        Parser parser = createParser();
+        Story expected = TestHelper.createStoryWithPartAndActionsIncludingHiddenDecisionNode();
+        Story actual = parser.fromStream(TestHelper.toStream("welcome!\n\n- proceed (chapter01)"), true);
+        Assert.assertEquals(expected.toString(), actual.toString());
+    }
+
     protected Parser createParser() {
         return new TxtParser();
     }

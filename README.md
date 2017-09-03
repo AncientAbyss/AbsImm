@@ -105,6 +105,7 @@ that use decision nodes to allow jumping between sections, where:
 
 Other commands:
 * To immediately return to the previous section use the peek section operator: '<<'.
+* When using '-' instead '*' as prefix for decision nodes, the available decision options will be hidden.
 
 #### Example:
 

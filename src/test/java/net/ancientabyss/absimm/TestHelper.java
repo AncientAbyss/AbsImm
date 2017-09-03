@@ -119,6 +119,21 @@ public class TestHelper {
         return expected;
     }
 
+    public static Story createStoryWithPartAndActionsIncludingHiddenDecisionNode() {
+        StateList stateList = new StateList();
+        Story expected = TestHelper.createDefaultStory(true);
+        Part part = new Part("main", "", stateList);
+        part.addAction(new Action("enter", "", "", "in_intro", stateList, expected, "enter intro"));
+        expected.addPart(part);
+        part = new Part("intro", "in_intro", stateList);
+        part.addAction(new Action("enter", "welcome!", "", "", stateList, expected));
+        Part dummyPart = new Part("", "", stateList);
+        dummyPart.addAction(new Action("proceed", "", "", "in_chapter01 AND NOT in_intro", stateList, expected, "enter chapter01"));
+        part.addPart(dummyPart);
+        expected.addPart(part);
+        return expected;
+    }
+
     public static Story createStoryWithPartsAndActions2(boolean includeInitialCommand) {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(includeInitialCommand);

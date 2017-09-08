@@ -33,8 +33,8 @@ public class TxtParser implements Parser {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StateList stateList = new StateList();
         Story story = new Story(stateList, settings);
-        Part mainPart = new Part("main", "", stateList);
-        mainPart.addAction(new Action("enter", "", "", "in_intro", stateList, story, "enter intro"));
+        Part mainPart = new Part("main", "NOT game_started", stateList);
+        mainPart.addAction(new Action("enter", "", "", "game_started AND in_intro", stateList, story, "enter intro"));
         story.addPart(mainPart);
         boolean isMainPart = true;
         int numEmptyLinesToAdd = 0;

@@ -56,8 +56,8 @@ public class TestHelper {
     public static Story createStoryWithPartsTxt() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(true);
-        Part part = new Part("main", "", stateList);
-        part.addAction(new Action("enter", "", "", "in_intro", stateList, expected, "enter intro"));
+        Part part = new Part("main", "NOT game_started", stateList);
+        part.addAction(new Action("enter", "", "", "game_started AND in_intro", stateList, expected, "enter intro"));
         expected.addPart(part);
         part = new Part("intro", "in_intro", stateList);
         part.addAction(new Action("enter", "", "", "", stateList, expected));
@@ -86,8 +86,8 @@ public class TestHelper {
     public static Story createStoryWithPartAndActionsTxt() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(true);
-        Part part = new Part("main", "", stateList);
-        part.addAction(new Action("enter", "", "", "in_intro", stateList, expected, "enter intro"));
+        Part part = new Part("main", "NOT game_started", stateList);
+        part.addAction(new Action("enter", "", "", "game_started AND in_intro", stateList, expected, "enter intro"));
         expected.addPart(part);
         part = new Part("intro", "in_intro", stateList);
         part.addAction(new Action("enter", "welcome!\n- proceed", "", "", stateList, expected));
@@ -104,8 +104,8 @@ public class TestHelper {
     public static Story createStoryWithPartAndActionsIncludingPeekPartsTxt() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(true);
-        Part part = new Part("main", "", stateList);
-        part.addAction(new Action("enter", "", "", "in_intro", stateList, expected, "enter intro"));
+        Part part = new Part("main", "NOT game_started", stateList);
+        part.addAction(new Action("enter", "", "", "game_started AND in_intro", stateList, expected, "enter intro"));
         expected.addPart(part);
         part = new Part("intro", "in_intro", stateList);
         part.addAction(new Action("enter", "welcome!\n- proceed", "", "", stateList, expected));
@@ -122,8 +122,8 @@ public class TestHelper {
     public static Story createStoryWithPartAndActionsIncludingHiddenDecisionNode() {
         StateList stateList = new StateList();
         Story expected = TestHelper.createDefaultStory(true);
-        Part part = new Part("main", "", stateList);
-        part.addAction(new Action("enter", "", "", "in_intro", stateList, expected, "enter intro"));
+        Part part = new Part("main", "NOT game_started", stateList);
+        part.addAction(new Action("enter", "", "", "game_started AND in_intro", stateList, expected, "enter intro"));
         expected.addPart(part);
         part = new Part("intro", "in_intro", stateList);
         part.addAction(new Action("enter", "welcome!", "", "", stateList, expected));

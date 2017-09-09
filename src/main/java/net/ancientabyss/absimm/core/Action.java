@@ -27,7 +27,10 @@ public class Action extends BasePart {
     public String execute() throws StoryException {
         if (!conditionsMet()) return "";
         if (!state.isEmpty()) stateList.add(state);
+        boolean isAutomatedMode = story.isAutomatedMode();
+        story.setAutomatedMode(true);
         if (!command.isEmpty()) story.interact(command);
+        story.setAutomatedMode(isAutomatedMode);
         return text;
     }
 

@@ -10,6 +10,8 @@ public class Story extends BasePart {
     private List<ReactionClient> clients = new ArrayList<>();
     private Settings settings;
     private StateList stateList;
+    private List<Action> automatedActions = new ArrayList<>();
+    private boolean automatedMode = false;
 
     public Story(StateList stateList, Settings settings) {
         super("", "", stateList);
@@ -39,6 +41,9 @@ public class Story extends BasePart {
                 String result = action.execute();
                 if (result.isEmpty()) continue;
                 sendMessageToAllClients(result);
+                if (automatedMode && !automatedActions.contains(action)) {
+                    automatedActions.add(action);
+                }
             }
         }
 
@@ -131,15 +136,16 @@ public class Story extends BasePart {
     private void hint() {
         List<BasePart> allParts = findAll();
         for (BasePart part : allParts) {
-            String hint_message = part.getName() + " (";
-            List<String> send_actions = new ArrayList<>();
+            String hintMessage = part.getName() + " (";
+            List<String> sentActions = new ArrayList<>();
             for (Action action : ((Part) part).findActions("")) {
-                if (send_actions.contains(action.getName())) continue;
-                if (send_actions.size() > 0) hint_message += ", ";
-                hint_message += action.getName();
-                send_actions.add(action.getName());
+                if (sentActions.contains(action.getName())) continue;
+                if (sentActions.size() > 0) hintMessage += ", ";
+                if (automatedActions.contains(action)) continue;
+                hintMessage += action.getName();
+                sentActions.add(action.getName());
             }
-            if (send_actions.size() > 0) sendMessageToAllClients(hint_message + ")");
+            if (sentActions.size() > 0) sendMessageToAllClients(hintMessage + ")");
         }
     }
 
@@ -172,6 +178,14 @@ public class Story extends BasePart {
 
     public void setState(String state) {
         stateList.deserialize(state);
+    }
+
+    public void setAutomatedMode(boolean automatedMode) {
+        this.automatedMode = automatedMode;
+    }
+
+    public boolean isAutomatedMode() {
+        return automatedMode;
     }
 }
 

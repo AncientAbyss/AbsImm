@@ -267,6 +267,28 @@ public class StoryTest {
     }
 
     @Test
+    public void interact_hint_doesNotShowInternalActions() throws StoryException {
+        Loader loader = createLoader();
+        Story story = loader.fromFile("res/test_03.xml");
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client).reaction("chapter_01");
+        verify(client).reaction("Entered chapter 01!");
+        story.interact("take key");
+        verify(client).reaction("You found a key!");
+        story.interact("open locker");
+        verify(client).reaction("The locker is open now!");
+        story.interact("enter locker");
+        verify(client).reaction("You entered the locker!");
+        verify(client).reaction("chapter_02");
+        story.interact("hint");
+        verify(client).reaction("small locker (look)");
+        verify(client).reaction("locker (leave)");
+        verify(client).reaction("key (take)");
+    }
+
+    @Test
     public void interact_help_showsHelp() throws StoryException {
         Loader loader = createLoader();
         Story story = loader.fromFile("res/test_03.xml");

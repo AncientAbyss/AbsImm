@@ -254,8 +254,7 @@ public class StoryTest {
         verify(client).reaction("chapter_01");
         verify(client).reaction("Entered chapter 01!");
         story.interact("hint");
-        verify(client).reaction("locker (look)");
-        verify(client).reaction("key (take)");
+        verify(client).reaction("locker (look)\nkey (take)");
         story.interact("take key");
         verify(client).reaction("You found a key!");
         story.interact("hint");
@@ -283,9 +282,7 @@ public class StoryTest {
         verify(client).reaction("You entered the locker!");
         verify(client).reaction("chapter_02");
         story.interact("hint");
-        verify(client).reaction("small locker (look)");
-        verify(client).reaction("locker (leave)");
-        verify(client).reaction("key (take)");
+        verify(client).reaction("small locker (look)\nlocker (leave)\nkey (take)");
     }
 
     @Test
@@ -405,6 +402,17 @@ public class StoryTest {
         story.addClient(client);
         story.interact("a");
         verify(client).reaction("a!");
+    }
+
+    @Test()
+    public void interact_txtFile_shouldShowHints() throws StoryException, IOException {
+        Loader loader = new Loader(new TxtParser());
+        Story story = loader.fromFile("res/test_06.txt");
+        ReactionClient client = mock(ReactionClient.class);
+        story.tell();
+        story.addClient(client);
+        story.interact("hint");
+        verify(client).reaction("a\nb");
     }
 
     @Test()

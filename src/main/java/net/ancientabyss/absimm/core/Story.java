@@ -1,5 +1,7 @@
 package net.ancientabyss.absimm.core;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -135,18 +137,25 @@ public class Story extends BasePart {
 
     private void hint() {
         List<BasePart> allParts = findAll();
+        StringBuilder message = new StringBuilder();
         for (BasePart part : allParts) {
-            String hintMessage = part.getName() + " (";
-            List<String> sentActions = new ArrayList<>();
+            List<String> availableActions = new ArrayList<>();
             for (Action action : ((Part) part).findActions("")) {
-                if (sentActions.contains(action.getName())) continue;
-                if (sentActions.size() > 0) hintMessage += ", ";
+                if (availableActions.contains(action.getName())) continue;
                 if (automatedActions.contains(action)) continue;
-                hintMessage += action.getName();
-                sentActions.add(action.getName());
+                availableActions.add(action.getName());
             }
-            if (sentActions.size() > 0) sendMessageToAllClients(hintMessage + ")");
+            if (availableActions.size() > 0) {
+                if (message.length() > 0) message.append('\n');
+                String actions = StringUtils.join(availableActions, ", ");
+                if (!part.getName().isEmpty()) {
+                    message.append(String.format("%s (%s)", part.getName(), actions));
+                } else {
+                    message.append(String.format("%s", actions));
+                }
+            }
         }
+        if (message.length() > 0) sendMessageToAllClients(message.toString());
     }
 
     private void help() {

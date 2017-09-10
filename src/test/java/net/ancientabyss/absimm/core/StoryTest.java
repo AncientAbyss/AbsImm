@@ -254,15 +254,15 @@ public class StoryTest {
         verify(client).reaction("chapter_01");
         verify(client).reaction("Entered chapter 01!");
         story.interact("hint");
-        verify(client).reaction("locker (look)\nkey (take)");
+        verify(client).reaction("Your possibilities:\nlocker (look)\nkey (take)");
         story.interact("take key");
         verify(client).reaction("You found a key!");
         story.interact("hint");
-        verify(client).reaction("locker (look, open)");
+        verify(client).reaction("Your possibilities:\nlocker (look, open)");
         story.interact("open locker");
         verify(client).reaction("The locker is open now!");
         story.interact("hint");
-        verify(client).reaction("locker (look, open, enter)");
+        verify(client).reaction("Your possibilities:\nlocker (look, open, enter)");
     }
 
     @Test
@@ -282,7 +282,7 @@ public class StoryTest {
         verify(client).reaction("You entered the locker!");
         verify(client).reaction("chapter_02");
         story.interact("hint");
-        verify(client).reaction("small locker (look)\nlocker (leave)\nkey (take)");
+        verify(client).reaction("Your possibilities:\nsmall locker (look)\nlocker (leave)\nkey (take)");
     }
 
     @Test
@@ -412,7 +412,7 @@ public class StoryTest {
         story.tell();
         story.addClient(client);
         story.interact("hint");
-        verify(client).reaction("a\nb");
+        verify(client).reaction("Your possibilities:\na\nb");
     }
 
     @Test()

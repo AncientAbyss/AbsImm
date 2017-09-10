@@ -41,6 +41,7 @@ public class TxtParser implements Parser {
         Part part = null;
         StringBuilder text = new StringBuilder();
         boolean isPeekPart = false;
+        boolean containsSettings = false;
         while (reader.ready()) {
             String line = reader.readLine();
             if (line == null) break;
@@ -49,7 +50,11 @@ public class TxtParser implements Parser {
                 ++numEmptyLinesToAdd;
                 continue;
             }
-            if (line.startsWith("settings:")) parseSettings(reader, story);
+            if (line.startsWith("settings:")) {
+                parseSettings(reader, story);
+                containsSettings = true;
+                continue;
+            }
             boolean isNewPart = line.endsWith(":") && !line.contains(" ");
             if (isMainPart || isNewPart) {
                 // the story starts with a part, so create a dummy main part
@@ -105,7 +110,9 @@ public class TxtParser implements Parser {
                 }
             }
         }
-        addPart(stateList, story, part, text.toString(), isPeekPart);
+        if (part != null || !containsSettings) { // can be null for e.g. default_settings.txt
+            addPart(stateList, story, part, text.toString(), isPeekPart);
+        }
         return story;
     }
 
@@ -127,7 +134,7 @@ public class TxtParser implements Parser {
     private void parseSettings(BufferedReader reader, Story story) throws IOException {
         while (reader.ready()) {
             String line = reader.readLine();
-            if (line == null) break;
+            if (line == null) return;
             line = line.trim();
             if (line.isEmpty()) return; // done with settings, move on
             int keyLength = line.indexOf("=");

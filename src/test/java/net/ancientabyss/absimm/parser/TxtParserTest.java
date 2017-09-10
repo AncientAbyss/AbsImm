@@ -1,9 +1,14 @@
 package net.ancientabyss.absimm.parser;
 
 import net.ancientabyss.absimm.TestHelper;
+import net.ancientabyss.absimm.core.ReactionClient;
 import net.ancientabyss.absimm.core.Story;
+import net.ancientabyss.absimm.core.StoryException;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class TxtParserTest extends ParserTestBase {
 
@@ -52,6 +57,17 @@ public class TxtParserTest extends ParserTestBase {
         String helpMessage = "Try harder!";
         Story actual = parser.fromStream(TestHelper.toStream("settings:\nhelp_message=" + helpMessage + "\n\nwelcome!"), true);
         Assert.assertEquals(helpMessage, actual.getSettings().getSetting("help_message"));
+    }
+
+    @Test
+    public void fromStream_includesSetting_shouldKeepStoryIntact() throws ParserException, StoryException {
+        Parser parser = createParser();
+        String helpMessage = "Try harder!";
+        Story actual = parser.fromStream(TestHelper.toStream("settings:\nhelp_message=" + helpMessage + "\n\nwelcome!"), true);
+        ReactionClient client = mock(ReactionClient.class);
+        actual.addClient(client);
+        actual.tell();
+        verify(client).reaction("welcome!");
     }
 
     @Test

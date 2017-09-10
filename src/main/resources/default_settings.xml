@@ -16,6 +16,7 @@
         <setting name="empty_story_error" value="Cannot tell empty story!"/>
         <setting name="object_error" value="No such object!"/>
         <setting name="action_error" value="You cannot do this with this object!"/>
+        <setting name="hint_intro_message" value="Your possibilities:"/>
         <setting name="initial_command_missing" value="No initial command has been set!"/>
         <setting name="help_message" value="\n-------------\nType 'hint' if you are stuck and 'quit' if you want to stop playing.\nUse 'save xx' to save your progress to the slot 'xx' and 'load xx' to load your progress from slot 'xx'.\n'help' will bring this info up again.\n-------------\n"/>
     </settings>

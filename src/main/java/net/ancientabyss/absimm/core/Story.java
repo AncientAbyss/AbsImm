@@ -155,7 +155,10 @@ public class Story extends BasePart {
                 }
             }
         }
-        if (message.length() > 0) sendMessageToAllClients(message.toString());
+        if (message.length() > 0) {
+            message.insert(0, settings.getRandom("hint_intro_message") + "\n");
+            sendMessageToAllClients(message.toString());
+        }
     }
 
     private void help() {

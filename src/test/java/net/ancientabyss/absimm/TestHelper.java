@@ -29,6 +29,7 @@ public class TestHelper {
         settings.addSetting("load_error", "Unable to load game.");
         settings.addSetting("load_success", "Game successfully loaded.");
         settings.addSetting("invalid_command", "Invalid command!");
+        settings.addSetting("hint_intro_message", "Your possibilities:");
         settings.addSetting("empty_story_error", "Cannot tell empty story!");
         if (useTxtFormat) {
             settings.addSetting("object_error", "Nah.|Nope!");

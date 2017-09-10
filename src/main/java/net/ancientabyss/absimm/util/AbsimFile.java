@@ -2,7 +2,9 @@ package net.ancientabyss.absimm.util;
 
 import java.io.*;
 
-public class AbsimFile {
+public abstract class AbsimFile {
+
+    private AbsimFile() {}
 
     public static String readFileAsString(String filePath) throws IOException {
         StringBuffer fileData = new StringBuffer();

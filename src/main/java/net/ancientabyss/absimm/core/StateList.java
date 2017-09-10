@@ -1,7 +1,7 @@
 package net.ancientabyss.absimm.core;
 
 import net.ancientabyss.absimm.util.AbsimFile;
-import org.apache.commons.lang3.StringUtils;
+import net.ancientabyss.absimm.util.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

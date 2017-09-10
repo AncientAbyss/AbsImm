@@ -1,6 +1,6 @@
 package net.ancientabyss.absimm.core;
 
-import org.apache.commons.lang3.StringUtils;
+import net.ancientabyss.absimm.util.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

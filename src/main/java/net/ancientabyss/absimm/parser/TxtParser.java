@@ -93,7 +93,9 @@ public class TxtParser implements Parser {
                     String action = StringUtils.removeStart(StringUtils.removeStart(line, "*"), "-").trim();
                     int keyLength = action.indexOf("(");
                     String actionLabel = action.substring(0, keyLength).trim();
-                    String actionName = StringUtils.stripEnd(action.substring(keyLength + 1).trim(), ")");
+                    String actionName = action.substring(keyLength + 1).trim();
+                    if (!action.endsWith(")")) throw new ParserException("Decision node needs to end with ')': " + line);
+                    actionName = StringUtils.stripEnd(actionName, ")");
                     Part dummyPart = new Part("", "", stateList);
                     String state = String.format("in_%s %s %s in_%s", actionName, BasePart.AND, BasePart.NOT, part.getName());
                     dummyPart.addAction(new Action(actionLabel, "", "", state, stateList, story, "enter " + actionName));

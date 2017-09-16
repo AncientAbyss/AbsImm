@@ -78,6 +78,12 @@ public class TxtParserTest extends ParserTestBase {
         Assert.assertEquals(expected.toString(), actual.toString());
     }
 
+    @Test(expected = ParserException.class)
+    public void fromStream_malformedDecisionNode_throwsException() throws ParserException, StoryException {
+        Parser parser = createParser();
+        parser.fromStream(TestHelper.toStream("welcome!\n\n- proceed (chapter01) mep"), true);
+    }
+
     protected Parser createParser() {
         return new TxtParser();
     }

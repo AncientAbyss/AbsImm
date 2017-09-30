@@ -22,9 +22,6 @@ public interface Story {
     /** Check whether the automated mode is set. */
     boolean isAutomatedMode();
 
-    /** Returns true if no more commands are accepted. */
-    boolean isFinished();
-
     @Override
     String toString();
 }

@@ -52,6 +52,9 @@ public class DefaultStory extends BasePart implements Story {
             }
         }
 
+        if (!automatedMode && isFinished()) {
+            finish();
+        }
     }
 
     private List<Action> findActions(String action, List<BasePart> allParts) {
@@ -106,7 +109,13 @@ public class DefaultStory extends BasePart implements Story {
 
     private void sendMessageToAllClients(String message) {
         for (ReactionClient client : clients) {
-            client.reaction(message);
+            client.onReact(message);
+        }
+    }
+
+    private void finish() {
+        for (ReactionClient client : clients) {
+            client.onFinish();
         }
     }
 
@@ -211,8 +220,7 @@ public class DefaultStory extends BasePart implements Story {
         return automatedMode;
     }
 
-    @Override
-    public boolean isFinished() {
+    private boolean isFinished() {
         for (BasePart part : findAll()) {
             if (getAvailableActions((Part) part).size() > 0) return false;
         }

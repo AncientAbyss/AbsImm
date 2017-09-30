@@ -68,7 +68,7 @@ public class TxtParserTest extends ParserTestBase {
         ReactionClient client = mock(ReactionClient.class);
         actual.addClient(client);
         actual.tell();
-        verify(client).reaction("welcome!");
+        verify(client).onReact("welcome!");
     }
 
     @Test

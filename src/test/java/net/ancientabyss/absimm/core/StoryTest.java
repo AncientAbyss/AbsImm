@@ -59,7 +59,7 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client, times(2)).reaction(Matchers.anyString());
+        verify(client, times(2)).onReact(Matchers.anyString());
     }
 
     @Test()
@@ -68,8 +68,8 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("chapter01");
-        verify(client).reaction("introduction");
+        verify(client).onReact("chapter01");
+        verify(client).onReact("introduction");
     }
 
     private DefaultStory createStory() {
@@ -104,10 +104,10 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("chapter01");
-        verify(client).reaction("introduction");
+        verify(client).onReact("chapter01");
+        verify(client).onReact("introduction");
         story.interact("open locker");
-        verify(client).reaction("Locker is open now!");
+        verify(client).onReact("Locker is open now!");
     }
 
     private Part createLocker(boolean condition) {
@@ -138,8 +138,8 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("chapter01");
-        verify(client).reaction("introduction");
+        verify(client).onReact("chapter01");
+        verify(client).onReact("introduction");
         story.interact("open locker");
     }
 
@@ -151,10 +151,10 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("chapter01");
-        verify(client).reaction("introduction");
+        verify(client).onReact("chapter01");
+        verify(client).onReact("introduction");
         story.interact("open locker");
-        verify(client).reaction("You need a key!");
+        verify(client).onReact("You need a key!");
     }
 
     @Test
@@ -226,7 +226,7 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("You cannot do this with this object!");
+        verify(client).onReact("You cannot do this with this object!");
     }
 
     @Test
@@ -237,13 +237,13 @@ public class StoryTest {
         story.addClient(client);
         story.tell();
         story.interact("take key");
-        verify(client).reaction("You found a small key!");
+        verify(client).onReact("You found a small key!");
         story.interact("use small locker with key blah");
-        verify(client).reaction("No such object!");
+        verify(client).onReact("No such object!");
         story.interact("use small locker with blah key");
-        verify(client).reaction("You cannot do this with this object!");
+        verify(client).onReact("You cannot do this with this object!");
         story.interact("use small locker with key");
-        verify(client).reaction("The very nice locker is unlocked now!");
+        verify(client).onReact("The very nice locker is unlocked now!");
     }
 
     @Test
@@ -253,18 +253,18 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("chapter_01");
-        verify(client).reaction("Entered chapter 01!");
+        verify(client).onReact("chapter_01");
+        verify(client).onReact("Entered chapter 01!");
         story.interact("hint");
-        verify(client).reaction("Your possibilities:\nlocker (look)\nkey (take)");
+        verify(client).onReact("Your possibilities:\nlocker (look)\nkey (take)");
         story.interact("take key");
-        verify(client).reaction("You found a key!");
+        verify(client).onReact("You found a key!");
         story.interact("hint");
-        verify(client).reaction("Your possibilities:\nlocker (look, open)");
+        verify(client).onReact("Your possibilities:\nlocker (look, open)");
         story.interact("open locker");
-        verify(client).reaction("The locker is open now!");
+        verify(client).onReact("The locker is open now!");
         story.interact("hint");
-        verify(client).reaction("Your possibilities:\nlocker (look, open, enter)");
+        verify(client).onReact("Your possibilities:\nlocker (look, open, enter)");
     }
 
     @Test
@@ -274,17 +274,17 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("chapter_01");
-        verify(client).reaction("Entered chapter 01!");
+        verify(client).onReact("chapter_01");
+        verify(client).onReact("Entered chapter 01!");
         story.interact("take key");
-        verify(client).reaction("You found a key!");
+        verify(client).onReact("You found a key!");
         story.interact("open locker");
-        verify(client).reaction("The locker is open now!");
+        verify(client).onReact("The locker is open now!");
         story.interact("enter locker");
-        verify(client).reaction("You entered the locker!");
-        verify(client).reaction("chapter_02");
+        verify(client).onReact("You entered the locker!");
+        verify(client).onReact("chapter_02");
         story.interact("hint");
-        verify(client).reaction("Your possibilities:\nsmall locker (look)\nlocker (leave)\nkey (take)");
+        verify(client).onReact("Your possibilities:\nsmall locker (look)\nlocker (leave)\nkey (take)");
     }
 
     @Test
@@ -294,10 +294,10 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client).reaction("chapter_01");
-        verify(client).reaction("Entered chapter 01!");
+        verify(client).onReact("chapter_01");
+        verify(client).onReact("Entered chapter 01!");
         story.interact("help");
-        verify(client).reaction("\\n-------------\\nType 'hint' if you are stuck and 'quit' if you want to stop playing.\\nUse 'save xx' to save your progress to the slot 'xx' and 'load xx' to load your progress from slot 'xx'.\\n'help' will bring this info up again.\\n-------------\\n");
+        verify(client).onReact("\\n-------------\\nType 'hint' if you are stuck and 'quit' if you want to stop playing.\\nUse 'save xx' to save your progress to the slot 'xx' and 'load xx' to load your progress from slot 'xx'.\\n'help' will bring this info up again.\\n-------------\\n");
     }
 
     @Test
@@ -308,7 +308,7 @@ public class StoryTest {
         story.addClient(client);
         story.tell();
         story.interact("look blah");
-        verify(client).reaction("No such object!");
+        verify(client).onReact("No such object!");
     }
 
     @Test
@@ -325,8 +325,8 @@ public class StoryTest {
         }
         story.interact("ranz");
         InOrder inOrder = inOrder(client);
-        inOrder.verify(client).reaction("chapter_01");
-        inOrder.verify(client).reaction("No such object!");
+        inOrder.verify(client).onReact("chapter_01");
+        inOrder.verify(client).onReact("No such object!");
     }
 
     @Test
@@ -337,33 +337,33 @@ public class StoryTest {
         InOrder inOrder = inOrder(client);
         story.addClient(client);
         story.tell();
-        inOrder.verify(client).reaction("chapter_01");
-        inOrder.verify(client).reaction("Entered chapter 01!");
+        inOrder.verify(client).onReact("chapter_01");
+        inOrder.verify(client).onReact("Entered chapter 01!");
         story.interact("open locker");
-        inOrder.verify(client).reaction("You cannot do this with this object!");
+        inOrder.verify(client).onReact("You cannot do this with this object!");
         story.interact("enter locker");
-        inOrder.verify(client).reaction("You cannot do this with this object!");
+        inOrder.verify(client).onReact("You cannot do this with this object!");
         story.interact("look locker");
-        inOrder.verify(client).reaction("A nice locker!");
+        inOrder.verify(client).onReact("A nice locker!");
         story.interact("take key");
-        inOrder.verify(client).reaction("You found a key!");
+        inOrder.verify(client).onReact("You found a key!");
         story.interact("open locker");
-        inOrder.verify(client).reaction("The locker is open now!");
+        inOrder.verify(client).onReact("The locker is open now!");
         story.interact("enter locker");
-        inOrder.verify(client).reaction("chapter_02");
-        inOrder.verify(client).reaction("You entered the locker!");
+        inOrder.verify(client).onReact("chapter_02");
+        inOrder.verify(client).onReact("You entered the locker!");
         story.interact("open small locker");
-        inOrder.verify(client).reaction("You cannot do this with this object!");
+        inOrder.verify(client).onReact("You cannot do this with this object!");
         story.interact("enter small locker");
-        inOrder.verify(client).reaction("You cannot do this with this object!");
+        inOrder.verify(client).onReact("You cannot do this with this object!");
         story.interact("look small locker");
-        inOrder.verify(client).reaction("A very nice locker!");
+        inOrder.verify(client).onReact("A very nice locker!");
         story.interact("take key");
-        inOrder.verify(client).reaction("You found a small key!");
+        inOrder.verify(client).onReact("You found a small key!");
         story.interact("open small locker");
-        inOrder.verify(client).reaction("The very nice locker is open now!");
+        inOrder.verify(client).onReact("The very nice locker is open now!");
         story.interact("leave locker");
-        inOrder.verify(client).reaction("You left the locker!");
+        inOrder.verify(client).onReact("You left the locker!");
     }
 
     @Test()
@@ -375,7 +375,7 @@ public class StoryTest {
         story.interact("take key");
         story.addClient(client);
         story.interact("save 01.dat");
-        verify(client).reaction("Game successfully saved.");
+        verify(client).onReact("Game successfully saved.");
         Assert.assertEquals("game_started,in_chapter01,have_key", AbsimFile.readFileAsString("01.dat"));
     }
 
@@ -390,9 +390,9 @@ public class StoryTest {
         story = loader.load("res/test_03.xml");
         story.addClient(client);
         story.interact("load 01.dat");
-        verify(client).reaction("Game successfully loaded.");
+        verify(client).onReact("Game successfully loaded.");
         story.interact("open locker");
-        verify(client).reaction("The locker is open now!");
+        verify(client).onReact("The locker is open now!");
     }
 
     @Test()
@@ -403,7 +403,7 @@ public class StoryTest {
         story.tell();
         story.addClient(client);
         story.interact("a");
-        verify(client).reaction("a!");
+        verify(client).onReact("a!");
     }
 
     @Test()
@@ -414,7 +414,7 @@ public class StoryTest {
         story.tell();
         story.addClient(client);
         story.interact("hint");
-        verify(client).reaction("Your possibilities:\na\nb");
+        verify(client).onReact("Your possibilities:\na\nb");
     }
 
     @Test()
@@ -423,9 +423,9 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client, times(2)).reaction(anyString());
+        verify(client, times(2)).onReact(anyString());
         story.interact("save");
-        verify(client).reaction("save invalid");
+        verify(client).onReact("save invalid");
     }
 
     @Test()
@@ -434,9 +434,9 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client, times(2)).reaction(anyString());
+        verify(client, times(2)).onReact(anyString());
         story.interact("save /i/do/not/exist");
-        verify(client).reaction("save error");
+        verify(client).onReact("save error");
     }
 
     @Test()
@@ -445,9 +445,9 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client, times(2)).reaction(anyString());
+        verify(client, times(2)).onReact(anyString());
         story.interact("save " + testFilename);
-        verify(client).reaction("save success");
+        verify(client).onReact("save success");
         //noinspection ResultOfMethodCallIgnored
         new File(testFilename).delete();
     }
@@ -458,9 +458,9 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client, times(2)).reaction(anyString());
+        verify(client, times(2)).onReact(anyString());
         story.interact("load");
-        verify(client).reaction("load invalid");
+        verify(client).onReact("load invalid");
     }
 
     @Test()
@@ -469,9 +469,9 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client, times(2)).reaction(anyString());
+        verify(client, times(2)).onReact(anyString());
         story.interact("load /i/do/not/exist");
-        verify(client).reaction("load error");
+        verify(client).onReact("load error");
     }
 
     @Test()
@@ -480,11 +480,11 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client, times(2)).reaction(anyString());
+        verify(client, times(2)).onReact(anyString());
         story.interact("save " + testFilename);
-        verify(client).reaction("save success");
+        verify(client).onReact("save success");
         story.interact("load " + testFilename);
-        verify(client).reaction("load success");
+        verify(client).onReact("load success");
         //noinspection ResultOfMethodCallIgnored
         new File(testFilename).delete();
     }
@@ -495,23 +495,18 @@ public class StoryTest {
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
-        verify(client, times(2)).reaction(anyString());
+        verify(client, times(2)).onReact(anyString());
         story.interact("quit");
     }
 
     @Test
-    public void isFinished_notFinished_shouldReturnFalse() throws StoryException {
-        Story story = new FileLoader(new TxtParser()).load("res/test_06.txt");
-        story.tell();
-        Assert.assertFalse(story.isFinished());
-    }
-
-    @Test
     public void isFinished_finished_shouldReturnTrue() throws StoryException {
-        Story story = new FileLoader(new XmlParser()).load("res/test_01.xml");
+        Story story = new FileLoader(new TxtParser()).load("res/test_06.txt");
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
         story.tell();
         story.interact("a");
-        Assert.assertTrue(story.isFinished());
+        verify(client).onFinish();
     }
     private Loader createLoader() {
         return new FileLoader(new XmlParser());

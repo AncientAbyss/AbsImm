@@ -68,7 +68,7 @@ public class BasePartTest {
     }
 
     private Action createAction(String condition, StateList stateList) {
-        return new Action("drink", "jamm", condition, "drunk", stateList, new Story(stateList, new Settings()));
+        return new Action("drink", "jamm", condition, "drunk", stateList, new DefaultStory(stateList, new Settings()));
     }
 
     @Test

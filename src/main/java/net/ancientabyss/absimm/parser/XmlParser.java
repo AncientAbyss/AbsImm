@@ -15,15 +15,15 @@ import java.io.InputStream;
 
 public class XmlParser implements Parser {
     @Override
-    public Story fromStream(InputStream is, boolean loadDefault) throws ParserException {
+    public DefaultStory fromStream(InputStream is, boolean loadDefault) throws ParserException {
         Settings settings = new Settings();
 
         if (loadDefault) {
             // TODO: check if exists
-            Story default_story = fromStream(new DataInputStream(getClass().getResourceAsStream("/default_settings.xml")), false);
+            DefaultStory default_story = fromStream(new DataInputStream(getClass().getResourceAsStream("/default_settings.xml")), false);
             settings = default_story.getSettings();
         }
-        Story story;
+        DefaultStory story;
         try {
             story = parseXml(is, settings);
         } catch (ParserConfigurationException | SAXException | IOException | StoryException e) {
@@ -32,7 +32,7 @@ public class XmlParser implements Parser {
         return story;
     }
 
-    private Story parseXml(InputStream is, Settings settings) throws ParserConfigurationException, SAXException, IOException, ParserException, StoryException {
+    private DefaultStory parseXml(InputStream is, Settings settings) throws ParserConfigurationException, SAXException, IOException, ParserException, StoryException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setIgnoringElementContentWhitespace(true);
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -40,7 +40,7 @@ public class XmlParser implements Parser {
         Node node = document.getFirstChild();
         if (!node.getNodeName().equals("story")) throw new ParserException("Root node needs to be a story!");
         StateList stateList = new StateList();
-        Story story = new Story(stateList, settings);
+        DefaultStory story = new DefaultStory(stateList, settings);
         parseChildNodes(story, stateList, node.getChildNodes(), story);
         return story;
     }
@@ -54,7 +54,7 @@ public class XmlParser implements Parser {
         }
     }
 
-    private void parseChildNodes(BasePart parent, StateList stateList, NodeList children, Story story) throws StoryException {
+    private void parseChildNodes(BasePart parent, StateList stateList, NodeList children, DefaultStory story) throws StoryException {
         for (int i = 0; i < children.getLength(); ++i) {
             Node n = children.item(i);
             if (isWhitespaceNode(n)) continue;

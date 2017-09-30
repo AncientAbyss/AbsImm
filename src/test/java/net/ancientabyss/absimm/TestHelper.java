@@ -10,8 +10,8 @@ public class TestHelper {
         return new ByteArrayInputStream(str.getBytes());
     }
 
-    public static Story createDefaultStory(boolean useTxtFormat) {
-        return new Story(new StateList(), createDefaultSettings(useTxtFormat));
+    public static DefaultStory createDefaultStory(boolean useTxtFormat) {
+        return new DefaultStory(new StateList(), createDefaultSettings(useTxtFormat));
     }
 
     private static Settings createDefaultSettings(boolean useTxtFormat) {
@@ -48,7 +48,7 @@ public class TestHelper {
 
     public static Story createStoryWithParts() {
         StateList stateList = new StateList();
-        Story expected = TestHelper.createDefaultStory(false);
+        DefaultStory expected = TestHelper.createDefaultStory(false);
         expected.addPart(new Part("chapter_01", "in_chapter01", stateList));
         expected.addPart(new Part("chapter_02", "", stateList));
         return expected;
@@ -56,7 +56,7 @@ public class TestHelper {
 
     public static Story createStoryWithPartsTxt() {
         StateList stateList = new StateList();
-        Story expected = TestHelper.createDefaultStory(true);
+        DefaultStory expected = TestHelper.createDefaultStory(true);
         Part part = new Part("main", "NOT game_started", stateList);
         part.addAction(new Action("enter", "", "", "game_started AND in_intro", stateList, expected, "enter intro"));
         expected.addPart(part);
@@ -74,7 +74,7 @@ public class TestHelper {
 
     public static Story createStoryWithPartAndActions() {
         StateList stateList = new StateList();
-        Story expected = TestHelper.createDefaultStory(false);
+        DefaultStory expected = TestHelper.createDefaultStory(false);
         Part part = new Part("chapter_01", "", stateList);
         part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
         expected.addPart(part);
@@ -86,7 +86,7 @@ public class TestHelper {
 
     public static Story createStoryWithPartAndActionsTxt() {
         StateList stateList = new StateList();
-        Story expected = TestHelper.createDefaultStory(true);
+        DefaultStory expected = TestHelper.createDefaultStory(true);
         Part part = new Part("main", "NOT game_started", stateList);
         part.addAction(new Action("enter", "", "", "game_started AND in_intro", stateList, expected, "enter intro"));
         expected.addPart(part);
@@ -104,7 +104,7 @@ public class TestHelper {
 
     public static Story createStoryWithPartAndActionsIncludingPeekPartsTxt() {
         StateList stateList = new StateList();
-        Story expected = TestHelper.createDefaultStory(true);
+        DefaultStory expected = TestHelper.createDefaultStory(true);
         Part part = new Part("main", "NOT game_started", stateList);
         part.addAction(new Action("enter", "", "", "game_started AND in_intro", stateList, expected, "enter intro"));
         expected.addPart(part);
@@ -122,7 +122,7 @@ public class TestHelper {
 
     public static Story createStoryWithPartAndActionsIncludingHiddenDecisionNode() {
         StateList stateList = new StateList();
-        Story expected = TestHelper.createDefaultStory(true);
+        DefaultStory expected = TestHelper.createDefaultStory(true);
         Part part = new Part("main", "NOT game_started", stateList);
         part.addAction(new Action("enter", "", "", "game_started AND in_intro", stateList, expected, "enter intro"));
         expected.addPart(part);
@@ -137,7 +137,7 @@ public class TestHelper {
 
     public static Story createStoryWithPartsAndActions2(boolean includeInitialCommand) {
         StateList stateList = new StateList();
-        Story expected = TestHelper.createDefaultStory(includeInitialCommand);
+        DefaultStory expected = TestHelper.createDefaultStory(includeInitialCommand);
         expected.getSettings().addSetting("initial_command", "enter chapter_01");
         Part part = new Part("chapter_01", "", stateList);
         part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));
@@ -150,7 +150,7 @@ public class TestHelper {
 
     public static Story createStoryWithSettings(boolean includeInitialCommand) {
         StateList stateList = new StateList();
-        Story expected = new Story(stateList, TestHelper.createDefaultSettings(includeInitialCommand));
+        DefaultStory expected = new DefaultStory(stateList, TestHelper.createDefaultSettings(includeInitialCommand));
         expected.getSettings().addSetting("initial_command", "enter chapter_01");
         Part part = new Part("chapter_01", "", stateList);
         part.addAction(new Action("enter", "opened1", "has_lock1", "in_chapter01", stateList, expected));

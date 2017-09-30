@@ -1,6 +1,7 @@
 package net.ancientabyss.absimm.parser;
 
 import net.ancientabyss.absimm.TestHelper;
+import net.ancientabyss.absimm.core.DefaultStory;
 import net.ancientabyss.absimm.core.ReactionClient;
 import net.ancientabyss.absimm.core.Story;
 import net.ancientabyss.absimm.core.StoryException;
@@ -23,7 +24,7 @@ public class TxtParserTest extends ParserTestBase {
     @Test
     public void fromStream_withoutSettings_createsStoryWithoutSettings() throws ParserException {
         Parser parser = createParser();
-        Story actual = parser.fromStream(TestHelper.toStream("\nchapter_01:\nchapter_02:"), false);
+        DefaultStory actual = parser.fromStream(TestHelper.toStream("\nchapter_01:\nchapter_02:"), false);
         Assert.assertNull(actual.getSettings().getSetting("help_message"));
     }
 
@@ -55,7 +56,7 @@ public class TxtParserTest extends ParserTestBase {
     public void fromStream_includesSetting_shouldOverwriteSetting() throws ParserException {
         Parser parser = createParser();
         String helpMessage = "Try harder!";
-        Story actual = parser.fromStream(TestHelper.toStream("settings:\nhelp_message=" + helpMessage + "\n\nwelcome!"), true);
+        DefaultStory actual = parser.fromStream(TestHelper.toStream("settings:\nhelp_message=" + helpMessage + "\n\nwelcome!"), true);
         Assert.assertEquals(helpMessage, actual.getSettings().getSetting("help_message"));
     }
 

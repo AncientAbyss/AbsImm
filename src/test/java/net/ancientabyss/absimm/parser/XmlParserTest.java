@@ -1,6 +1,7 @@
 package net.ancientabyss.absimm.parser;
 
 import net.ancientabyss.absimm.TestHelper;
+import net.ancientabyss.absimm.core.DefaultStory;
 import net.ancientabyss.absimm.core.Story;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class XmlParserTest extends ParserTestBase {
     @Test
     public void fromStream_withoutSettings_createsStoryWithoutSettings() throws ParserException {
         Parser parser = createParser();
-        Story story = parser.fromStream(TestHelper.toStream("<story></story>"), false);
+        DefaultStory story = parser.fromStream(TestHelper.toStream("<story></story>"), false);
         Assert.assertNull(story.getSettings().getSetting("help_message"));
     }
 

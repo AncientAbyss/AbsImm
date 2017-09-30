@@ -12,15 +12,15 @@ public class TxtParser implements Parser {
     private Map<String, String> parentParts = new HashMap<>();
 
     @Override
-    public Story fromStream(InputStream is, boolean loadDefault) throws ParserException {
+    public DefaultStory fromStream(InputStream is, boolean loadDefault) throws ParserException {
         Settings settings = new Settings();
 
         if (loadDefault) {
             // TODO: check if exists
-            Story default_story = fromStream(new DataInputStream(getClass().getResourceAsStream("/default_settings.txt")), false);
+            DefaultStory default_story = fromStream(new DataInputStream(getClass().getResourceAsStream("/default_settings.txt")), false);
             settings = default_story.getSettings();
         }
-        Story story;
+        DefaultStory story;
         try {
             story = parseTxt(is, settings);
         } catch (IOException e) {
@@ -29,10 +29,10 @@ public class TxtParser implements Parser {
         return story;
     }
 
-    private Story parseTxt(InputStream is, Settings settings) throws IOException, ParserException {
+    private DefaultStory parseTxt(InputStream is, Settings settings) throws IOException, ParserException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StateList stateList = new StateList();
-        Story story = new Story(stateList, settings);
+        DefaultStory story = new DefaultStory(stateList, settings);
         Part mainPart = new Part("main", "NOT game_started", stateList);
         mainPart.addAction(new Action("enter", "", "", "game_started AND in_intro", stateList, story, "enter intro"));
         story.addPart(mainPart);
@@ -126,14 +126,14 @@ public class TxtParser implements Parser {
         text.append((text.length() == 0) ? "" : "\n").append(line);
     }
 
-    private void addPart(StateList stateList, Story story, Part part, String text, boolean isPeekPart) throws ParserException {
+    private void addPart(StateList stateList, DefaultStory story, Part part, String text, boolean isPeekPart) throws ParserException {
         if (part == null) throw new ParserException("Attempted adding an empty part.");
         part.addAction(new Action("enter", text, "", isPeekPart ?
                 String.format("%s in_%s %s in_%s", BasePart.NOT, part.getName(), BasePart.AND, parentParts.get(part.getName())) : "", stateList, story, ""));
         story.addPart(part);
     }
 
-    private void parseSettings(BufferedReader reader, Story story) throws IOException {
+    private void parseSettings(BufferedReader reader, DefaultStory story) throws IOException {
         while (reader.ready()) {
             String line = reader.readLine();
             if (line == null) return;

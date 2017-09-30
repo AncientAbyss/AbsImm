@@ -1,5 +1,7 @@
 package net.ancientabyss.absimm.core;
 
+import net.ancientabyss.absimm.loader.FileLoader;
+import net.ancientabyss.absimm.loader.Loader;
 import net.ancientabyss.absimm.parser.TxtParser;
 import net.ancientabyss.absimm.parser.XmlParser;
 import net.ancientabyss.absimm.util.AbsimFile;
@@ -19,7 +21,7 @@ public class StoryTest {
 
     @Test(expected = StoryException.class)
     public void interact_noContent_throwsException() throws StoryException {
-        Story story = new Story(new StateList(), new Settings());
+        Story story = new DefaultStory(new StateList(), new Settings());
         story.interact("test");
     }
 
@@ -28,7 +30,7 @@ public class StoryTest {
         StateList stateList = new StateList();
         stateList.add("s1");
         stateList.add("s2");
-        Story story = new Story(stateList, new Settings());
+        Story story = new DefaultStory(stateList, new Settings());
         String expected = story.getState();
         story.setState("");
         Assert.assertEquals("", stateList.serialize());
@@ -38,13 +40,13 @@ public class StoryTest {
 
     @Test(expected = StoryException.class)
     public void tell_noContent_throwsException() throws StoryException {
-        Story story = new Story(new StateList(), new Settings());
+        Story story = new DefaultStory(new StateList(), new Settings());
         story.tell();
     }
 
     @Test(expected = StoryException.class)
     public void tell_noInitialCommandAction_throwsException() throws StoryException {
-        Story story = new Story(new StateList(), new Settings());
+        DefaultStory story = new DefaultStory(new StateList(), new Settings());
         story.addPart(new Part("chapter"));
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
@@ -70,7 +72,7 @@ public class StoryTest {
         verify(client).reaction("introduction");
     }
 
-    private Story createStory() {
+    private DefaultStory createStory() {
         Settings settings = new Settings();
         settings.addSetting("initial_command", "enter chapter01");
         settings.addSetting("object_error", "No such object!");
@@ -84,7 +86,7 @@ public class StoryTest {
         settings.addSetting("load_invalid_command", "load invalid");
         settings.addSetting("load_success", "load success");
         settings.addSetting("quit_command", "quit");
-        Story story = new Story(new StateList(), settings);
+        DefaultStory story = new DefaultStory(new StateList(), settings);
         Part part = new Part("chapter01");
         Action action = new Action("enter", part.getName(), mock(StateList.class), story);
         Action action2 = new Action("enter", "introduction", mock(StateList.class), story);
@@ -96,7 +98,7 @@ public class StoryTest {
 
     @Test()
     public void tell_actionOnNonChapterPart_callsReactionWithCorrectParameter() throws StoryException {
-        Story story = createStory();
+        DefaultStory story = createStory();
         Part part = (Part) story.findAll("chapter01").get(0);
         part.addPart(createLocker(false));
         ReactionClient client = mock(ReactionClient.class);
@@ -113,11 +115,11 @@ public class StoryTest {
         Action open;
         StateList list = new StateList();
         if (condition) {
-            open = new Action("open", "Locker is open now!", "have_key", "locker_open", list, new Story(list, new Settings()));
-            Action locked = new Action("open", "You need a key!", "NOT have_key", "", list, new Story(list, new Settings()));
+            open = new Action("open", "Locker is open now!", "have_key", "locker_open", list, new DefaultStory(list, new Settings()));
+            Action locked = new Action("open", "You need a key!", "NOT have_key", "", list, new DefaultStory(list, new Settings()));
             locker.addAction(locked);
         } else {
-            open = new Action("open", "Locker is open now!", mock(StateList.class), new Story(list, new Settings()));
+            open = new Action("open", "Locker is open now!", mock(StateList.class), new DefaultStory(list, new Settings()));
         }
         locker.addAction(open);
         return locker;
@@ -125,7 +127,7 @@ public class StoryTest {
 
     @Test()
     public void tell_actionWithConditionNotMet_returnsEmptyString() throws StoryException {
-        Story story = createStory();
+        DefaultStory story = createStory();
         Part part = (Part) story.findAll("chapter01").get(0);
         Part locker = new Part("locker");
         Action open;
@@ -143,7 +145,7 @@ public class StoryTest {
 
     @Test()
     public void tell_actionWithCondition_callsReactionWithCorrectParameter() throws StoryException {
-        Story story = createStory();
+        DefaultStory story = createStory();
         Part part = (Part) story.findAll("chapter01").get(0);
         part.addPart(createLocker(true));
         ReactionClient client = mock(ReactionClient.class);
@@ -157,7 +159,7 @@ public class StoryTest {
 
     @Test
     public void tell_multipleChapters_executesAllActions() throws StoryException {
-        Story story = createStory();
+        DefaultStory story = createStory();
         Part part = (Part) story.findAll("chapter01").get(0);
         Part locker = new Part("locker");
         Action locker1 = mock(Action.class);
@@ -188,7 +190,7 @@ public class StoryTest {
         StateList stateList = new StateList();
         Settings settings = new Settings();
         settings.addSetting("initial_command", "enter chapter01");
-        Story story = new Story(stateList, settings);
+        DefaultStory story = new DefaultStory(stateList, settings);
         Part part = new Part("chapter01", "", stateList);
         Action action = new Action("enter", "introduction", "", "in_chapter01", stateList, story);
         part.addAction(action);
@@ -220,7 +222,7 @@ public class StoryTest {
     @Test
     public void tell_multipleChaptersWithActionsWithUnsatisfiedConditions_returnsErrorMessage() throws StoryException {
         Loader loader = createLoader();
-        Story story = loader.fromFile("res/test_02.xml");
+        Story story = loader.load("res/test_02.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
@@ -230,7 +232,7 @@ public class StoryTest {
     @Test
     public void interact_spacesInActionNames_work() throws StoryException {
         Loader loader = createLoader();
-        Story story = loader.fromFile("res/test_04.xml");
+        Story story = loader.load("res/test_04.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
@@ -247,7 +249,7 @@ public class StoryTest {
     @Test
     public void interact_hint_returnsAllPossibleActions() throws StoryException {
         Loader loader = createLoader();
-        Story story = loader.fromFile("res/test_03.xml");
+        Story story = loader.load("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
@@ -268,7 +270,7 @@ public class StoryTest {
     @Test
     public void interact_hint_doesNotShowInternalActions() throws StoryException {
         Loader loader = createLoader();
-        Story story = loader.fromFile("res/test_03.xml");
+        Story story = loader.load("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
@@ -288,7 +290,7 @@ public class StoryTest {
     @Test
     public void interact_help_showsHelp() throws StoryException {
         Loader loader = createLoader();
-        Story story = loader.fromFile("res/test_03.xml");
+        Story story = loader.load("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
@@ -301,7 +303,7 @@ public class StoryTest {
     @Test
     public void interact_nonexistentObject_returnsErrorMessage() throws StoryException {
         Loader loader = createLoader();
-        Story story = loader.fromFile("res/test_02.xml");
+        Story story = loader.load("res/test_02.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.addClient(client);
         story.tell();
@@ -315,7 +317,7 @@ public class StoryTest {
         Story story = null;
         ReactionClient client = mock(ReactionClient.class);
         try {
-            story = loader.fromFile("res/test_03.xml");
+            story = loader.load("res/test_03.xml");
             story.addClient(client);
             story.tell();
         } catch (Exception e) {
@@ -330,7 +332,7 @@ public class StoryTest {
     @Test
     public void tell_multipleChaptersWithConditions_playsGameWithoutProblem() throws StoryException {
         Loader loader = createLoader();
-        Story story = loader.fromFile("res/test_03.xml");
+        Story story = loader.load("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         InOrder inOrder = inOrder(client);
         story.addClient(client);
@@ -367,7 +369,7 @@ public class StoryTest {
     @Test()
     public void interact_save_savesStateList() throws StoryException, IOException {
         Loader loader = createLoader();
-        Story story = loader.fromFile("res/test_03.xml");
+        Story story = loader.load("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.tell();
         story.interact("take key");
@@ -380,12 +382,12 @@ public class StoryTest {
     @Test()
     public void interact_load_loadsStateList() throws StoryException, IOException {
         Loader loader = createLoader();
-        Story story = loader.fromFile("res/test_03.xml");
+        Story story = loader.load("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
         story.tell();
         story.interact("take key");
         story.interact("save 01.dat");
-        story = loader.fromFile("res/test_03.xml");
+        story = loader.load("res/test_03.xml");
         story.addClient(client);
         story.interact("load 01.dat");
         verify(client).reaction("Game successfully loaded.");
@@ -395,8 +397,8 @@ public class StoryTest {
 
     @Test()
     public void interact_txtFile_shouldAddActions() throws StoryException, IOException {
-        Loader loader = new Loader(new TxtParser());
-        Story story = loader.fromFile("res/test_06.txt");
+        Loader loader = new FileLoader(new TxtParser());
+        Story story = loader.load("res/test_06.txt");
         ReactionClient client = mock(ReactionClient.class);
         story.tell();
         story.addClient(client);
@@ -406,8 +408,8 @@ public class StoryTest {
 
     @Test()
     public void interact_txtFile_shouldShowHints() throws StoryException, IOException {
-        Loader loader = new Loader(new TxtParser());
-        Story story = loader.fromFile("res/test_06.txt");
+        Loader loader = new FileLoader(new TxtParser());
+        Story story = loader.load("res/test_06.txt");
         ReactionClient client = mock(ReactionClient.class);
         story.tell();
         story.addClient(client);
@@ -498,6 +500,6 @@ public class StoryTest {
     }
 
     private Loader createLoader() {
-        return new Loader(new XmlParser());
+        return new FileLoader(new XmlParser());
     }
 }

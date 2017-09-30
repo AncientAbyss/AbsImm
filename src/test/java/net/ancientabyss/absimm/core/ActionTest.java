@@ -25,7 +25,7 @@ public class ActionTest {
     @Test
     public void execute_executes_savesState() throws StoryException {
         StateList stateList = new StateList();
-        Action action = new Action("drink", "jamm", "", "", stateList, new Story(stateList, new Settings()));
+        Action action = new Action("drink", "jamm", "", "", stateList, new DefaultStory(stateList, new Settings()));
         action.execute();
         Assert.assertFalse(stateList.contains(""));
     }
@@ -40,13 +40,13 @@ public class ActionTest {
 
     @Test
     public void execute_targetSet_executesOnTarget() throws StoryException {
-        Story story = mock(Story.class);
+        Story story = mock(DefaultStory.class);
         Action action = new Action("drink", "jamm", "", "drunk", new StateList(), story, "enter target01");
         action.execute();
         verify(story).interact("enter target01");
     }
 
     private Action createAction(String condition, StateList stateList) {
-        return new Action("drink", "jamm", condition, "drunk", stateList, new Story(stateList, new Settings()));
+        return new Action("drink", "jamm", condition, "drunk", stateList, new DefaultStory(stateList, new Settings()));
     }
 }

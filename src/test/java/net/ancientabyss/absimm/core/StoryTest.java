@@ -499,6 +499,20 @@ public class StoryTest {
         story.interact("quit");
     }
 
+    @Test
+    public void isFinished_notFinished_shouldReturnFalse() throws StoryException {
+        Story story = new FileLoader(new TxtParser()).load("res/test_06.txt");
+        story.tell();
+        Assert.assertFalse(story.isFinished());
+    }
+
+    @Test
+    public void isFinished_finished_shouldReturnTrue() throws StoryException {
+        Story story = new FileLoader(new XmlParser()).load("res/test_01.xml");
+        story.tell();
+        story.interact("a");
+        Assert.assertTrue(story.isFinished());
+    }
     private Loader createLoader() {
         return new FileLoader(new XmlParser());
     }

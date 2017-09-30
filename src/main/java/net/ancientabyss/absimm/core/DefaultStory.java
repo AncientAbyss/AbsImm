@@ -142,12 +142,7 @@ public class DefaultStory extends BasePart implements Story {
         List<BasePart> allParts = findAll();
         StringBuilder message = new StringBuilder();
         for (BasePart part : allParts) {
-            List<String> availableActions = new ArrayList<>();
-            for (Action action : ((Part) part).findActions("")) {
-                if (availableActions.contains(action.getName())) continue;
-                if (automatedActions.contains(action)) continue;
-                availableActions.add(action.getName());
-            }
+            List<String> availableActions = getAvailableActions((Part) part);
             if (availableActions.size() > 0) {
                 if (message.length() > 0) message.append('\n');
                 String actions = StringUtils.join(availableActions, ", ");
@@ -162,6 +157,16 @@ public class DefaultStory extends BasePart implements Story {
             message.insert(0, settings.getRandom("hint_intro_message") + "\n");
             sendMessageToAllClients(message.toString());
         }
+    }
+
+    private List<String> getAvailableActions(Part part) {
+        List<String> availableActions = new ArrayList<>();
+        for (Action action : part.findActions("")) {
+            if (availableActions.contains(action.getName())) continue;
+            if (automatedActions.contains(action)) continue;
+            availableActions.add(action.getName());
+        }
+        return availableActions;
     }
 
     private void help() {
@@ -204,5 +209,13 @@ public class DefaultStory extends BasePart implements Story {
 
     public boolean isAutomatedMode() {
         return automatedMode;
+    }
+
+    @Override
+    public boolean isFinished() {
+        for (BasePart part : findAll()) {
+            if (getAvailableActions((Part) part).size() > 0) return false;
+        }
+        return true;
     }
 }

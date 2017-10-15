@@ -28,7 +28,7 @@ public class DefaultStory extends BasePart implements Story {
     }
 
     @Override
-    public void interact(String interaction) throws StoryException  {
+    public void interact(String interaction) throws StoryException {
         if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
 
         if (handleSystemCommands(interaction)) return;
@@ -40,8 +40,7 @@ public class DefaultStory extends BasePart implements Story {
         if (allParts.isEmpty()) sendMessageToAllClients(settings.getRandom("object_error"));
         else if (actions.isEmpty()) {
             sendMessageToAllClients(settings.getRandom("action_error"));
-        }
-        else {
+        } else {
             for (Action action : actions) {
                 String result = action.execute();
                 if (result.isEmpty()) continue;
@@ -65,7 +64,7 @@ public class DefaultStory extends BasePart implements Story {
         return actions;
     }
 
-    private boolean handleSystemCommands(String interaction)  {
+    private boolean handleSystemCommands(String interaction) {
         String command = interaction.split(" ")[0];
         if (command.equals(settings.getSetting("hint_command"))) {
             hint();
@@ -127,7 +126,10 @@ public class DefaultStory extends BasePart implements Story {
             splitted = splitted[1].split(" ", 2); // check each word
 
             if (splitted.length < 2) {
-                if (!processed_interaction.containsKey("action")) {
+                if (!isValidTarget(splitted[0])) {
+                    processed_interaction.put("action", interaction); // fallback when no target has been found
+                    processed_interaction.put("target", "");
+                } else if (!processed_interaction.containsKey("action")) {
                     processed_interaction.put("action", splitted[0]);
                     processed_interaction.put("target", "");
                 }
@@ -141,6 +143,10 @@ public class DefaultStory extends BasePart implements Story {
         processed_interaction.put("target", splitted[1]);
 
         return processed_interaction;
+    }
+
+    private boolean isValidTarget(String target) {
+        return !findAll(target).isEmpty();
     }
 
     private boolean isAction(String[] splitted) {
@@ -185,7 +191,8 @@ public class DefaultStory extends BasePart implements Story {
     @Override
     public void tell() throws StoryException {
         if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
-        if (settings.getSetting("initial_command") == null) throw new StoryException(settings.getSetting("initial_command_missing"));
+        if (settings.getSetting("initial_command") == null)
+            throw new StoryException(settings.getSetting("initial_command_missing"));
         interact(settings.getSetting("initial_command"));
     }
 

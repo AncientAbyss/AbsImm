@@ -508,6 +508,19 @@ public class StoryTest {
         story.interact("a");
         verify(client).onFinish();
     }
+
+    @Test
+    public void interact_multipleWords_proceedsTheStory() throws StoryException {
+        Loader loader = new FileLoader(new TxtParser());
+        Story story = loader.load("res/test_09.txt");
+        ReactionClient client = mock(ReactionClient.class);
+        story.addClient(client);
+        story.tell();
+        verify(client).onReact("Hello!!");
+        story.interact("a ha!");
+        verify(client).onReact("b!");
+    }
+
     private Loader createLoader() {
         return new FileLoader(new XmlParser());
     }

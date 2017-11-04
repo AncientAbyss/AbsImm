@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class TxtParser implements Parser {
 
+    private static final String commentPrefix = "#";
+
     private Map<String, String> parentParts = new HashMap<>();
 
     @Override
@@ -42,12 +44,17 @@ public class TxtParser implements Parser {
         StringBuilder text = new StringBuilder();
         boolean isPeekPart = false;
         boolean containsSettings = false;
+        boolean isComment = false;
         while (reader.ready()) {
             String line = reader.readLine();
             if (line == null) break;
             line = line.trim();
             if (line.isEmpty()) {
                 ++numEmptyLinesToAdd;
+                continue;
+            }
+            if (line.startsWith(commentPrefix)) {
+                isComment = true;
                 continue;
             }
             if (line.startsWith("settings:")) {
@@ -83,6 +90,10 @@ public class TxtParser implements Parser {
             if (!isNewPart) {
                 if (numEmptyLinesToAdd > 0) {
                     if (line.startsWith("- ")) numEmptyLinesToAdd = 0; // strip whitespace between section and hidden decision node
+                    if (isComment) {
+                        numEmptyLinesToAdd = 0;
+                        isComment = false;
+                    }
                     for (int i = 0; i < numEmptyLinesToAdd; ++i) {
                         appendText(text, "");
                     }

@@ -85,6 +85,19 @@ public class TxtParserTest extends ParserTestBase {
         parser.fromStream(TestHelper.toStream("welcome!\n\n- proceed (chapter01) mep"), true);
     }
 
+    @Test
+    public void fromStream_storyfileWithComments_createsStoryWithoutComments() throws ParserException, StoryException {
+        Parser parser = createParser();
+        String chapter1Text = "hello!\n# c3 \n\nworld";
+        Story actual = parser.fromStream(TestHelper.toStream("welcome!\n\n#c1\n\n* proceed (chapter01)\n# c2\nchapter01:\n" + chapter1Text), true);
+        ReactionClient client = mock(ReactionClient.class);
+        actual.addClient(client);
+        actual.tell();
+        verify(client).onReact("welcome!\n- proceed");
+        actual.interact("proceed");
+        verify(client).onReact("hello!\nworld");
+    }
+
     protected Parser createParser() {
         return new TxtParser();
     }

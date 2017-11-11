@@ -588,6 +588,19 @@ public class StoryTest {
         Assert.assertEquals(0, statistics.getNumUsedHints());
     }
 
+    @Test
+    public void getStatistics_txtFile_shouldReturnStatistics() throws StoryException {
+        Loader loader = new FileLoader(new TxtParser());
+        Story story = loader.load("res/test_06.txt");
+        story.tell();
+        story.interact("a");
+        Statistics statistics = story.getStatistics();
+        Assert.assertEquals(0, statistics.getNumInvalidCommands());
+        Assert.assertEquals(1, statistics.getNumValidCommands());
+        Assert.assertEquals(0, statistics.getNumOptionalCommands());
+        Assert.assertEquals(0, statistics.getNumUsedHints());
+    }
+
     private Loader createLoader() {
         return new FileLoader(new XmlParser());
     }

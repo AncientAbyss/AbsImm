@@ -36,17 +36,17 @@ public class DefaultStory extends BasePart implements Story {
         if (handleSystemCommands(interaction)) return;
 
         Map<String, String> processed_interaction = extractActionAndTargetFromCommand(interaction);
-        List<BasePart> allParts = processed_interaction.containsKey("target") ? findAll(processed_interaction.get("target")) : new ArrayList<BasePart>();
+        List<BasePart> allParts = processed_interaction.containsKey("target") ? findAll(processed_interaction.get("target")) : new ArrayList<>();
         List<Action> actions = findActions(processed_interaction.get("action"), allParts);
 
         if (allParts.isEmpty()) {
-            statistics.increaseNumInvalidCommands();
+            runIfNotInAutomatedMode(() -> statistics.increaseNumInvalidCommands());
             sendMessageToAllClients(settings.getRandom("object_error"));
         } else if (actions.isEmpty()) {
-            statistics.increaseNumInvalidCommands();
+            runIfNotInAutomatedMode(() -> statistics.increaseNumInvalidCommands());
             sendMessageToAllClients(settings.getRandom("action_error"));
         } else {
-            int previousState = stateList.hashCode();
+            final int previousState = stateList.hashCode();
             for (Action action : actions) {
                 String result = action.execute();
                 if (result.isEmpty()) continue;
@@ -55,16 +55,23 @@ public class DefaultStory extends BasePart implements Story {
                     automatedActions.add(action);
                 }
             }
-            if (previousState != stateList.hashCode()) {
-                statistics.increaseNumValidCommands();
-            } else {
-                statistics.increaseNumOptionalCommands();
-            }
-        }
+            runIfNotInAutomatedMode(() -> {
+                if (previousState != stateList.hashCode()) {
+                    statistics.increaseNumValidCommands();
+                } else {
+                    statistics.increaseNumOptionalCommands();
+                }
+            });
+       }
 
         if (!automatedMode && isFinished()) {
             finish();
         }
+    }
+
+    private void runIfNotInAutomatedMode(Runnable method) {
+        if (automatedMode) return;
+        method.run();
     }
 
     private List<Action> findActions(String action, List<BasePart> allParts) {
@@ -183,7 +190,7 @@ public class DefaultStory extends BasePart implements Story {
             message.insert(0, settings.getRandom("hint_intro_message") + "\n");
             sendMessageToAllClients(message.toString());
         }
-        statistics.increaseNumUsedHints();
+        runIfNotInAutomatedMode(() -> statistics.increaseNumUsedHints());
     }
 
     private List<String> getAvailableActions(Part part) {

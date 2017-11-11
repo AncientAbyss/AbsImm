@@ -20,7 +20,7 @@ Features
 Requirements
 ------------
 
-* Java JDK >= 1.7
+* Java JDK >= 1.8
 * Maven >= 2
 
 

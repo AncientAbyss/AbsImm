@@ -1,5 +1,6 @@
 package net.ancientabyss.absimm.core;
 
+import net.ancientabyss.absimm.models.Statistics;
 import net.ancientabyss.absimm.util.StringUtils;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class DefaultStory extends BasePart implements Story {
     // actions in the automated mode will not be suggested by the hint system.
     private List<Action> automatedActions = new ArrayList<>();
     private boolean automatedMode = false;
+    private Statistics statistics = new Statistics();
 
     public DefaultStory(StateList stateList, Settings settings) {
         super("", "", stateList);
@@ -37,10 +39,14 @@ public class DefaultStory extends BasePart implements Story {
         List<BasePart> allParts = processed_interaction.containsKey("target") ? findAll(processed_interaction.get("target")) : new ArrayList<BasePart>();
         List<Action> actions = findActions(processed_interaction.get("action"), allParts);
 
-        if (allParts.isEmpty()) sendMessageToAllClients(settings.getRandom("object_error"));
-        else if (actions.isEmpty()) {
+        if (allParts.isEmpty()) {
+            statistics.increaseNumInvalidCommands();
+            sendMessageToAllClients(settings.getRandom("object_error"));
+        } else if (actions.isEmpty()) {
+            statistics.increaseNumInvalidCommands();
             sendMessageToAllClients(settings.getRandom("action_error"));
         } else {
+            int previousState = stateList.hashCode();
             for (Action action : actions) {
                 String result = action.execute();
                 if (result.isEmpty()) continue;
@@ -48,6 +54,11 @@ public class DefaultStory extends BasePart implements Story {
                 if (automatedMode && !automatedActions.contains(action)) {
                     automatedActions.add(action);
                 }
+            }
+            if (previousState != stateList.hashCode()) {
+                statistics.increaseNumValidCommands();
+            } else {
+                statistics.increaseNumOptionalCommands();
             }
         }
 
@@ -172,6 +183,7 @@ public class DefaultStory extends BasePart implements Story {
             message.insert(0, settings.getRandom("hint_intro_message") + "\n");
             sendMessageToAllClients(message.toString());
         }
+        statistics.increaseNumUsedHints();
     }
 
     private List<String> getAvailableActions(Part part) {
@@ -194,6 +206,7 @@ public class DefaultStory extends BasePart implements Story {
         if (settings.getSetting("initial_command") == null)
             throw new StoryException(settings.getSetting("initial_command_missing"));
         interact(settings.getSetting("initial_command"));
+        statistics = new Statistics(); // reset to not include startup commands
     }
 
     private boolean isInitialized() {
@@ -225,6 +238,11 @@ public class DefaultStory extends BasePart implements Story {
 
     public boolean isAutomatedMode() {
         return automatedMode;
+    }
+
+    @Override
+    public Statistics getStatistics() {
+        return statistics;
     }
 
     private boolean isFinished() {

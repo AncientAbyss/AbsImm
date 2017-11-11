@@ -45,22 +45,22 @@ public class BasePart {
         return true;
     }
 
-    private boolean singleConditionMet(String single_condition) {
-        String invertedCondition = conditionContainsNot(single_condition) ? single_condition.split(" ")[1] : NOT + " " + single_condition;
-        int condition_index = stateList.lastIndexOf(single_condition);
-        int inverted_condition_index = stateList.lastIndexOf(invertedCondition);
+    protected boolean singleConditionMet(String singleCondition) {
+        String invertedCondition = conditionContainsNot(singleCondition) ? singleCondition.split(" ")[1] : NOT + " " + singleCondition;
+        int conditionIndex = stateList.lastIndexOf(singleCondition);
+        int invertedConditionIndex = stateList.lastIndexOf(invertedCondition);
 
-        if (conditionContainsNot(single_condition)) {
-            if (condition_index == -1 && inverted_condition_index == -1) return true;
+        if (conditionContainsNot(singleCondition)) {
+            if (conditionIndex == -1 && invertedConditionIndex == -1) return true;
         } else {
-            if (condition_index == -1) return false;
+            if (conditionIndex == -1) return false;
         }
 
-        return (condition_index > inverted_condition_index);
+        return (conditionIndex > invertedConditionIndex);
     }
 
-    private boolean conditionContainsNot(String single_condition) {
-        return single_condition.startsWith(NOT + " ");
+    private boolean conditionContainsNot(String singleCondition) {
+        return singleCondition.startsWith(NOT + " ");
     }
 
     public List<BasePart> findAll(String somePart) {

@@ -47,4 +47,9 @@ public class StateList {
     public String toString() {
         return serialize();
     }
+
+    @Override
+    public int hashCode() {
+        return list != null ? list.hashCode() : 0;
+    }
 }

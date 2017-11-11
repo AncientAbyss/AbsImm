@@ -1,5 +1,7 @@
 package net.ancientabyss.absimm.core;
 
+import net.ancientabyss.absimm.models.Statistics;
+
 /**
  * This is the main component for handling stories.
  * Get started: create stories using a Loader, add a client and run tell.
@@ -21,6 +23,8 @@ public interface Story {
     void setAutomatedMode(boolean automatedMode);
     /** Check whether the automated mode is set. */
     boolean isAutomatedMode();
+
+    Statistics getStatistics();
 
     @Override
     String toString();

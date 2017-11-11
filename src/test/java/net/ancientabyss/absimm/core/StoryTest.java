@@ -2,6 +2,7 @@ package net.ancientabyss.absimm.core;
 
 import net.ancientabyss.absimm.loader.FileLoader;
 import net.ancientabyss.absimm.loader.Loader;
+import net.ancientabyss.absimm.models.Statistics;
 import net.ancientabyss.absimm.parser.TxtParser;
 import net.ancientabyss.absimm.parser.XmlParser;
 import net.ancientabyss.absimm.util.AbsimFile;
@@ -519,6 +520,72 @@ public class StoryTest {
         verify(client).onReact("Hello!!");
         story.interact("a ha!");
         verify(client).onReact("b!");
+    }
+
+    @Test
+    public void getStatistics_invalidObject_shouldReturnStatistics() throws StoryException {
+        Loader loader = createLoader();
+        Story story = loader.load("res/test_03.xml");
+        story.tell();
+        story.interact("take nonexistentthing");
+        Statistics statistics = story.getStatistics();
+        Assert.assertEquals(1, statistics.getNumInvalidCommands());
+        Assert.assertEquals(0, statistics.getNumValidCommands());
+        Assert.assertEquals(0, statistics.getNumOptionalCommands());
+        Assert.assertEquals(0, statistics.getNumUsedHints());
+    }
+
+    @Test
+    public void getStatistics_invalidAction_shouldReturnStatistics() throws StoryException {
+        Loader loader = createLoader();
+        Story story = loader.load("res/test_03.xml");
+        story.tell();
+        story.interact("eat locker");
+        Statistics statistics = story.getStatistics();
+        Assert.assertEquals(1, statistics.getNumInvalidCommands());
+        Assert.assertEquals(0, statistics.getNumValidCommands());
+        Assert.assertEquals(0, statistics.getNumOptionalCommands());
+        Assert.assertEquals(0, statistics.getNumUsedHints());
+     }
+
+    @Test
+    public void getStatistics_hint_shouldReturnStatistics() throws StoryException {
+        Loader loader = createLoader();
+        Story story = loader.load("res/test_03.xml");
+        story.tell();
+        story.interact("hint");
+        Statistics statistics = story.getStatistics();
+        Assert.assertEquals(0, statistics.getNumInvalidCommands());
+        Assert.assertEquals(0, statistics.getNumValidCommands());
+        Assert.assertEquals(0, statistics.getNumOptionalCommands());
+        Assert.assertEquals(1, statistics.getNumUsedHints());
+    }
+
+    @Test
+    public void getStatistics_validCommand_shouldReturnStatistics() throws StoryException {
+        Loader loader = createLoader();
+        Story story = loader.load("res/test_03.xml");
+        story.tell();
+        story.interact("take key");
+        Statistics statistics = story.getStatistics();
+        Assert.assertEquals(0, statistics.getNumInvalidCommands());
+        Assert.assertEquals(1, statistics.getNumValidCommands());
+        Assert.assertEquals(0, statistics.getNumOptionalCommands());
+        Assert.assertEquals(0, statistics.getNumUsedHints());
+    }
+
+    @Test
+    public void getStatistics_optionalCommand_shouldReturnStatistics() throws StoryException {
+        Loader loader = createLoader();
+        Story story = loader.load("res/test_03.xml");
+        story.tell();
+        story.interact("look locker");
+        story.interact("look locker");
+        Statistics statistics = story.getStatistics();
+        Assert.assertEquals(0, statistics.getNumInvalidCommands());
+        Assert.assertEquals(1, statistics.getNumValidCommands());
+        Assert.assertEquals(1, statistics.getNumOptionalCommands());
+        Assert.assertEquals(0, statistics.getNumUsedHints());
     }
 
     private Loader createLoader() {

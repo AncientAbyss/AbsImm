@@ -29,8 +29,8 @@ public class StoryTest {
     @Test
     public void setState_validState_setsState() throws StoryException {
         StateList stateList = new StateList();
-        stateList.add("s1");
-        stateList.add("s2");
+        stateList.set(new State("s1", false));
+        stateList.set(new State("s2", false));
         Story story = new DefaultStory(stateList, new Settings());
         String expected = story.getState();
         story.setState("");
@@ -87,10 +87,11 @@ public class StoryTest {
         settings.addSetting("load_invalid_command", "load invalid");
         settings.addSetting("load_success", "load success");
         settings.addSetting("quit_command", "quit");
-        DefaultStory story = new DefaultStory(new StateList(), settings);
+        StateList stateList = new StateList();
+        DefaultStory story = new DefaultStory(stateList, settings);
         Part part = new Part("chapter01");
-        Action action = new Action("enter", part.getName(), mock(StateList.class), story);
-        Action action2 = new Action("enter", "introduction", mock(StateList.class), story);
+        Action action = new Action("enter", part.getName(), stateList, story);
+        Action action2 = new Action("enter", "introduction", stateList, story);
         part.addAction(action);
         part.addAction(action2);
         story.addPart(part);
@@ -120,7 +121,7 @@ public class StoryTest {
             Action locked = new Action("open", "You need a key!", "NOT have_key", "", list, new DefaultStory(list, new Settings()));
             locker.addAction(locked);
         } else {
-            open = new Action("open", "Locker is open now!", mock(StateList.class), new DefaultStory(list, new Settings()));
+            open = new Action("open", "Locker is open now!", createStateListMock(), new DefaultStory(list, new Settings()));
         }
         locker.addAction(open);
         return locker;
@@ -377,7 +378,7 @@ public class StoryTest {
         story.addClient(client);
         story.interact("save 01.dat");
         verify(client).onReact("Game successfully saved.");
-        Assert.assertEquals("game_started,in_chapter01,have_key", AbsimFile.readFileAsString("01.dat"));
+        Assert.assertEquals("game_started AND in_chapter01 AND have_key", AbsimFile.readFileAsString("01.dat"));
     }
 
     @Test()
@@ -601,7 +602,29 @@ public class StoryTest {
         Assert.assertEquals(0, statistics.getNumUsedHints());
     }
 
+    @Test
+    public void getStatistics_txtFileIncludes_shouldReturnStatistics() throws StoryException {
+        Loader loader = new FileLoader(new TxtParser());
+        Story story = loader.load("res/test_10.txt");
+        story.tell();
+        story.interact("b");
+        story.interact("b");
+        story.interact("b");
+        story.interact("a");
+        Statistics statistics = story.getStatistics();
+        Assert.assertEquals(0, statistics.getNumInvalidCommands());
+        Assert.assertEquals(2, statistics.getNumValidCommands());
+        Assert.assertEquals(2, statistics.getNumOptionalCommands());
+        Assert.assertEquals(0, statistics.getNumUsedHints());
+    }
+
     private Loader createLoader() {
         return new FileLoader(new XmlParser());
+    }
+
+    private StateList createStateListMock() {
+        StateList stateList = mock(StateList.class);
+        when(stateList.areAllSatisfied(anyObject())).thenReturn(true);
+        return stateList;
     }
 }

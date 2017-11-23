@@ -108,7 +108,7 @@ public class TxtParser implements Parser {
                     if (!action.endsWith(")")) throw new ParserException("Decision node needs to end with ')': " + line);
                     actionName = StringUtils.stripEnd(actionName, ")");
                     Part dummyPart = new Part("", "", stateList);
-                    String state = String.format("in_%s %s %s in_%s", actionName, BasePart.AND, BasePart.NOT, part.getName());
+                    String state = String.format("in_%s %s %s in_%s", actionName, StateList.AND, StateList.NOT, part.getName());
                     dummyPart.addAction(new Action(actionLabel, "", "", state, stateList, story, "enter " + actionName));
                     part.addPart(dummyPart);
                     parentParts.put(actionName, part.getName());
@@ -140,7 +140,7 @@ public class TxtParser implements Parser {
     private void addPart(StateList stateList, DefaultStory story, Part part, String text, boolean isPeekPart) throws ParserException {
         if (part == null) throw new ParserException("Attempted adding an empty part.");
         part.addAction(new Action("enter", text, "", isPeekPart ?
-                String.format("%s in_%s %s in_%s", BasePart.NOT, part.getName(), BasePart.AND, parentParts.get(part.getName())) : "", stateList, story, ""));
+                String.format("%s in_%s %s in_%s", StateList.NOT, part.getName(), StateList.AND, parentParts.get(part.getName())) : "", stateList, story, ""));
         story.addPart(part);
     }
 

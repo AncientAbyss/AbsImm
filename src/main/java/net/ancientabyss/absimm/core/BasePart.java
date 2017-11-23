@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BasePart {
-    public static final String NOT = "NOT";
-    public static final String AND = "AND";
-
     protected List<BasePart> parts = new ArrayList<>();
     protected String name = "";
     protected String condition = "";
-    protected StateList stateList;
+    protected StateList stateList = new StateList();
 
     public BasePart() {
     }
@@ -34,33 +31,7 @@ public class BasePart {
     }
 
     public boolean conditionsMet() {
-        if (condition.isEmpty()) return true;
-
-        String[] conditions = condition.split(" " + AND + " ");
-
-        for (String single_condition : conditions) {
-            if (!singleConditionMet(single_condition)) return false;
-        }
-
-        return true;
-    }
-
-    protected boolean singleConditionMet(String singleCondition) {
-        String invertedCondition = conditionContainsNot(singleCondition) ? singleCondition.split(" ")[1] : NOT + " " + singleCondition;
-        int conditionIndex = stateList.lastIndexOf(singleCondition);
-        int invertedConditionIndex = stateList.lastIndexOf(invertedCondition);
-
-        if (conditionContainsNot(singleCondition)) {
-            if (conditionIndex == -1 && invertedConditionIndex == -1) return true;
-        } else {
-            if (conditionIndex == -1) return false;
-        }
-
-        return (conditionIndex > invertedConditionIndex);
-    }
-
-    private boolean conditionContainsNot(String singleCondition) {
-        return singleCondition.startsWith(NOT + " ");
+        return stateList.areAllSatisfied(State.fromString(this.condition));
     }
 
     public List<BasePart> findAll(String somePart) {

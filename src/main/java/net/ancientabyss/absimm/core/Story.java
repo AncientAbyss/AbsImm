@@ -4,7 +4,7 @@ import net.ancientabyss.absimm.models.Statistics;
 
 /**
  * This is the main component for handling stories.
- * Get started: create stories using a Loader, add a client and run tell.
+ * Get started: create stories using a Loader, set a client and run tell.
  */
 public interface Story {
     /** Register a client, where messages will be sent to. */

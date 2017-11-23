@@ -1,7 +1,6 @@
 package net.ancientabyss.absimm.core;
 
 public class Action extends BasePart {
-
     private String text;
     private String state;
     private String command;
@@ -26,7 +25,7 @@ public class Action extends BasePart {
 
     public String execute() throws StoryException {
         if (!conditionsMet()) return "";
-        if (!state.isEmpty() && !singleConditionMet(state)) stateList.add(state);
+        stateList.setAll(State.fromString(state));
         boolean isAutomatedMode = story.isAutomatedMode();
         story.setAutomatedMode(true);
         if (!command.isEmpty()) story.interact(command);

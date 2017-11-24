@@ -14,7 +14,7 @@ Features
 * Comprehensive XML story format support, which allows modelling complex situations using states.
 * Save and load game states
 * Open story file formats
-* Cross platform
+* Cross platform (Android >= API level 16)
 
 
 Requirements
@@ -134,4 +134,10 @@ and then responds with either 'Whoop!' or 'Well.'.
 Stories are defined in XML and need to be conform to the [story.xsd](story.xsd).
 Examples can be found in the [res](res) directory.
 Story files need to be encoded as UTF-8.
+
+
+Notes
+-----
+
+For Android (API level <24) compatibility uses the streamsupport library instead Java 8 Streams.
 

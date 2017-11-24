@@ -1,6 +1,6 @@
 package net.ancientabyss.absimm.core;
 
-import java.util.Arrays;
+import java8.util.J8Arrays;
 
 public class State {
     private String name;
@@ -30,7 +30,7 @@ public class State {
     public static State[] fromString(String states) {
         if (states.isEmpty()) return new State[0];
         String[] allStates = states.split(" " + StateList.AND + " ");
-        return Arrays.stream(allStates).map(x -> {
+        return J8Arrays.stream(allStates).map(x -> {
             boolean isNegated = x.startsWith(StateList.NOT);
             return new State(isNegated ? x.replaceFirst(StateList.NOT + " ", "") : x, isNegated);
         }).toArray(State[]::new);

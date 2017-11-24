@@ -1,31 +1,34 @@
 package net.ancientabyss.absimm.core;
 
+import java8.util.J8Arrays;
+import java8.util.Optional;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 import net.ancientabyss.absimm.util.AbsimFile;
 import net.ancientabyss.absimm.util.StringUtils;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StateList {
 
     public static final String NOT = "NOT";
     public static final String AND = "AND";
 
-    private List<State> list = new ArrayList<>();
+    private Map<String, State> list = new HashMap<>();
 
     public void set(State state) {
         if (isSet(state)) return;
-        Optional<State> lastState = getLastState(state);
-        if (lastState.isPresent()) {
-            lastState.get().setNegated(state.isNegated());
+        if (list.containsKey(state.getName())) {
+            list.get(state.getName()).setNegated(state.isNegated());
         } else {
-            list.add(state);
+            list.put(state.getName(), state);
         }
     }
 
     public void setAll(State[] states) {
-        Arrays.stream(states).forEach(this::set);
+        J8Arrays.stream(states).forEach(this::set);
     }
 
     private boolean isSet(State state) {
@@ -34,11 +37,11 @@ public class StateList {
     }
 
     private Optional<State> getLastState(State state) {
-        return list.stream().filter(x -> Objects.equals(x.getName(), state.getName())).reduce((x, y) -> y);
+        return Optional.ofNullable(list.get(state.getName()));
     }
 
     public boolean areAllSatisfied(State[] states) {
-        return Arrays.stream(states).map(this::isSatisfied).allMatch(x -> x);
+        return J8Arrays.stream(states).map(this::isSatisfied).allMatch(x -> x);
     }
 
     public boolean isSatisfied(State state) {
@@ -55,11 +58,12 @@ public class StateList {
     }
 
     public String serialize() {
-        return StringUtils.join(list.stream().map(State::toString).collect(Collectors.toList()), " " + AND + " ");
+        return StringUtils.join(StreamSupport.stream(list.values()).map(State::toString).collect(Collectors.toList()), " " + AND + " ");
     }
 
     public void deserialize(String data) {
-        list = Arrays.stream(State.fromString(data)).collect(Collectors.toList());
+        list = new HashMap<>();
+        J8Arrays.stream(State.fromString(data)).forEachOrdered(x -> list.put(x.getName(), x));
     }
 
     @Override

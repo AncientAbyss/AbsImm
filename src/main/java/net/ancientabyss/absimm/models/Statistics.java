@@ -37,4 +37,16 @@ public class Statistics {
     public void increaseNumOptionalCommands() {
         ++numOptionalCommands;
     }
+
+    public float getEfficiency() {
+        return (float) numValidCommands / (numValidCommands + numOptionalCommands) * 100;
+    }
+
+    public float getHelplessness() {
+        return (float) numUsedHints / (numValidCommands + numUsedHints) * 100;
+    }
+
+    public float getClumsiness() {
+        return (float) numInvalidCommands / (numValidCommands + numInvalidCommands) * 100;
+    }
 }

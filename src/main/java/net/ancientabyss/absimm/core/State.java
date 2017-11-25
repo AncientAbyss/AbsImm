@@ -41,6 +41,7 @@ public class State {
         return (isNegated ? StateList.NOT + " " : "") + name;
     }
 
+    @SuppressWarnings("SimplifiableIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

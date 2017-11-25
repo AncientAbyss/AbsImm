@@ -42,7 +42,7 @@ For an example project, see the [Cli client](https://github.com/AncientAbyss/Abs
             
         dependencies {
             ...
-            compile 'net.ancientabyss.absimm:absimm-core:0.2-SNAPSHOT'
+            compile 'net.ancientabyss.absimm:absimm-core:0.4-SNAPSHOT'
         }
             
 * Maven:
@@ -60,7 +60,7 @@ For an example project, see the [Cli client](https://github.com/AncientAbyss/Abs
             <dependency>
                 <groupId>net.ancientabyss.absimm</groupId>
                 <artifactId>absimm-core</artifactId>
-                <version>0.2-SNAPSHOT</version>
+                <version>0.4-SNAPSHOT</version>
             </dependency>
         </dependencies>
 

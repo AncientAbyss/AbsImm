@@ -1,5 +1,7 @@
 package net.ancientabyss.absimm.core;
 
+import net.ancientabyss.absimm.history.History;
+import net.ancientabyss.absimm.history.HistoryType;
 import net.ancientabyss.absimm.models.Statistics;
 import net.ancientabyss.absimm.util.StringUtils;
 
@@ -17,6 +19,7 @@ public class DefaultStory extends BasePart implements Story {
     private List<Action> automatedActions = new ArrayList<>();
     private boolean automatedMode = false;
     private Statistics statistics = new Statistics();
+    private History history;
 
     public DefaultStory(StateList stateList, Settings settings) {
         super("", "", stateList);
@@ -30,10 +33,17 @@ public class DefaultStory extends BasePart implements Story {
     }
 
     @Override
+    public void addHistory(History history) {
+        this.history = history;
+    }
+
+    @Override
     public void interact(String interaction) throws StoryException {
         if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
 
         if (handleSystemCommands(interaction)) return;
+
+        log(interaction, HistoryType.INPUT);
 
         Map<String, String> processed_interaction = extractActionAndTargetFromCommand(interaction);
         List<BasePart> allParts = processed_interaction.containsKey("target") ? findAll(processed_interaction.get("target")) : new ArrayList<>();
@@ -67,6 +77,12 @@ public class DefaultStory extends BasePart implements Story {
         if (!automatedMode && isFinished()) {
             finish();
         }
+    }
+
+    private void log(String interaction, HistoryType input) {
+        boolean isAutomatedInput = automatedMode && input == HistoryType.INPUT;
+        if (history == null || isAutomatedInput) return;
+        history.add(interaction, input);
     }
 
     private void runIfNotInAutomatedMode(Runnable method) {
@@ -128,6 +144,7 @@ public class DefaultStory extends BasePart implements Story {
         for (ReactionClient client : clients) {
             client.onReact(message);
         }
+        log(message, HistoryType.OUTPUT);
     }
 
     private void finish() {
@@ -136,7 +153,7 @@ public class DefaultStory extends BasePart implements Story {
         }
     }
 
-    private Map<String, String> extractActionAndTargetFromCommand(String interaction) throws StoryException {
+    private Map<String, String> extractActionAndTargetFromCommand(String interaction) {
         Map<String, String> processed_interaction = new HashMap<>();
         String[] splitted = new String[]{"", interaction}; // prepare array
         // for all possible actions...
@@ -212,7 +229,9 @@ public class DefaultStory extends BasePart implements Story {
         if (!isInitialized()) throw new StoryException(settings.getSetting("empty_story_error"));
         if (settings.getSetting("initial_command") == null)
             throw new StoryException(settings.getSetting("initial_command_missing"));
+        automatedMode = true;
         interact(settings.getSetting("initial_command"));
+        automatedMode = false;
         statistics = new Statistics(); // reset to not include startup commands
     }
 

@@ -1,5 +1,7 @@
 package net.ancientabyss.absimm.core;
 
+import net.ancientabyss.absimm.history.History;
+import net.ancientabyss.absimm.history.HistoryType;
 import net.ancientabyss.absimm.loader.FileLoader;
 import net.ancientabyss.absimm.loader.Loader;
 import net.ancientabyss.absimm.models.Statistics;
@@ -61,6 +63,18 @@ public class StoryTest {
         story.addClient(client);
         story.tell();
         verify(client, times(2)).onReact(Matchers.anyString());
+    }
+
+    @Test()
+    public void tell_historyAdded_logsToHistory() throws StoryException {
+        Story story = createStory();
+        ReactionClient client = mock(ReactionClient.class);
+        History history = mock(History.class);
+        story.addClient(client);
+        story.addHistory(history);
+        story.tell();
+        verify(client, times(2)).onReact(Matchers.anyString());
+        verify(history, times(2)).add(Matchers.anyString(), anyObject());
     }
 
     @Test()
@@ -382,7 +396,7 @@ public class StoryTest {
     }
 
     @Test()
-    public void interact_load_loadsStateList() throws StoryException, IOException {
+    public void interact_load_loadsStateList() throws StoryException {
         Loader loader = createLoader();
         Story story = loader.load("res/test_03.xml");
         ReactionClient client = mock(ReactionClient.class);
@@ -398,7 +412,7 @@ public class StoryTest {
     }
 
     @Test()
-    public void interact_txtFile_shouldAddActions() throws StoryException, IOException {
+    public void interact_txtFile_shouldAddActions() throws StoryException {
         Loader loader = new FileLoader(new TxtParser());
         Story story = loader.load("res/test_06.txt");
         ReactionClient client = mock(ReactionClient.class);
@@ -616,6 +630,18 @@ public class StoryTest {
         Assert.assertEquals(2, statistics.getNumValidCommands());
         Assert.assertEquals(2, statistics.getNumOptionalCommands());
         Assert.assertEquals(0, statistics.getNumUsedHints());
+    }
+
+    @Test
+    public void interact_storyIncludesAutomatedActions_shouldOnlyLogManualInteractions() throws StoryException {
+        Loader loader = createLoader();
+        Story story = loader.load("res/test_03.xml");
+        History history = mock(History.class);
+        story.addHistory(history);
+        story.tell();
+        story.interact("look locker");
+        verify(history, times(3)).add(Matchers.anyString(), eq(HistoryType.OUTPUT));
+        verify(history, times(1)).add(Matchers.anyString(), eq(HistoryType.INPUT));
     }
 
     private Loader createLoader() {

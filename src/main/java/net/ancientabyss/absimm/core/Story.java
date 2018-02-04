@@ -1,5 +1,6 @@
 package net.ancientabyss.absimm.core;
 
+import net.ancientabyss.absimm.history.History;
 import net.ancientabyss.absimm.models.Statistics;
 
 /**
@@ -9,6 +10,8 @@ import net.ancientabyss.absimm.models.Statistics;
 public interface Story {
     /** Register a client, where messages will be sent to. */
     void addClient(ReactionClient client);
+    /** Input and output can optionally also be logged. */
+    void addHistory(History history);
     /** Run the story. */
     void tell() throws StoryException;
     /** Execute a command. */

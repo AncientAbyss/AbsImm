@@ -42,7 +42,7 @@ For an example project, see the [Cli client](https://github.com/AncientAbyss/Abs
             
         dependencies {
             ...
-            compile 'net.ancientabyss.absimm:absimm-core:0.4-SNAPSHOT'
+            compile 'net.ancientabyss.absimm:absimm-core:0.5-SNAPSHOT'
         }
             
 * Maven:
@@ -60,7 +60,7 @@ For an example project, see the [Cli client](https://github.com/AncientAbyss/Abs
             <dependency>
                 <groupId>net.ancientabyss.absimm</groupId>
                 <artifactId>absimm-core</artifactId>
-                <version>0.4-SNAPSHOT</version>
+                <version>0.5-SNAPSHOT</version>
             </dependency>
         </dependencies>
 
@@ -71,8 +71,10 @@ For an example project, see the [Cli client](https://github.com/AncientAbyss/Abs
         Story story = new Loader(new XmlParser()).fromString(...); // or TxtParser() for the simplified format
         // or from a file
         Story story = new Loader(new XmlParser()).fromFile(...); // or TxtParser() for the simplified format
-        // set the client to which AbsImm passes messages
+        // either set a client to which AbsImm passes messages...
         story.addClient(...);
+        // ... or use the history to retrieve messags synchronously
+        story.addHistory(...);
 
 ### Run
 
@@ -83,6 +85,8 @@ For an example project, see the [Cli client](https://github.com/AncientAbyss/Abs
             story.interact(...);
         }
         
+Responses from the engine are pushed to the client, but can also be retrieved via the history.
+
 ### Load/Save
 
         // Get the current state, e.g. for saving the active session
